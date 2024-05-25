@@ -8,5 +8,5 @@
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "cSpell.words": []
+  "cSpell.words": ["tetris", "tetromino", "tetrominos"]
 }
