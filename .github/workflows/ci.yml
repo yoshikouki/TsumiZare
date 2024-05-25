@@ -21,3 +21,6 @@ jobs:
 
       - name: Run Lint and Format
         run: bun lint
+
+      - name: Run tests
+        run: bun test
