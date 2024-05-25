@@ -1,4 +1,4 @@
-import { Tetris } from "./tetris";
+import { Tetris } from "@/futures/tetris/tetris";
 
 export default async function HomePage() {
   return (

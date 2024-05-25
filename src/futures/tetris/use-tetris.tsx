@@ -1,8 +1,4 @@
-"use client";
-
-import React, { KeyboardEventHandler, useEffect, useState } from "react";
-
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const ROWS = 20;
 const COLS = 10;
@@ -47,7 +43,7 @@ const TETROMINOS: Tetrominos = {
 } as const;
 const TETROMINO_TYPES = Object.keys(TETROMINOS) as TetrominoType[];
 
-export const Tetris = () => {
+export const useTetris = () => {
   const [board, setBoard] = useState(INITIAL_BOARD);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
@@ -123,42 +119,5 @@ export const Tetris = () => {
     };
   }, [dropTetromino]);
 
-  return (
-    <div className="flex max-h-screen items-center justify-center">
-      <div className="relative border-2 bg-gray-100">
-        {board.map((row, rowIndex) => (
-          <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            key={`row${rowIndex}`}
-            className="flex"
-          >
-            {row.map((cell, colIndex) => (
-              <div
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                key={`row${rowIndex}-cell${colIndex}`}
-                className={cn("h-10 w-10 border-2", cell && "bg-primary")}
-              />
-            ))}
-          </div>
-        ))}
-        {activeTetromino?.shape.map((row, y) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-          <div key={`tetromino-row${y}`} className="flex">
-            {row.map((cell, x) => (
-              <div
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                key={`tetromino-row${y}-cell${x}`}
-                className="absolute h-10 w-10 border-4 bg-primary opacity-90"
-                style={{
-                  top: (activeTetromino.position.y + y) * 40,
-                  left: (activeTetromino.position.x + x) * 40,
-                }}
-                hidden={!cell}
-              />
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  return { board, activeTetromino };
 };
