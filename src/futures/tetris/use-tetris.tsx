@@ -14,7 +14,7 @@ type Tetromino = {
 type TetrominoType = "I" | "O" | "T" | "S" | "Z" | "J" | "L";
 
 type Tetrominos = Record<TetrominoType, Tetromino["shape"]>;
-const TETROMINOS: Tetrominos = {
+export const TETROMINOS: Tetrominos = {
   I: [[1, 1, 1, 1]],
   O: [
     [1, 1],
@@ -41,7 +41,7 @@ const TETROMINOS: Tetrominos = {
     [1, 1, 1],
   ],
 } as const;
-const TETROMINO_TYPES = Object.keys(TETROMINOS) as TetrominoType[];
+export const TETROMINO_TYPES = Object.keys(TETROMINOS) as TetrominoType[];
 
 export const useTetris = () => {
   const [board, setBoard] = useState(INITIAL_BOARD);
@@ -119,5 +119,12 @@ export const useTetris = () => {
     };
   }, [dropTetromino]);
 
-  return { board, activeTetromino };
+  return {
+    board,
+    activeTetromino,
+    generateRandomTetromino,
+    mergeTetrominoIntoBoard,
+    dropTetromino,
+    checkCollision,
+  };
 };
