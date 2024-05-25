@@ -12,10 +12,11 @@
     "update:all": "bunx npm-check-updates -u"
   },
   "dependencies": {
+    "babel-plugin-react-compiler": "^0.0.0-experimental-592953e-20240517",
     "hono": "^4.3.11",
-    "next": "14.2.3",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "^15.0.0-rc.0",
+    "react": "^19.0.0-rc-935180c7e0-20240524",
+    "react-dom": "^19.0.0-rc-935180c7e0-20240524",
     "swr": "^2.2.5"
   },
   "devDependencies": {
