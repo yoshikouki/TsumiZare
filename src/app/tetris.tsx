@@ -2,6 +2,8 @@
 
 import React, { KeyboardEventHandler, useEffect, useState } from "react";
 
+import { cn } from "@/lib/utils";
+
 const ROWS = 20;
 const COLS = 10;
 const INITIAL_BOARD = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
@@ -123,7 +125,7 @@ export const Tetris = () => {
 
   return (
     <div className="flex max-h-screen items-center justify-center">
-      <div className="relative border-2 border-white bg-gray-100">
+      <div className="relative border-2 bg-gray-100">
         {board.map((row, rowIndex) => (
           <div
             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
@@ -134,9 +136,7 @@ export const Tetris = () => {
               <div
                 // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={`row${rowIndex}-cell${colIndex}`}
-                className={`h-10 w-10 border-2 border-white ${
-                  cell && "bg-gray-800"
-                }`}
+                className={cn("h-10 w-10 border-2", cell && "bg-primary")}
               />
             ))}
           </div>
@@ -148,11 +148,12 @@ export const Tetris = () => {
               <div
                 // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={`tetromino-row${y}-cell${x}`}
-                className="absolute h-10 w-10 border-4 border-white bg-gray-600"
+                className="absolute h-10 w-10 border-4 bg-primary opacity-90"
                 style={{
                   top: (activeTetromino.position.y + y) * 40,
                   left: (activeTetromino.position.x + x) * 40,
                 }}
+                hidden={!cell}
               />
             ))}
           </div>
