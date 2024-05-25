@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
-const ROWS = 20;
-const COLS = 10;
-const INITIAL_BOARD = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+export const ROWS = 20;
+export const COLS = 10;
+const DROP_INTERVAL = 1000;
+const INITIAL_BOARD: TetrominoShape = Array.from({ length: ROWS }, () =>
+  Array(COLS).fill(0),
+);
 
-type TetrominoShape = number[][];
+export type TetrominoShape = number[][];
 type TetrominoPosition = { x: number; y: number };
 type Tetromino = {
   shape: TetrominoShape;
@@ -59,15 +62,18 @@ export const useTetris = () => {
     shape: TetrominoShape,
     position: TetrominoPosition,
   ) => {
-    const newBoard = board.map((row) => [...row]);
-    for (let y = 0; y < shape.length; y++) {
-      for (let x = 0; x < shape[y].length; x++) {
-        if (shape[y][x] === 0) {
-          break;
+    const newBoard: TetrominoShape = board.map((row) => [...row]);
+    for (let shapeY = 0; shapeY < shape.length; shapeY++) {
+      const row = shape[shapeY];
+      for (let shapeX = 0; shapeX < row.length; shapeX++) {
+        if (row[shapeX] === 0) {
+          continue;
         }
-        newBoard[position.y + y][position.x + x] = shape[y][x];
+        newBoard[position.y + shapeY][position.x + shapeX] = row[shapeX];
       }
     }
+    setBoard(newBoard);
+    setActiveTetromino(null);
     return newBoard;
   };
 
@@ -80,9 +86,7 @@ export const useTetris = () => {
       if (!checkCollision(shape, newPosition)) {
         setActiveTetromino({ shape, position: newPosition });
       } else {
-        const newBoard = mergeTetrominoIntoBoard(shape, position);
-        setBoard(newBoard);
-        setActiveTetromino(null);
+        mergeTetrominoIntoBoard(shape, position);
       }
     }
   };
@@ -91,16 +95,17 @@ export const useTetris = () => {
     shape: TetrominoShape,
     position: TetrominoPosition,
   ) => {
-    for (let y = 0; y < shape.length; y++) {
-      for (let x = 0; x < shape[y].length; x++) {
-        if (shape[y][x] === 0) {
-          break;
+    for (let shapeY = 0; shapeY < shape.length; shapeY++) {
+      const row = shape[shapeY];
+      for (let shapeX = 0; shapeX < row.length; shapeX++) {
+        if (row[shapeX] === 0) {
+          continue;
         }
         if (
-          position.x + x < 0 ||
-          position.x + x >= COLS ||
-          position.y + y >= ROWS ||
-          (board[position.y + y] && board[position.y + y][position.x + x]) !== 0
+          position.x + shapeX < 0 ||
+          position.x + shapeX >= COLS ||
+          position.y + shapeY >= ROWS ||
+          board[position.y + shapeY]?.[position.x + shapeX] !== 0
         ) {
           return true;
         }
@@ -112,8 +117,7 @@ export const useTetris = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       dropTetromino();
-    }, 1000);
-
+    }, DROP_INTERVAL);
     return () => {
       clearInterval(interval);
     };
