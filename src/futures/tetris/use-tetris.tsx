@@ -93,6 +93,14 @@ const generateRandomTetromino = () => {
   };
 };
 
+const rotateShape = (shape: TetrominoShape) => {
+  // 90度時計回りに回転
+  const newShape = shape[0].map((_, index) =>
+    shape.map((row) => row[index]).reverse(),
+  );
+  return newShape;
+};
+
 export const useTetris = () => {
   const [board, setBoard] = useState<Board>(INITIAL_BOARD);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
@@ -171,6 +179,14 @@ export const useTetris = () => {
     setActiveTetromino({ ...activeTetromino, position: newPosition });
   };
 
+  const rotateActiveTetromino = () => {
+    if (!activeTetromino) return;
+    setActiveTetromino({
+      ...activeTetromino,
+      shape: rotateShape(activeTetromino.shape),
+    });
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -183,11 +199,14 @@ export const useTetris = () => {
         case "ArrowDown":
           moveActiveTetromino("down");
           break;
+        case "ArrowUp":
+          rotateActiveTetromino();
+          break;
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [moveActiveTetromino]);
+  }, [moveActiveTetromino, rotateActiveTetromino]);
 
   useEffect(() => {
     const interval = setInterval(() => {
