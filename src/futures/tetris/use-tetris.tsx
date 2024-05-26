@@ -123,10 +123,10 @@ export const useTetris = () => {
     } else {
       const { position } = activeTetromino;
       const newPosition = { ...position, y: position.y + 1 };
-      if (!checkCollision(activeTetromino.shape, newPosition)) {
-        setActiveTetromino({ ...activeTetromino, position: newPosition });
-      } else {
+      if (checkCollision(activeTetromino.shape, newPosition)) {
         mergeTetrominoIntoBoard(activeTetromino);
+      } else {
+        setActiveTetromino({ ...activeTetromino, position: newPosition });
       }
     }
   };
@@ -154,6 +154,43 @@ export const useTetris = () => {
     }
     return false;
   };
+
+  const moveActiveTetromino = (direction: "left" | "right" | "down") => {
+    if (!activeTetromino) return;
+
+    const { position } = activeTetromino;
+    const newPosition =
+      direction === "left"
+        ? { ...position, x: position.x - 1 }
+        : direction === "right"
+          ? { ...position, x: position.x + 1 }
+          : { ...position, y: position.y + 1 };
+    if (checkCollision(activeTetromino.shape, newPosition)) {
+      return;
+    }
+    setActiveTetromino({ ...activeTetromino, position: newPosition });
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowLeft":
+          moveActiveTetromino("left");
+          break;
+        case "ArrowRight":
+          moveActiveTetromino("right");
+          break;
+        case "ArrowDown":
+          moveActiveTetromino("down");
+          break;
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [moveActiveTetromino]);
 
   useEffect(() => {
     const interval = setInterval(() => {
