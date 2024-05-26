@@ -83,21 +83,21 @@ export const TETROMINOS: Tetrominos = {
 } as const;
 export const TETROMINO_TYPES = Object.keys(TETROMINOS) as TetrominoType[];
 
+const generateRandomTetromino = () => {
+  const type =
+    TETROMINO_TYPES[Math.floor(Math.random() * TETROMINO_TYPES.length)];
+  return {
+    id: crypto.randomUUID(),
+    shape: TETROMINOS[type],
+    position: { x: 3, y: 0 },
+  };
+};
+
 export const useTetris = () => {
   const [board, setBoard] = useState<Board>(INITIAL_BOARD);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
   );
-
-  const generateRandomTetromino = () => {
-    const type =
-      TETROMINO_TYPES[Math.floor(Math.random() * TETROMINO_TYPES.length)];
-    return {
-      id: crypto.randomUUID(),
-      shape: TETROMINOS[type],
-      position: { x: 3, y: 0 },
-    };
-  };
 
   const mergeTetrominoIntoBoard = (tetromino: Tetromino) => {
     const newBoard = deepCopyBoard(board);
@@ -120,15 +120,15 @@ export const useTetris = () => {
   const dropTetromino = () => {
     if (!activeTetromino) {
       setActiveTetromino(generateRandomTetromino());
-    } else {
-      const { position } = activeTetromino;
-      const newPosition = { ...position, y: position.y + 1 };
-      if (checkCollision(activeTetromino.shape, newPosition)) {
-        mergeTetrominoIntoBoard(activeTetromino);
-      } else {
-        setActiveTetromino({ ...activeTetromino, position: newPosition });
-      }
+      return;
     }
+    const { position } = activeTetromino;
+    const newPosition = { ...position, y: position.y + 1 };
+    if (checkCollision(activeTetromino.shape, newPosition)) {
+      mergeTetrominoIntoBoard(activeTetromino);
+      return;
+    }
+    setActiveTetromino({ ...activeTetromino, position: newPosition });
   };
 
   const checkCollision = (
@@ -141,12 +141,13 @@ export const useTetris = () => {
         if (row[shapeX] === 0) {
           continue;
         }
+        const cellX = position.x + shapeX;
+        const cellY = position.y + shapeY;
         if (
-          position.x + shapeX < 0 ||
-          position.x + shapeX >= COLS ||
-          position.y + shapeY >= ROWS ||
-          board.rows[position.y + shapeY].cells[position.x + shapeX]
-            .tetrominoId !== null
+          cellX < 0 ||
+          COLS <= cellX ||
+          ROWS <= cellY ||
+          board.rows[cellY].cells[cellX].tetrominoId
         ) {
           return true;
         }
@@ -157,7 +158,6 @@ export const useTetris = () => {
 
   const moveActiveTetromino = (direction: "left" | "right" | "down") => {
     if (!activeTetromino) return;
-
     const { position } = activeTetromino;
     const newPosition =
       direction === "left"
@@ -186,19 +186,14 @@ export const useTetris = () => {
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [moveActiveTetromino]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       dropTetromino();
     }, DROP_INTERVAL);
-    return () => {
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [dropTetromino]);
 
   return {
