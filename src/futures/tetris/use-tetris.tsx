@@ -257,6 +257,7 @@ export const useTetris = () => {
     });
   };
 
+  // Keyboard event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -278,6 +279,51 @@ export const useTetris = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [moveActiveTetromino, rotateActiveTetromino]);
 
+  // Touch event
+  useEffect(() => {
+    let touchStartX: number;
+    let touchStartY: number;
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      }
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const touchEndX = touch.clientX;
+        const touchEndY = touch.clientY;
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+          // 水平方向の移動
+          if (dx > 0) {
+            moveActiveTetromino("right");
+          } else {
+            moveActiveTetromino("left");
+          }
+        } else {
+          // 垂直方向の移動
+          if (dy > 0) {
+            moveActiveTetromino("down");
+          } else {
+            rotateActiveTetromino();
+          }
+        }
+      }
+    };
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [moveActiveTetromino, rotateActiveTetromino]);
+
+  //
   useEffect(() => {
     if (board.status !== "playing") return;
     const interval = setInterval(() => {
