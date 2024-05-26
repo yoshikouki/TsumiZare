@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const ROWS = 20;
 export const COLS = 10;
-const DROP_INTERVAL = 1000;
+const DROP_INTERVAL = 333;
 
 const id = () => crypto.randomUUID();
 const initCell = () => ({
