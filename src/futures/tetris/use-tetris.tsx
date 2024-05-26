@@ -4,28 +4,50 @@ export const ROWS = 20;
 export const COLS = 10;
 const DROP_INTERVAL = 1000;
 
-const INITIAL_BOARD: Board = {
-  id: crypto.randomUUID(),
-  rows: Array.from({ length: ROWS }, () => ({
-    id: crypto.randomUUID(),
-    cells: Array.from({ length: COLS }, () => ({
-      id: crypto.randomUUID(),
-      tetrominoId: null,
-    })),
-  })),
-};
+const id = () => crypto.randomUUID();
+const initCell = () => ({
+  id: id(),
+  tetrominoId: null,
+});
+const initRow = (colsNumber = COLS) => ({
+  id: id(),
+  cells: Array.from({ length: colsNumber }, initCell),
+});
+const INITIAL_BOARD = (rowsNumber = ROWS, colsNumber = COLS): Board => ({
+  id: id(),
+  rows: Array.from({ length: rowsNumber }, () => initRow(colsNumber)),
+  rowsNumber,
+  colsNumber,
+});
 
 const deepCopyBoard = (board: Board): Board => {
   return {
-    id: board.id,
+    ...board,
     rows: board.rows.map((row) => ({
-      id: row.id,
+      ...row,
       cells: row.cells.map((cell) => ({
-        id: cell.id,
-        tetrominoId: cell.tetrominoId,
+        ...cell,
       })),
     })),
   };
+};
+
+const renewFilledRows = (board: Board): Board => {
+  const remainingRows = board.rows.filter((row) =>
+    row.cells.some((cell) => !cell.tetrominoId),
+  );
+  const clearedRowsCount = board.rowsNumber - remainingRows.length;
+  if (clearedRowsCount === 0) return board;
+  const newBoard = {
+    ...board,
+    rows: [
+      ...Array.from({ length: clearedRowsCount }, () =>
+        initRow(board.colsNumber),
+      ),
+      ...remainingRows,
+    ],
+  };
+  return newBoard;
 };
 
 type Cell = {
@@ -41,6 +63,8 @@ type Row = {
 type Board = {
   id: string;
   rows: Row[];
+  rowsNumber: number;
+  colsNumber: number;
 };
 
 export type TetrominoShape = number[][];
@@ -129,7 +153,12 @@ export const useTetris = () => {
       }
     }
     setBoard(newBoard);
-    setActiveTetromino(null);
+    return newBoard;
+  };
+
+  const clearFilledRows = (board: Board) => {
+    const newBoard = renewFilledRows(board);
+    setBoard(newBoard);
     return newBoard;
   };
 
@@ -141,7 +170,9 @@ export const useTetris = () => {
     const { position } = activeTetromino;
     const newPosition = { ...position, y: position.y + 1 };
     if (checkCollision(activeTetromino.shape, newPosition)) {
-      mergeTetrominoIntoBoard(activeTetromino);
+      const mergedBoard = mergeTetrominoIntoBoard(activeTetromino);
+      clearFilledRows(mergedBoard);
+      setActiveTetromino(null);
       return;
     }
     setActiveTetromino({ ...activeTetromino, position: newPosition });

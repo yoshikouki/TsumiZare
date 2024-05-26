@@ -48,9 +48,9 @@ describe("useTetris", () => {
   });
 
   describe("#mergeTetrominoIntoBoard", () => {
-    it("should detect collision correctly", async () => {
+    it("should detect collision correctly", () => {
       const { result } = renderHook(useTetris);
-      await waitFor(() => {
+      act(() => {
         result.current.mergeTetrominoIntoBoard({
           id: "testId",
           shape: TETROMINOS.Z,
@@ -80,10 +80,10 @@ describe("useTetris", () => {
       expect(checkCollision(shape, { x: -1, y: 0 })).toBe(true);
     });
 
-    it("should detect collision of other tetrominos correctly", async () => {
+    it("should detect collision of other tetrominos correctly", () => {
       const { result } = renderHook(useTetris);
       const shape = TETROMINOS.O;
-      await waitFor(() => {
+      act(() => {
         result.current.mergeTetrominoIntoBoard({
           id: "testId",
           shape,
