@@ -7,7 +7,8 @@ describe("useTetris", () => {
     const { result } = renderHook(() => useTetris());
     const { board, activeTetromino } = result.current;
 
-    expect(board).toEqual(Array.from({ length: 20 }, () => Array(10).fill(0)));
+    expect(board.rows).toHaveLength(20);
+    expect(board.rows[0].cells).toHaveLength(10);
     expect(activeTetromino).toBeNull();
   });
 
@@ -50,15 +51,16 @@ describe("useTetris", () => {
     it("should detect collision correctly", async () => {
       const { result } = renderHook(useTetris);
       await waitFor(() => {
-        result.current.mergeTetrominoIntoBoard(TETROMINOS.Z, {
-          x: 0,
-          y: 0,
+        result.current.mergeTetrominoIntoBoard({
+          id: "testId",
+          shape: TETROMINOS.Z,
+          position: { x: 0, y: 0 },
         });
       });
-      expect(result.current.board[0][0]).toBe(1);
-      expect(result.current.board[0][1]).toBe(1);
-      expect(result.current.board[1][1]).toBe(1);
-      expect(result.current.board[1][2]).toBe(1);
+      expect(result.current.board.rows[0].cells[0].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[0].cells[1].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[1].cells[1].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[1].cells[2].tetrominoId).toBe("testId");
     });
   });
 
@@ -82,7 +84,11 @@ describe("useTetris", () => {
       const { result } = renderHook(useTetris);
       const shape = TETROMINOS.O;
       await waitFor(() => {
-        result.current.mergeTetrominoIntoBoard(shape, { x: 0, y: 18 });
+        result.current.mergeTetrominoIntoBoard({
+          id: "testId",
+          shape,
+          position: { x: 0, y: 18 },
+        });
       });
       expect(result.current.checkCollision(shape, { x: 0, y: 16 })).toBe(false);
       expect(result.current.checkCollision(shape, { x: 0, y: 17 })).toBe(true);
