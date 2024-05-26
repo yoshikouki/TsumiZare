@@ -101,6 +101,14 @@ const rotateShape = (shape: TetrominoShape) => {
   return newShape;
 };
 
+const WALL_KICKS = [
+  { x: -1, y: 0 },
+  { x: 1, y: 0 },
+  { x: 0, y: -1 },
+  { x: -1, y: -1 },
+  { x: 1, y: -1 },
+];
+
 export const useTetris = () => {
   const [board, setBoard] = useState<Board>(INITIAL_BOARD);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
@@ -179,11 +187,35 @@ export const useTetris = () => {
     setActiveTetromino({ ...activeTetromino, position: newPosition });
   };
 
+  const tryWallKick = (shape: TetrominoShape, position: TetrominoPosition) => {
+    for (let i = 0; i < WALL_KICKS.length; i++) {
+      const newPosition = {
+        x: position.x + WALL_KICKS[i].x,
+        y: position.y + WALL_KICKS[i].y,
+      };
+      if (!checkCollision(shape, newPosition)) {
+        return newPosition;
+      }
+    }
+    return null;
+  };
+
   const rotateActiveTetromino = () => {
     if (!activeTetromino) return;
+    const rotatedShape = rotateShape(activeTetromino.shape);
+    if (!checkCollision(rotatedShape, activeTetromino.position)) {
+      setActiveTetromino({
+        ...activeTetromino,
+        shape: rotatedShape,
+      });
+      return;
+    }
+    const newPosition = tryWallKick(rotatedShape, activeTetromino.position);
+    if (!newPosition) return;
     setActiveTetromino({
       ...activeTetromino,
-      shape: rotateShape(activeTetromino.shape),
+      shape: rotatedShape,
+      position: newPosition,
     });
   };
 
@@ -222,5 +254,6 @@ export const useTetris = () => {
     mergeTetrominoIntoBoard,
     dropTetromino,
     checkCollision,
+    rotateActiveTetromino,
   };
 };
