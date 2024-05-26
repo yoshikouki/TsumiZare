@@ -12,6 +12,7 @@
     "update:all": "bunx npm-check-updates -u"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
     "babel-plugin-react-compiler": "^0.0.0-experimental-592953e-20240517",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

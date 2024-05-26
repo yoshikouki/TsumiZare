@@ -13,12 +13,12 @@ const initRow = (colsNumber = COLS) => ({
   id: id(),
   cells: Array.from({ length: colsNumber }, initCell),
 });
-const INITIAL_BOARD = (rowsNumber = ROWS, colsNumber = COLS): Board => ({
+const initBoard = (rowsNumber = ROWS, colsNumber = COLS): Board => ({
   id: id(),
   rows: Array.from({ length: rowsNumber }, () => initRow(colsNumber)),
   rowsNumber,
   colsNumber,
-  status: "playing",
+  status: "ready",
 });
 
 const deepCopyBoard = (board: Board): Board => {
@@ -136,10 +136,15 @@ const WALL_KICKS = [
 ];
 
 export const useTetris = () => {
-  const [board, setBoard] = useState<Board>(INITIAL_BOARD);
+  const [board, setBoard] = useState<Board>(initBoard);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
   );
+
+  const startTetris = () => {
+    setBoard({ ...initBoard(), status: "playing" });
+    setActiveTetromino(null);
+  };
 
   const mergeTetrominoIntoBoard = (tetromino: Tetromino) => {
     const newBoard = deepCopyBoard(board);
@@ -335,6 +340,7 @@ export const useTetris = () => {
   return {
     board,
     activeTetromino,
+    startTetris,
     generateRandomTetromino,
     mergeTetrominoIntoBoard,
     dropTetromino,

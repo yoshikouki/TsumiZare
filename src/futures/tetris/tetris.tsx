@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useTetris } from "./use-tetris";
 
 export const Tetris = () => {
-  const { board, activeTetromino } = useTetris();
+  const { board, activeTetromino, startTetris } = useTetris();
 
   return (
     <div className="flex max-h-screen items-center justify-center">
@@ -37,6 +37,20 @@ export const Tetris = () => {
             ))}
           </div>
         ))}
+        <div
+          className={cn(
+            "absolute inset-0 flex w-full items-center justify-center",
+            board.status !== "ready" && "hidden",
+          )}
+        >
+          <Button
+            type="button"
+            onClick={startTetris}
+            className="p-12 font-black text-6xl"
+          >
+            Start
+          </Button>
+        </div>
       </div>
     </div>
   );
