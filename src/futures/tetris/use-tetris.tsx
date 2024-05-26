@@ -18,6 +18,7 @@ const INITIAL_BOARD = (rowsNumber = ROWS, colsNumber = COLS): Board => ({
   rows: Array.from({ length: rowsNumber }, () => initRow(colsNumber)),
   rowsNumber,
   colsNumber,
+  status: "playing",
 });
 
 const deepCopyBoard = (board: Board): Board => {
@@ -65,6 +66,7 @@ type Board = {
   rows: Row[];
   rowsNumber: number;
   colsNumber: number;
+  status: "ready" | "playing" | "finished" | "pause";
 };
 
 export type TetrominoShape = number[][];
@@ -164,7 +166,12 @@ export const useTetris = () => {
 
   const dropTetromino = () => {
     if (!activeTetromino) {
-      setActiveTetromino(generateRandomTetromino());
+      const newTetromino = generateRandomTetromino();
+      if (checkCollision(newTetromino.shape, newTetromino.position)) {
+        setBoard({ ...board, status: "finished" });
+      } else {
+        setActiveTetromino(newTetromino);
+      }
       return;
     }
     const { position } = activeTetromino;
@@ -272,11 +279,12 @@ export const useTetris = () => {
   }, [moveActiveTetromino, rotateActiveTetromino]);
 
   useEffect(() => {
+    if (board.status !== "playing") return;
     const interval = setInterval(() => {
       dropTetromino();
     }, DROP_INTERVAL);
     return () => clearInterval(interval);
-  }, [dropTetromino]);
+  }, [dropTetromino, board.status]);
 
   return {
     board,
