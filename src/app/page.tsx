@@ -1,10 +1,16 @@
 import { Tetris } from "@/futures/tetris/tetris";
+import { TetrisProvider } from "@/futures/tetris/tetris-provider";
+import { ClientHeader } from "./header.client";
 
 export default async function HomePage() {
   return (
-    <main className="flex flex-col items-center justify-center gap-10">
-      <h1 className="font-black text-6xl">Tetris</h1>
-      <Tetris />
-    </main>
+    <TetrisProvider>
+      <main className="flex flex-col items-center gap-10">
+        <header className={"absolute z-10 items-center justify-center py-4"}>
+          <ClientHeader />
+        </header>
+        <Tetris />
+      </main>
+    </TetrisProvider>
   );
 }
