@@ -18,7 +18,10 @@ export const Tetris = () => {
     >
       <div className={cn("w-svw max-w-sm p-4")}>
         <div
-          className={cn("grid", board.status !== "playing" && "opacity-50")}
+          className={cn(
+            "grid touch-none",
+            board.status !== "playing" && "opacity-50",
+          )}
           style={{
             gridTemplateRows: `repeat(${board.rowsNumber}, 1fr)`,
             gridTemplateColumns: `repeat(${board.colsNumber}, 1fr)`,
@@ -48,7 +51,7 @@ export const Tetris = () => {
           <Button
             type="button"
             onClick={startTetris}
-            className="p-12 font-black text-6xl"
+            className="touch-auto p-12 font-black text-6xl"
           >
             Start
           </Button>
