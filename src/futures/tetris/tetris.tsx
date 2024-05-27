@@ -46,13 +46,13 @@ export const Tetris = () => {
           className={cn(
             board.status === "playing"
               ? "hidden"
-              : "pointer-events-none absolute inset-0 flex w-svw items-center justify-center",
+              : "absolute inset-0 flex w-svw items-center justify-center",
           )}
         >
           <Button
             type="button"
             onClick={startTetris}
-            className="pointer-events-auto p-12 font-black text-6xl"
+            className="p-12 font-black text-6xl"
           >
             Start
           </Button>
