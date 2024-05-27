@@ -5,7 +5,7 @@ export const COLS = 10;
 const DROP_INTERVAL = 333;
 const SWIPE_THRESHOLD = 30;
 
-const id = () => crypto.randomUUID();
+const id = () => Math.random().toString(36).substr(2, 9);
 const initCell = () => ({
   id: id(),
   tetrominoId: null,
@@ -114,7 +114,7 @@ const generateRandomTetromino = () => {
   const type =
     TETROMINO_TYPES[Math.floor(Math.random() * TETROMINO_TYPES.length)];
   return {
-    id: crypto.randomUUID(),
+    id: id(),
     shape: TETROMINOS[type],
     position: { x: 3, y: 0 },
   };
