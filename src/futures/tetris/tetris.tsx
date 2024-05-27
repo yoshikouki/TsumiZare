@@ -13,7 +13,7 @@ export const Tetris = () => {
         "flex w-svw items-center justify-center overscroll-none",
         board.status === "ready"
           ? "relative"
-          : "fixed inset-0 h-svw bg-background",
+          : "absolute inset-0 bg-background",
       )}
     >
       <div className={cn("w-svw max-w-sm p-4")}>
@@ -32,10 +32,10 @@ export const Tetris = () => {
               <div
                 key={cell.id}
                 className={cn(
-                  "aspect-square border-2",
-                  cell.tetrominoId && "bg-primary",
+                  "aspect-square rounded-sm bg-stone-100",
+                  cell.tetrominoId && "rounded-none bg-primary",
                   isActiveTetromino(cellIndex, rowIndex) &&
-                    "border-4 bg-primary opacity-90",
+                    "bg-primary opacity-90",
                 )}
               />
             )),
