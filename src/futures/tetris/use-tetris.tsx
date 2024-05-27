@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export const ROWS = 20;
 export const COLS = 10;
 const DROP_INTERVAL = 333;
+const SWIPE_THRESHOLD = 30;
 
 const id = () => crypto.randomUUID();
 const initCell = () => ({
@@ -312,8 +313,8 @@ export const useTetris = () => {
 
   // Touch event
   useEffect(() => {
-    let touchStartX: number;
-    let touchStartY: number;
+    let touchStartX = 0;
+    let touchStartY = 0;
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
         const touch = e.touches[0];
@@ -322,29 +323,37 @@ export const useTetris = () => {
       }
     };
     const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const touchEndX = touch.clientX;
-        const touchEndY = touch.clientY;
-        const dx = touchEndX - touchStartX;
-        const dy = touchEndY - touchStartY;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-          // 水平方向の移動
-          if (dx > 0) {
-            moveActiveTetromino("right");
-          } else {
-            moveActiveTetromino("left");
-          }
+      if (e.touches.length !== 1) {
+        return;
+      }
+      const touch = e.touches[0];
+      const touchEndX = touch.clientX;
+      const touchEndY = touch.clientY;
+      const dx = touchEndX - touchStartX;
+      const dy = touchEndY - touchStartY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      if (Math.max(absDx, absDy) < SWIPE_THRESHOLD) {
+        return;
+      }
+      if (absDx > absDy) {
+        // Horizontal swipe
+        if (dx > 0) {
+          moveActiveTetromino("right");
         } else {
-          // 垂直方向の移動
-          if (dy > 0) {
-            moveActiveTetromino("down");
-          } else {
-            rotateActiveTetromino();
-          }
+          moveActiveTetromino("left");
+        }
+      } else if (absDy < SWIPE_THRESHOLD * 3) {
+        // Vertical swipe
+        if (dy > 0) {
+          moveActiveTetromino("down");
+        } else {
+          rotateActiveTetromino();
         }
       }
+      // Re-init new touch start position after each move to allow continuous movement.
+      touchStartX = touchEndX;
+      touchStartY = touchEndY;
     };
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchmove", handleTouchMove);
