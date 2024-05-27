@@ -19,7 +19,7 @@ export const Tetris = () => {
       <div className={cn("w-svw max-w-sm p-4")}>
         <div
           className={cn(
-            "grid touch-none",
+            "pointer-events-none grid touch-none gap-1",
             board.status !== "playing" && "opacity-50",
           )}
           style={{
@@ -51,7 +51,7 @@ export const Tetris = () => {
           <Button
             type="button"
             onClick={startTetris}
-            className="touch-auto p-12 font-black text-6xl"
+            className="pointer-events-auto touch-auto p-12 font-black text-6xl"
           >
             Start
           </Button>
