@@ -5,50 +5,54 @@ import { cn } from "@/lib/utils";
 import { useTetris } from "./use-tetris";
 
 export const Tetris = () => {
-  const { board, activeTetromino, startTetris, isActiveTetromino } =
-    useTetris();
+  const { board, startTetris, isActiveTetromino } = useTetris();
 
   return (
-    <div className="relative w-full max-w-sm p-4">
-      <div
-        className="grid w-full"
-        style={{
-          gridTemplateRows: `repeat(${board.rowsNumber}, 1fr)`,
-          gridTemplateColumns: `repeat(${board.colsNumber}, 1fr)`,
-        }}
-      >
-        {board.rows.map((row, rowIndex) =>
-          row.cells.map((cell, cellIndex) =>
-            isActiveTetromino(cellIndex, rowIndex) ? (
-              <div
-                key={`${activeTetromino?.id}-${rowIndex}-${cellIndex}`}
-                className="aspect-square border-4 bg-primary opacity-90"
-              />
-            ) : (
+    <div
+      className={cn(
+        "flex w-svw items-center justify-center overscroll-none",
+        board.status === "ready"
+          ? "relative"
+          : "fixed inset-0 h-svw bg-background",
+      )}
+    >
+      <div className={cn("w-svw max-w-sm p-4")}>
+        <div
+          className={cn("grid", board.status !== "playing" && "opacity-50")}
+          style={{
+            gridTemplateRows: `repeat(${board.rowsNumber}, 1fr)`,
+            gridTemplateColumns: `repeat(${board.colsNumber}, 1fr)`,
+          }}
+        >
+          {board.rows.map((row, rowIndex) =>
+            row.cells.map((cell, cellIndex) => (
               <div
                 key={cell.id}
                 className={cn(
                   "aspect-square border-2",
                   cell.tetrominoId && "bg-primary",
+                  isActiveTetromino(cellIndex, rowIndex) &&
+                    "border-4 bg-primary opacity-90",
                 )}
               />
-            ),
-          ),
-        )}
-      </div>
-      <div
-        className={cn(
-          "absolute inset-0 flex w-full items-center justify-center",
-          board.status !== "ready" && "hidden",
-        )}
-      >
-        <Button
-          type="button"
-          onClick={startTetris}
-          className="p-12 font-black text-6xl"
+            )),
+          )}
+        </div>
+        <div
+          className={cn(
+            board.status === "playing"
+              ? "hidden"
+              : "absolute inset-0 flex w-svw items-center justify-center",
+          )}
         >
-          Start
-        </Button>
+          <Button
+            type="button"
+            onClick={startTetris}
+            className="p-12 font-black text-6xl"
+          >
+            Start
+          </Button>
+        </div>
       </div>
     </div>
   );
