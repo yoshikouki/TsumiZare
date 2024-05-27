@@ -127,6 +127,26 @@ const rotateShape = (shape: TetrominoShape) => {
   return newShape;
 };
 
+export const isFilledTetrominoCell = (
+  cellX: number,
+  cellY: number,
+  { position, shape }: Tetromino,
+) => {
+  const maxX = position.x + shape[0].length;
+  const maxY = position.y + shape.length;
+  if (
+    !(
+      position.x <= cellX &&
+      cellX < maxX &&
+      position.y <= cellY &&
+      cellY < maxY
+    )
+  ) {
+    return false;
+  }
+  return shape[cellY - position.y][cellX - position.x] === 1;
+};
+
 const WALL_KICKS = [
   { x: -1, y: 0 },
   { x: 1, y: 0 },
@@ -263,6 +283,11 @@ export const useTetris = () => {
     });
   };
 
+  const isActiveTetromino = (cellX: number, cellY: number) => {
+    if (!activeTetromino) return false;
+    return isFilledTetrominoCell(cellX, cellY, activeTetromino);
+  };
+
   // Keyboard event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -347,5 +372,6 @@ export const useTetris = () => {
     dropTetromino,
     checkCollision,
     rotateActiveTetromino,
+    isActiveTetromino,
   };
 };
