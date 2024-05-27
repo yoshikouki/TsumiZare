@@ -1,15 +1,13 @@
 import { describe, expect, it } from "bun:test";
-import { act, renderHook, waitFor } from "@testing-library/react";
-import {
-  TETROMINOS,
-  type TetrominoShape,
-  isFilledTetrominoCell,
-  useTetris,
-} from "./use-tetris";
+import { act, renderHook } from "@testing-library/react";
+
+import { TetrisProvider } from "./tetris-provider";
+import { TETROMINOS } from "./tetromino";
+import { useTetris } from "./use-tetris";
 
 describe("useTetris", () => {
   it("should initialize with the correct initial state", () => {
-    const { result } = renderHook(() => useTetris());
+    const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
     const { board, activeTetromino } = result.current;
 
     expect(board.rows).toHaveLength(20);
@@ -19,7 +17,7 @@ describe("useTetris", () => {
 
   describe("#dropTetromino", () => {
     it("should generate a random tetromino", () => {
-      const { result } = renderHook(useTetris);
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       act(() => result.current.dropTetromino());
       const { activeTetromino } = result.current;
       expect(activeTetromino).not.toBeNull();
@@ -27,7 +25,7 @@ describe("useTetris", () => {
     });
 
     it("should drop tetromino correctly", () => {
-      const { result } = renderHook(useTetris);
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       expect(result.current.activeTetromino).toBeNull();
       act(() => result.current.dropTetromino());
       expect(result.current.activeTetromino?.position).toEqual({ x: 3, y: 0 });
@@ -35,8 +33,8 @@ describe("useTetris", () => {
       expect(result.current.activeTetromino?.position).toEqual({ x: 3, y: 1 });
     });
 
-    it("should detect collision correctly", () => {
-      const { result } = renderHook(() => useTetris());
+    it("should detect collision correctly", async () => {
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       act(() => result.current.dropTetromino());
       const { activeTetromino } = result.current;
       if (!activeTetromino) throw new Error("activeTetromino is null");
@@ -54,7 +52,7 @@ describe("useTetris", () => {
 
   describe("#mergeTetrominoIntoBoard", () => {
     it("should detect collision correctly", () => {
-      const { result } = renderHook(useTetris);
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       act(() => {
         result.current.mergeTetrominoIntoBoard({
           id: "testId",
@@ -75,7 +73,7 @@ describe("useTetris", () => {
         result: {
           current: { checkCollision },
         },
-      } = renderHook(useTetris);
+      } = renderHook(useTetris, { wrapper: TetrisProvider });
       const shape = TETROMINOS.O;
       expect(checkCollision(shape, { x: 0, y: 0 })).toBe(false);
       expect(checkCollision(shape, { x: 0, y: 18 })).toBe(false);
@@ -86,7 +84,7 @@ describe("useTetris", () => {
     });
 
     it("should detect collision of other tetrominos correctly", () => {
-      const { result } = renderHook(useTetris);
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       const shape = TETROMINOS.O;
       act(() => {
         result.current.mergeTetrominoIntoBoard({
@@ -100,27 +98,5 @@ describe("useTetris", () => {
       expect(result.current.checkCollision(shape, { x: 2, y: 18 })).toBe(false);
       expect(result.current.checkCollision(shape, { x: 1, y: 18 })).toBe(true);
     });
-  });
-});
-
-describe("isFilledTetrominoCell", () => {
-  it("should return correct result", () => {
-    const tetromino = {
-      id: "testId",
-      shape: TETROMINOS.Z,
-      position: { x: 1, y: 1 },
-    };
-    expect(isFilledTetrominoCell(0, 0, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(1, 0, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(0, 1, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(1, 1, tetromino)).toBe(true);
-    expect(isFilledTetrominoCell(2, 1, tetromino)).toBe(true);
-    expect(isFilledTetrominoCell(3, 1, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(1, 2, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(2, 2, tetromino)).toBe(true);
-    expect(isFilledTetrominoCell(3, 2, tetromino)).toBe(true);
-    expect(isFilledTetrominoCell(4, 2, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(2, 3, tetromino)).toBe(false);
-    expect(isFilledTetrominoCell(3, 3, tetromino)).toBe(false);
   });
 });

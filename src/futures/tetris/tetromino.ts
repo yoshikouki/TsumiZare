@@ -51,7 +51,7 @@ export const generateRandomTetromino = () => {
 };
 
 export const rotateShape = (shape: TetrominoShape) => {
-  // 90度時計回りに回転
+  // 90° clockwise rotation
   const newShape = shape[0].map((_, index) =>
     shape.map((row) => row[index]).reverse(),
   );
