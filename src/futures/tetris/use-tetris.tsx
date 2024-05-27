@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const ROWS = 20;
 export const COLS = 10;
 const DROP_INTERVAL = 333;
 const SWIPE_THRESHOLD = 30;
+const TAP_MOVE_THRESHOLD = 5;
+const TAP_DURATION_THRESHOLD = 300;
 
 const id = () => Math.random().toString(36).substr(2, 9);
 const initCell = () => ({
@@ -311,57 +313,91 @@ export const useTetris = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [moveActiveTetromino, rotateActiveTetromino]);
 
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
+  const moveStartX = useRef(0);
+  const moveStartY = useRef(0);
+  const onTouchStart = (e: TouchEvent) => {
+    if (e.touches.length !== 1) {
+      return;
+    }
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+    moveStartX.current = touch.clientX;
+    moveStartY.current = touch.clientY;
+    touchStartTime.current = Date.now();
+    touchStartTime.current = Date.now();
+  };
+  const onTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
+    if (e.touches.length !== 1) {
+      return;
+    }
+    const touch = e.touches[0];
+    const touchEndX = touch.clientX;
+    const touchEndY = touch.clientY;
+    const dx = touchEndX - moveStartX.current;
+    const dy = touchEndY - moveStartY.current;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    if (Math.max(absDx, absDy) < SWIPE_THRESHOLD) {
+      return;
+    }
+    if (absDx > absDy) {
+      // Horizontal swipe
+      if (dx > 0) {
+        moveActiveTetromino("right");
+      } else {
+        moveActiveTetromino("left");
+      }
+    } else if (absDy < SWIPE_THRESHOLD * 3) {
+      // Vertical swipe
+      if (dy > 0) {
+        moveActiveTetromino("down");
+      } else {
+        rotateActiveTetromino();
+      }
+    } else {
+      return;
+    }
+    // Re-init new touch start position after each move to allow continuous movement.
+    moveStartX.current = touchEndX;
+    moveStartY.current = touchEndY;
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    if (e.changedTouches.length !== 1) {
+      return;
+    }
+    const touch = e.changedTouches[0];
+    const touchEndX = touch.clientX;
+    const touchEndY = touch.clientY;
+    const dx = touchEndX - touchStartX.current;
+    const dy = touchEndY - touchStartY.current;
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+    const touchDuration = Date.now() - touchStartTime.current;
+    if (
+      !(
+        Math.max(absDx, absDy) < TAP_MOVE_THRESHOLD &&
+        touchDuration < TAP_DURATION_THRESHOLD
+      )
+    ) {
+      return;
+    }
+    rotateActiveTetromino();
+  };
   // Touch event
   const boardRef = (ref: HTMLDivElement) => {
-    let touchStartX = 0;
-    let touchStartY = 0;
-    const handleTouchStart = (e: TouchEvent) => {
-      e.preventDefault();
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
-      }
-    };
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      if (e.touches.length !== 1) {
-        return;
-      }
-      const touch = e.touches[0];
-      const touchEndX = touch.clientX;
-      const touchEndY = touch.clientY;
-      const dx = touchEndX - touchStartX;
-      const dy = touchEndY - touchStartY;
-      const absDx = Math.abs(dx);
-      const absDy = Math.abs(dy);
-      if (Math.max(absDx, absDy) < SWIPE_THRESHOLD) {
-        return;
-      }
-      if (absDx > absDy) {
-        // Horizontal swipe
-        if (dx > 0) {
-          moveActiveTetromino("right");
-        } else {
-          moveActiveTetromino("left");
-        }
-      } else if (absDy < SWIPE_THRESHOLD * 3) {
-        // Vertical swipe
-        if (dy > 0) {
-          moveActiveTetromino("down");
-        } else {
-          rotateActiveTetromino();
-        }
-      }
-      // Re-init new touch start position after each move to allow continuous movement.
-      touchStartX = touchEndX;
-      touchStartY = touchEndY;
-    };
-    ref.addEventListener("touchstart", handleTouchStart);
-    ref.addEventListener("touchmove", handleTouchMove);
+    ref.addEventListener("touchstart", onTouchStart);
+    ref.addEventListener("touchmove", onTouchMove);
+    ref.addEventListener("touchend", onTouchEnd);
     return () => {
-      ref.removeEventListener("touchstart", handleTouchStart);
-      ref.removeEventListener("touchmove", handleTouchMove);
+      ref.removeEventListener("touchstart", onTouchStart);
+      ref.removeEventListener("touchmove", onTouchMove);
+      ref.removeEventListener("touchend", onTouchEnd);
     };
   };
 
