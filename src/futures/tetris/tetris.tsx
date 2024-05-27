@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useTetris } from "./use-tetris";
 
 export const Tetris = () => {
-  const { board, startTetris, isActiveTetromino } = useTetris();
+  const { board, boardRef, startTetris, isActiveTetromino } = useTetris();
 
   return (
     <div
@@ -19,13 +19,14 @@ export const Tetris = () => {
       <div className={cn("w-svw max-w-sm p-4")}>
         <div
           className={cn(
-            "pointer-events-none grid touch-none gap-1",
+            "grid touch-none gap-1",
             board.status !== "playing" && "opacity-50",
           )}
           style={{
             gridTemplateRows: `repeat(${board.rowsNumber}, 1fr)`,
             gridTemplateColumns: `repeat(${board.colsNumber}, 1fr)`,
           }}
+          ref={boardRef}
         >
           {board.rows.map((row, rowIndex) =>
             row.cells.map((cell, cellIndex) => (
@@ -51,7 +52,7 @@ export const Tetris = () => {
           <Button
             type="button"
             onClick={startTetris}
-            className="pointer-events-auto touch-auto p-12 font-black text-6xl"
+            className="touch-auto p-12 font-black text-6xl"
           >
             Start
           </Button>

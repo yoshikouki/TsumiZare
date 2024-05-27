@@ -312,10 +312,11 @@ export const useTetris = () => {
   }, [moveActiveTetromino, rotateActiveTetromino]);
 
   // Touch event
-  useEffect(() => {
+  const boardRef = (ref: HTMLDivElement) => {
     let touchStartX = 0;
     let touchStartY = 0;
     const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
       if (e.touches.length === 1) {
         const touch = e.touches[0];
         touchStartX = touch.clientX;
@@ -323,6 +324,7 @@ export const useTetris = () => {
       }
     };
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       if (e.touches.length !== 1) {
         return;
       }
@@ -355,13 +357,13 @@ export const useTetris = () => {
       touchStartX = touchEndX;
       touchStartY = touchEndY;
     };
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("touchmove", handleTouchMove);
+    ref.addEventListener("touchstart", handleTouchStart);
+    ref.addEventListener("touchmove", handleTouchMove);
     return () => {
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
+      ref.removeEventListener("touchstart", handleTouchStart);
+      ref.removeEventListener("touchmove", handleTouchMove);
     };
-  }, [moveActiveTetromino, rotateActiveTetromino]);
+  };
 
   //
   useEffect(() => {
@@ -375,6 +377,7 @@ export const useTetris = () => {
   return {
     board,
     activeTetromino,
+    boardRef,
     startTetris,
     generateRandomTetromino,
     mergeTetrominoIntoBoard,
