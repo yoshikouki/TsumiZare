@@ -5,12 +5,18 @@ import { cn } from "@/lib/utils";
 import { useTetris } from "./use-tetris";
 
 export const Tetris = () => {
-  const { board, boardRef, startTetris, isActiveTetromino } = useTetris();
+  const {
+    board,
+    boardRef,
+    startTetris,
+    isActiveTetromino,
+    isBelowActiveTetromino,
+  } = useTetris();
 
   return (
     <div
       className={cn(
-        "flex w-svw items-center justify-center overscroll-none",
+        "flex w-svw items-center justify-center overscroll-none transition-all",
         board.status === "ready"
           ? "relative"
           : "absolute inset-0 bg-background",
@@ -34,9 +40,12 @@ export const Tetris = () => {
                 key={cell.id}
                 className={cn(
                   "aspect-square rounded-sm bg-stone-100",
-                  cell.tetrominoId && "rounded-none bg-primary",
-                  isActiveTetromino(cellIndex, rowIndex) &&
-                    "bg-primary opacity-90",
+                  cell.tetrominoId
+                    ? "rounded-none bg-primary"
+                    : isActiveTetromino(cellIndex, rowIndex)
+                      ? "bg-primary opacity-90"
+                      : isBelowActiveTetromino(cellIndex, rowIndex) &&
+                        "bg-primary opacity-10",
                 )}
               />
             )),

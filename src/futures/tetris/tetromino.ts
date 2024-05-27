@@ -77,3 +77,16 @@ export const isFilledTetrominoCell = (
   }
   return shape[cellY - position.y][cellX - position.x] === 1;
 };
+
+export const isCellBelowTetromino = (
+  cellX: number,
+  cellY: number,
+  { position, shape }: Tetromino,
+) => {
+  const maxX = position.x + shape[0].length;
+  const maxY = position.y + shape.length;
+  if (cellX < position.x || maxX <= cellX || cellY < maxY) {
+    return false;
+  }
+  return true;
+};

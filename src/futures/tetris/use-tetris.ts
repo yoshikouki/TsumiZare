@@ -10,6 +10,7 @@ import {
   type TetrominoPosition,
   type TetrominoShape,
   generateRandomTetromino,
+  isCellBelowTetromino,
   isFilledTetrominoCell,
   rotateShape,
 } from "./tetromino";
@@ -154,6 +155,11 @@ export const useTetris = () => {
     return isFilledTetrominoCell(cellX, cellY, activeTetromino);
   };
 
+  const isBelowActiveTetromino = (cellX: number, cellY: number) => {
+    if (!activeTetromino) return false;
+    return isCellBelowTetromino(cellX, cellY, activeTetromino);
+  };
+
   // Touch event
   const boardRef = useTouch({
     onSwipeLeft: () => moveActiveTetromino("left"),
@@ -208,5 +214,6 @@ export const useTetris = () => {
     checkCollision,
     rotateActiveTetromino,
     isActiveTetromino,
+    isBelowActiveTetromino,
   };
 };
