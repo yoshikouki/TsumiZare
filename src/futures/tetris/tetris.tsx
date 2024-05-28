@@ -61,9 +61,13 @@ export const Tetris = () => {
           <Button
             type="button"
             onClick={startTetris}
-            className="p-12 font-black text-6xl"
+            className={cn(
+              "cursor-pointer rounded-md border bg-primary p-12 font-black text-6xl text-primary-foreground transition duration-200",
+              "hover:translate-x-[-0.25rem] hover:translate-y-[-0.25rem] hover:bg-accent hover:text-primary hover:shadow-[0.25rem_0.25rem_#000]",
+              "active:translate-x-0 active:translate-y-0 active:shadow-none",
+            )}
           >
-            Start
+            PLAY
           </Button>
         </div>
       </div>
