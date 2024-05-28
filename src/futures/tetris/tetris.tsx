@@ -29,7 +29,7 @@ export const Tetris = () => {
         ref={boardRef}
       >
         <div
-          className={cn("grid h-full gap-1")}
+          className={cn("grid max-h-svh w-full max-w-xs gap-1")}
           style={{
             gridTemplateRows: `repeat(${board.rowsNumber}, 1fr)`,
             gridTemplateColumns: `repeat(${board.colsNumber}, 1fr)`,
