@@ -87,5 +87,43 @@ describe("Tetromino", () => {
       expect(isCellBelowTetromino(0, 2, tetromino)).toBe(false);
       expect(isCellBelowTetromino(5, 2, tetromino)).toBe(false);
     });
+
+    it("should correctly return if the shape is T shape", () => {
+      const tetromino: Tetromino = {
+        id: "test",
+        shape: [
+          // T shape
+          [0, 1],
+          [1, 1],
+          [0, 1],
+        ],
+        position: { x: 1, y: 1 },
+      };
+      expect(isCellBelowTetromino(1, 1, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(1, 2, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(1, 3, tetromino)).toBe(true);
+      expect(isCellBelowTetromino(2, 1, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(2, 2, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(2, 3, tetromino)).toBe(false);
+    });
+
+    it("should correctly return if the shape is J shape", () => {
+      const tetromino: Tetromino = {
+        id: "test",
+        shape: [
+          // J shape
+          [0, 1],
+          [0, 1],
+          [1, 1],
+        ],
+        position: { x: 1, y: 1 },
+      };
+      expect(isCellBelowTetromino(1, 1, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(1, 2, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(1, 3, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(2, 1, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(2, 2, tetromino)).toBe(false);
+      expect(isCellBelowTetromino(2, 3, tetromino)).toBe(false);
+    });
   });
 });

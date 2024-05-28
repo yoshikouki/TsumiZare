@@ -81,12 +81,15 @@ export const isFilledTetrominoCell = (
 export const isCellBelowTetromino = (
   cellX: number,
   cellY: number,
-  { position, shape }: Tetromino,
+  tetromino: Tetromino,
 ) => {
+  const { position, shape } = tetromino;
   const maxX = position.x + shape[0].length;
-  const maxY = position.y + shape.length;
-  if (cellX < position.x || maxX <= cellX || cellY < maxY) {
+  const isOutside = cellX < position.x || maxX <= cellX;
+  const isAbove = cellY <= position.y;
+  const shapeY = cellY - position.y;
+  if (isOutside || isAbove || shapeY === 0) {
     return false;
   }
-  return true;
+  return shape[shapeY]?.[cellX - position.x] !== 1;
 };
