@@ -91,5 +91,9 @@ export const isCellBelowTetromino = (
   if (isOutside || isAbove || shapeY === 0) {
     return false;
   }
-  return shape[shapeY]?.[cellX - position.x] !== 1;
+  return (
+    shape[shapeY]?.[cellX - position.x] !== 1 &&
+    (shape[shapeY + 1] === undefined ||
+      shape[shapeY + 1]?.[cellX - position.x] !== 1)
+  );
 };
