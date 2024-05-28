@@ -63,6 +63,7 @@ export const useTouch = ({
     const dy = touchEndY - moveStartY.current;
     const absDx = Math.abs(dx);
     const absDy = Math.abs(dy);
+    // TODO: Stepwise acceleration
     if (Math.max(absDx, absDy) < swipeMoveThreshold) {
       return;
     }

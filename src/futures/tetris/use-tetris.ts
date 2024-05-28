@@ -33,6 +33,7 @@ export const useTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
     setActiveTetromino(null);
   };
+  // TODO: Pause
 
   const mergeTetrominoIntoBoard = (tetromino: Tetromino) => {
     const newBoard = deepCopyBoard(board);
