@@ -15,15 +15,20 @@ export const Tetris = () => {
   } = useTetris();
 
   return (
-    <div className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none bg-background">
-      {/* <div
+    <div className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none">
+      <div
         className={cn(
-          "py-4 opacity-100 transition-all duration-200",
-          board.status !== "playing" && "pointer-events-none opacity-0",
+          "flex w-full max-w-xs justify-between py-4 opacity-100 transition-all duration-200",
+          board.status === "ready" && "pointer-events-none opacity-0",
         )}
       >
-        <Settings />
-      </div> */}
+        <div />
+        <div>
+          <Button type="button" variant={"ghost"} size={"icon"}>
+            <Settings />
+          </Button>
+        </div>
+      </div>
       <div
         className="flex h-full w-full flex-col items-center justify-center p-4"
         ref={boardRef}
