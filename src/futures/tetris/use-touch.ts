@@ -12,6 +12,7 @@ export const useTouch = ({
   onSwipeLeft,
   onSwipeRight,
   onTap,
+  isPreventTouchDefault,
   swipeMoveThreshold = SWIPE_THRESHOLD,
   tapMoveThreshold = TAP_MOVE_THRESHOLD,
   tapDurationThreshold = TAP_DURATION_THRESHOLD,
@@ -21,6 +22,7 @@ export const useTouch = ({
   onSwipeLeft: () => void;
   onSwipeRight: () => void;
   onTap: () => void;
+  isPreventTouchDefault?: () => boolean;
   swipeMoveThreshold?: number;
   tapMoveThreshold?: number;
   tapDurationThreshold?: number;
@@ -30,11 +32,14 @@ export const useTouch = ({
   const touchStartTime = useRef(0);
   const moveStartX = useRef(0);
   const moveStartY = useRef(0);
+
   const onTouchStart = (e: TouchEvent) => {
     if (e.touches.length !== 1) {
       return;
     }
-    e.preventDefault();
+    if (isPreventTouchDefault?.()) {
+      e.preventDefault();
+    }
     const touch = e.touches[0];
     touchStartX.current = touch.clientX;
     touchStartY.current = touch.clientY;
@@ -43,8 +48,11 @@ export const useTouch = ({
     touchStartTime.current = Date.now();
     touchStartTime.current = Date.now();
   };
+
   const onTouchMove = (e: TouchEvent) => {
-    e.preventDefault();
+    if (isPreventTouchDefault?.()) {
+      e.preventDefault();
+    }
     if (e.touches.length !== 1) {
       return;
     }
@@ -79,6 +87,7 @@ export const useTouch = ({
     moveStartX.current = touchEndX;
     moveStartY.current = touchEndY;
   };
+
   const onTouchEnd = (e: TouchEvent) => {
     if (e.changedTouches.length !== 1) {
       return;

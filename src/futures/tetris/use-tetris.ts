@@ -167,6 +167,7 @@ export const useTetris = () => {
     onSwipeDown: () => moveActiveTetromino("down"),
     onSwipeUp: rotateActiveTetromino,
     onTap: rotateActiveTetromino,
+    isPreventTouchDefault: () => board.status === "playing",
   });
 
   // Keyboard event
