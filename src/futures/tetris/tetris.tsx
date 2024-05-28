@@ -39,13 +39,13 @@ export const Tetris = () => {
               <div
                 key={cell.id}
                 className={cn(
-                  "aspect-square rounded-sm bg-stone-100",
+                  "aspect-square rounded-sm bg-primary/5",
                   cell.tetrominoId
                     ? "rounded-none bg-primary"
                     : isActiveTetromino(cellIndex, rowIndex)
-                      ? "bg-primary opacity-90"
+                      ? "bg-primary/90"
                       : isBelowActiveTetromino(cellIndex, rowIndex) &&
-                        "bg-primary opacity-10",
+                        "bg-primary/10",
                 )}
               />
             )),
