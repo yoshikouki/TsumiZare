@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Settings } from "lucide-react";
+import { Pause } from "lucide-react";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { useTetris } from "./use-tetris";
@@ -25,7 +25,7 @@ export const Tetris = () => {
       {/* Game Header */}
       <div
         className={cn(
-          "flex w-full max-w-xs justify-between py-4 opacity-100 transition-all duration-200",
+          "flex w-full max-w-xs justify-between pt-4 opacity-100 transition-all duration-200",
           board.status === "ready" && "pointer-events-none opacity-0",
         )}
       >
@@ -37,14 +37,14 @@ export const Tetris = () => {
             size={"icon"}
             onClick={pauseTetris}
           >
-            <Settings />
+            <Pause className="fill-primary stroke-none" />
           </Button>
         </div>
       </div>
 
       {/* Game Board */}
       <div
-        className="flex h-full w-full flex-col items-center justify-center p-4"
+        className="flex h-full w-full flex-col items-center px-4"
         ref={boardRef}
       >
         <div
