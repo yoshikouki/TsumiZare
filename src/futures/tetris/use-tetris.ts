@@ -36,14 +36,13 @@ export const useTetris = () => {
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
   );
-  const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>(
-    Array.from({ length: 3 }, generateRandomTetromino),
-  );
+  const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>([]);
   const [tickCount, setTickCount] = useState(0);
 
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
     setActiveTetromino(null);
+    setQueuedTetrominos(Array.from({ length: 3 }, generateRandomTetromino));
   };
 
   const finishTetris = () => {
