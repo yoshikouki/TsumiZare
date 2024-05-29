@@ -85,8 +85,8 @@ export const Tetris = () => {
         <div
           className={cn("grid max-h-svh w-full max-w-xs gap-1")}
           style={{
-            gridTemplateRows: `repeat(${board.rowsNumber}, 1fr)`,
-            gridTemplateColumns: `repeat(${board.colsNumber}, 1fr)`,
+            gridTemplateRows: `repeat(${board.config.rowsNumber}, 1fr)`,
+            gridTemplateColumns: `repeat(${board.config.colsNumber}, 1fr)`,
           }}
         >
           {board.rows.map((row, rowIndex) =>

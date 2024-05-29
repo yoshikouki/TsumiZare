@@ -32,10 +32,10 @@ describe("Board", () => {
     it("should initialize a board with the specified number of rows and columns", () => {
       const rowsNumber = 10;
       const colsNumber = 8;
-      const board = initBoard(rowsNumber, colsNumber);
+      const board = initBoard({ rowsNumber, colsNumber });
       expect(board).toHaveProperty("id");
       expect(board.rows).toHaveLength(rowsNumber);
-      expect(board.colsNumber).toBe(colsNumber);
+      expect(board.config.colsNumber).toBe(colsNumber);
       expect(board.status).toBe("ready");
     });
   });

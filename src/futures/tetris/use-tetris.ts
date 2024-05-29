@@ -8,7 +8,6 @@ import {
   mergeTetrominoIntoBoard,
   renewFilledRows,
 } from "./board";
-import { DROP_INTERVAL } from "./constants";
 import { TetrisContext } from "./tetris-provider";
 import {
   type Tetromino,
@@ -191,7 +190,7 @@ export const useTetris = () => {
   // Game loop
   const gameRef = (ref: HTMLDivElement) => {
     if (board.status !== "playing") return;
-    const interval = setInterval(runTick, DROP_INTERVAL);
+    const interval = setInterval(runTick, board.config.dropInterval);
     return () => clearInterval(interval);
   };
 
