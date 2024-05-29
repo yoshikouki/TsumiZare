@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
 import {
   hasTetrominoCollision,
@@ -37,7 +37,7 @@ export const useTetris = () => {
     null,
   );
   const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>([]);
-  const [tickCount, setTickCount] = useState(0);
+  const playMilliSecondsRef = useRef(0);
 
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
@@ -82,7 +82,8 @@ export const useTetris = () => {
     } else {
       activateNextTetromino();
     }
-    setTickCount((prev) => prev + 1);
+    playMilliSecondsRef.current =
+      playMilliSecondsRef.current + board.config.dropInterval;
   };
 
   const mergeTetromino = (tetromino: Tetromino) => {
@@ -198,6 +199,7 @@ export const useTetris = () => {
     board,
     activeTetromino,
     queuedTetrominos,
+    playMilliSecondsRef,
     boardRef, // For touch event
     gameRef, // For game loop
     // Game management
