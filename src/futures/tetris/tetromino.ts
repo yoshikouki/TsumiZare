@@ -1,4 +1,5 @@
 import { id } from "./board";
+import { DEFAULT_TETROMINO_QUEUE_SIZE } from "./constants";
 
 export type TetrominoShape = number[][];
 export type TetrominoPosition = { x: number; y: number };
@@ -48,6 +49,13 @@ export const generateRandomTetromino = () => {
     shape: TETROMINOS[type],
     position: { x: 3, y: 0 },
   };
+};
+
+export const generateQueuedTetrominos = (
+  count = DEFAULT_TETROMINO_QUEUE_SIZE,
+) => {
+  const tetrominos = Array.from({ length: count }, generateRandomTetromino);
+  return tetrominos;
 };
 
 export const rotateShape = (shape: TetrominoShape) => {

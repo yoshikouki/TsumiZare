@@ -14,6 +14,7 @@ import {
   type Tetromino,
   type TetrominoPosition,
   type TetrominoShape,
+  generateQueuedTetrominos,
   generateRandomTetromino,
   isCellBelowTetromino,
   isFilledTetrominoCell,
@@ -42,7 +43,7 @@ export const useTetris = () => {
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
     setActiveTetromino(null);
-    setQueuedTetrominos(Array.from({ length: 3 }, generateRandomTetromino));
+    setQueuedTetrominos(generateQueuedTetrominos());
   };
 
   const finishTetris = () => {
@@ -64,7 +65,10 @@ export const useTetris = () => {
   };
 
   const activateNextTetromino = () => {
-    const [nextTetromino, ...restTetrominos] = queuedTetrominos;
+    const [nextTetromino, ...restTetrominos] =
+      queuedTetrominos.length > 0
+        ? queuedTetrominos
+        : generateQueuedTetrominos();
     if (checkCollision(nextTetromino.shape, nextTetromino.position)) {
       finishTetris();
     } else {
