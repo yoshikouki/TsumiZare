@@ -71,14 +71,18 @@ export const useTetris = () => {
     }
   };
 
+  const mergeTetromino = (tetromino: Tetromino) => {
+    const mergedBoard = mergeTetrominoIntoBoard(tetromino, board);
+    const newBoard = renewFilledRows(mergedBoard);
+    setBoard(newBoard);
+    setActiveTetromino(null);
+  };
+
   const dropTetromino = (tetromino: Tetromino) => {
     const { position } = tetromino;
     const newPosition = { ...position, y: position.y + 1 };
     if (checkCollision(tetromino.shape, newPosition)) {
-      const mergedBoard = mergeTetrominoIntoBoard(tetromino, board);
-      const newBoard = renewFilledRows(mergedBoard);
-      setBoard(newBoard);
-      setActiveTetromino(null);
+      mergeTetromino(tetromino);
     } else {
       setActiveTetromino({ ...tetromino, position: newPosition });
     }
@@ -187,8 +191,8 @@ export const useTetris = () => {
     resumeTetris,
     readyTetris,
     // Tetromino management
-    generateRandomTetromino,
-    mergeTetrominoIntoBoard,
+    mergeTetromino,
+    runTick,
     dropTetromino,
     checkCollision,
     rotateActiveTetromino,

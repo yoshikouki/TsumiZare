@@ -1,5 +1,5 @@
 import { COLS, ROWS } from "./constants";
-import type { Tetromino, TetrominoPosition, TetrominoShape } from "./tetromino";
+import type { Tetromino } from "./tetromino";
 
 export type Cell = {
   id: string;

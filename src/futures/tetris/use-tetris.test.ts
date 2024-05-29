@@ -15,55 +15,38 @@ describe("useTetris", () => {
     expect(activeTetromino).toBeNull();
   });
 
-  describe("#dropTetromino", () => {
+  describe("#runTick", () => {
     it("should generate a random tetromino", () => {
       const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
-      act(() => result.current.dropTetromino());
-      const { activeTetromino } = result.current;
-      expect(activeTetromino).not.toBeNull();
-      expect(activeTetromino?.position).toEqual({ x: 3, y: 0 });
+      expect(result.current.activeTetromino).toBeNull();
+      act(() => result.current.runTick());
+      expect(result.current.activeTetromino).not.toBeNull();
+      expect(result.current.activeTetromino?.position).toEqual({ x: 3, y: 0 });
     });
 
     it("should drop tetromino correctly", () => {
       const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       expect(result.current.activeTetromino).toBeNull();
-      act(() => result.current.dropTetromino());
+      act(() => result.current.runTick());
       expect(result.current.activeTetromino?.position).toEqual({ x: 3, y: 0 });
-      act(() => result.current.dropTetromino());
+      act(() => result.current.runTick());
       expect(result.current.activeTetromino?.position).toEqual({ x: 3, y: 1 });
     });
 
     it("should detect collision correctly", async () => {
       const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
-      act(() => result.current.dropTetromino());
+      act(() => result.current.runTick());
       const { activeTetromino } = result.current;
       if (!activeTetromino) throw new Error("activeTetromino is null");
       const { shape, position } = activeTetromino;
       // Move tetromino to the bottom
       for (let i = 0; i < 19; i++) {
-        act(() => result.current.dropTetromino());
+        act(() => result.current.runTick());
       }
       // Check collision at bottom
       expect(
         result.current.checkCollision(shape, { x: position.x, y: 20 }),
       ).toBe(true);
-    });
-  });
-
-  describe("#mergeTetrominoIntoBoard", () => {
-    it("should detect collision correctly", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
-      act(() => {
-        result.current.mergeTetrominoIntoBoard({
-          id: "testId",
-          shape: TETROMINOS.Z,
-          position: { x: 0, y: 0 },
-        });
-      });
-      expect(result.current.board.rows[0].cells[0].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[0].cells[1].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[1].cells[1].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[1].cells[2].tetrominoId).toBe("testId");
     });
   });
 
@@ -87,16 +70,76 @@ describe("useTetris", () => {
       const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       const shape = TETROMINOS.O;
       act(() => {
-        result.current.mergeTetrominoIntoBoard({
+        result.current.mergeTetromino({
           id: "testId",
           shape,
-          position: { x: 0, y: 18 },
+          position: { x: 0, y: 18 }, // Bottom left
         });
       });
       expect(result.current.checkCollision(shape, { x: 0, y: 16 })).toBe(false);
       expect(result.current.checkCollision(shape, { x: 0, y: 17 })).toBe(true);
       expect(result.current.checkCollision(shape, { x: 2, y: 18 })).toBe(false);
       expect(result.current.checkCollision(shape, { x: 1, y: 18 })).toBe(true);
+    });
+  });
+
+  describe("#dropTetromino", () => {
+    it("should update the active tetromino position when there is no collision", () => {
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      act(() =>
+        result.current.dropTetromino({
+          id: "testId",
+          shape: TETROMINOS.O,
+          position: { x: 0, y: 17 },
+        }),
+      );
+      expect(result.current.activeTetromino?.position).toEqual({ x: 0, y: 18 });
+      expect(result.current.board.rows[18].cells[0].tetrominoId).toBeNull();
+      expect(result.current.board.rows[18].cells[1].tetrominoId).toBeNull();
+      expect(result.current.board.rows[19].cells[0].tetrominoId).toBeNull();
+      expect(result.current.board.rows[19].cells[1].tetrominoId).toBeNull();
+    });
+
+    it("should merge tetromino into the board when there is a collision", () => {
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      act(() =>
+        result.current.dropTetromino({
+          id: "testId",
+          shape: TETROMINOS.O,
+          position: { x: 0, y: 18 },
+        }),
+      );
+      expect(result.current.activeTetromino).toBeNull();
+      expect(result.current.board.rows[18].cells[0].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[18].cells[1].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[19].cells[0].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[19].cells[1].tetrominoId).toBe("testId");
+    });
+
+    it("should clear filled rows after merging tetromino", () => {
+      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      // Fill the bottom cells of 2 ~ 9 columns
+      act(() =>
+        result.current.mergeTetromino({
+          id: "1",
+          shape: [Array(8).fill(1)],
+          position: { x: 2, y: 19 },
+        }),
+      );
+      act(() =>
+        result.current.dropTetromino({
+          id: "testId",
+          shape: TETROMINOS.O,
+          position: { x: 0, y: 18 },
+        }),
+      );
+      expect(result.current.activeTetromino).toBeNull();
+      expect(result.current.board.rows[18].cells[0].tetrominoId).toBeNull();
+      expect(result.current.board.rows[18].cells[1].tetrominoId).toBeNull();
+      expect(result.current.board.rows[19].cells[0].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[19].cells[1].tetrominoId).toBe("testId");
+      expect(result.current.board.rows[19].cells[2].tetrominoId).toBeNull();
+      expect(result.current.board.rows[19].cells[9].tetrominoId).toBeNull();
     });
   });
 });
