@@ -33,7 +33,24 @@ export const useTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
     setActiveTetromino(null);
   };
-  // TODO: Pause
+
+  const finishTetris = () => {
+    setBoard((prev) => ({ ...prev, status: "finished" }));
+    setActiveTetromino(null);
+  };
+
+  const pauseTetris = () => {
+    setBoard((prev) => ({ ...prev, status: "pause" }));
+  };
+
+  const resumeTetris = () => {
+    setBoard((prev) => ({ ...prev, status: "playing" }));
+  };
+
+  const readyTetris = () => {
+    setBoard(initBoard());
+    setActiveTetromino(null);
+  };
 
   const mergeTetrominoIntoBoard = (tetromino: Tetromino) => {
     const newBoard = deepCopyBoard(board);
@@ -62,7 +79,7 @@ export const useTetris = () => {
     if (!activeTetromino) {
       const newTetromino = generateRandomTetromino();
       if (checkCollision(newTetromino.shape, newTetromino.position)) {
-        setBoard({ ...board, status: "finished" });
+        finishTetris();
       } else {
         setActiveTetromino(newTetromino);
       }
@@ -208,13 +225,20 @@ export const useTetris = () => {
   return {
     board,
     activeTetromino,
-    boardRef,
+    boardRef, // For touch event
+    // Game management
     startTetris,
+    finishTetris,
+    pauseTetris,
+    resumeTetris,
+    readyTetris,
+    // Tetromino management
     generateRandomTetromino,
     mergeTetrominoIntoBoard,
     dropTetromino,
     checkCollision,
     rotateActiveTetromino,
+    // Cell management
     isActiveTetromino,
     isBelowActiveTetromino,
   };

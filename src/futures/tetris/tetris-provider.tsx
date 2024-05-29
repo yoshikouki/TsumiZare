@@ -1,13 +1,18 @@
 "use client";
 
-import { createContext, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  createContext,
+  useState,
+} from "react";
 
 import { type Board, initBoard } from "./board";
 import type { Tetromino } from "./tetromino";
 
 export const TetrisContext = createContext<{
   board: Board;
-  setBoard: (board: Board) => void;
+  setBoard: Dispatch<SetStateAction<Board>>;
   activeTetromino: Tetromino | null;
   setActiveTetromino: (tetromino: Tetromino | null) => void;
 }>({

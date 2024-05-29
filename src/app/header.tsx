@@ -13,7 +13,12 @@ export const Header = () => {
         board.status !== "ready" && "pointer-events-none opacity-0",
       )}
     >
-      <div className="pointer-events-auto flex w-full max-w-xs justify-center p-4">
+      <div
+        className={cn(
+          "flex w-full max-w-xs justify-center p-4",
+          board.status !== "ready" && "pointer-events-none opacity-0",
+        )}
+      >
         <h1 className={"font-black text-4xl"}>Tetris</h1>
       </div>
     </header>
