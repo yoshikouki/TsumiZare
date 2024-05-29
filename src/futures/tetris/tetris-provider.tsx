@@ -4,34 +4,28 @@ import {
   type Dispatch,
   type SetStateAction,
   createContext,
+  useRef,
   useState,
 } from "react";
 
 import { type Board, initBoard } from "./board";
-import type { Tetromino } from "./tetromino";
 
 export const TetrisContext = createContext<{
   board: Board;
   setBoard: Dispatch<SetStateAction<Board>>;
-  activeTetromino: Tetromino | null;
-  setActiveTetromino: (tetromino: Tetromino | null) => void;
+  isTickRunning: { current: boolean };
 }>({
   board: initBoard(),
-  activeTetromino: null,
   setBoard: () => {},
-  setActiveTetromino: () => {},
+  isTickRunning: { current: false },
 });
 
 export const TetrisProvider = ({ children }: { children: React.ReactNode }) => {
   const [board, setBoard] = useState<Board>(initBoard);
-  const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
-    null,
-  );
+  const isTickRunning = useRef(false);
 
   return (
-    <TetrisContext
-      value={{ board, setBoard, activeTetromino, setActiveTetromino }}
-    >
+    <TetrisContext value={{ board, setBoard, isTickRunning }}>
       {children}
     </TetrisContext>
   );

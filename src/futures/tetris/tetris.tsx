@@ -10,6 +10,7 @@ import { useTetris } from "./use-tetris";
 export const Tetris = () => {
   const {
     board,
+    gameRef,
     boardRef,
     startTetris,
     finishTetris,
@@ -21,7 +22,10 @@ export const Tetris = () => {
   } = useTetris();
 
   return (
-    <div className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none">
+    <div
+      className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none"
+      ref={gameRef}
+    >
       {/* Game Header */}
       <div
         className={cn(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   hasTetrominoCollision,
@@ -32,8 +32,14 @@ const WALL_KICKS = [
 ];
 
 export const useTetris = () => {
-  const { board, setBoard, activeTetromino, setActiveTetromino } =
-    useContext(TetrisContext);
+  const { board, setBoard, isTickRunning } = useContext(TetrisContext);
+  const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
+    null,
+  );
+  const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>(
+    Array.from({ length: 3 }, generateRandomTetromino),
+  );
+  const [tickCount, setTickCount] = useState(0);
 
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
@@ -58,17 +64,23 @@ export const useTetris = () => {
     setActiveTetromino(null);
   };
 
+  const activateNextTetromino = () => {
+    const [nextTetromino, ...restTetrominos] = queuedTetrominos;
+    if (checkCollision(nextTetromino.shape, nextTetromino.position)) {
+      finishTetris();
+    } else {
+      setActiveTetromino(nextTetromino);
+      setQueuedTetrominos([...restTetrominos, generateRandomTetromino()]);
+    }
+  };
+
   const runTick = () => {
     if (activeTetromino) {
       dropTetromino(activeTetromino);
-      return;
-    }
-    const newTetromino = generateRandomTetromino();
-    if (checkCollision(newTetromino.shape, newTetromino.position)) {
-      finishTetris();
     } else {
-      setActiveTetromino(newTetromino);
+      activateNextTetromino();
     }
+    setTickCount((prev) => prev + 1);
   };
 
   const mergeTetromino = (tetromino: Tetromino) => {
@@ -174,16 +186,17 @@ export const useTetris = () => {
   });
 
   // Game loop
-  useEffect(() => {
+  const gameRef = (ref: HTMLDivElement) => {
     if (board.status !== "playing") return;
     const interval = setInterval(runTick, DROP_INTERVAL);
     return () => clearInterval(interval);
-  }, [runTick, board.status]);
+  };
 
   return {
     board,
     activeTetromino,
     boardRef, // For touch event
+    gameRef, // For game loop
     // Game management
     startTetris,
     finishTetris,
