@@ -10,6 +10,7 @@ import { useTetris } from "./use-tetris";
 export const Tetris = () => {
   const {
     board,
+    queuedTetrominos,
     gameRef,
     boardRef,
     startTetris,
@@ -33,7 +34,37 @@ export const Tetris = () => {
           board.status === "ready" && "pointer-events-none opacity-0",
         )}
       >
-        <div />
+        <div
+          className={cn(
+            "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          )}
+        >
+          {queuedTetrominos[0] && (
+            <>
+              Next
+              <div
+                className="grid gap-[2px]"
+                style={{
+                  gridTemplateColumns: `repeat(${queuedTetrominos[0].shape[0].length}, 1fr)`,
+                  gridTemplateRows: `repeat(${queuedTetrominos[0].shape.length}, 1fr)`,
+                }}
+              >
+                {queuedTetrominos[0].shape.map((row, rowIndex) =>
+                  row.map((cell, cellIndex) => (
+                    <div
+                      key={`${queuedTetrominos[0]}-${rowIndex}-${cellIndex}`}
+                      className={cn(
+                        "aspect-square min-w-2 bg-primary",
+                        cell ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                  )),
+                )}
+              </div>
+            </>
+          )}
+        </div>
         <div>
           <Button
             type="button"

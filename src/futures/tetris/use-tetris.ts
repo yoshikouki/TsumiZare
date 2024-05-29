@@ -194,6 +194,7 @@ export const useTetris = () => {
   return {
     board,
     activeTetromino,
+    queuedTetrominos,
     boardRef, // For touch event
     gameRef, // For game loop
     // Game management
