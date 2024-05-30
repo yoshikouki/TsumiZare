@@ -32,12 +32,15 @@ const WALL_KICKS = [
 ];
 
 export const useTetris = () => {
-  const { board, setBoard, isTickRunning } = useContext(TetrisContext);
+  const { board, setBoard } = useContext(TetrisContext);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
   );
   const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>([]);
   const playMilliSecondsRef = useRef(0);
+  const updatePlayTime = () => {
+    playMilliSecondsRef.current += board.config.dropInterval;
+  };
 
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
@@ -82,8 +85,7 @@ export const useTetris = () => {
     } else {
       activateNextTetromino();
     }
-    playMilliSecondsRef.current =
-      playMilliSecondsRef.current + board.config.dropInterval;
+    updatePlayTime();
   };
 
   const mergeTetromino = (tetromino: Tetromino) => {
