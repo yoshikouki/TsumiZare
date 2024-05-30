@@ -69,24 +69,30 @@ describe("Board", () => {
   });
 
   describe("renewFilledRows", () => {
-    it("should remove filled rows and add new empty rows at the top", () => {
+    it("should not remove any rows and return board as it is if there are no filled rows", () => {
       const board = initBoard();
       board.rows[0].cells[0].tetrominoId = "testId";
       board.rows[0].cells[1].tetrominoId = "testId";
       board.rows[0].cells[2].tetrominoId = "testId";
-      const renewedBoard = renewFilledRows(board);
-      expect(renewedBoard.rows[0].cells[0].tetrominoId).not.toBeNull();
-      expect(renewedBoard.rows[0].cells[1].tetrominoId).not.toBeNull();
-      expect(renewedBoard.rows[0].cells[2].tetrominoId).not.toBeNull();
+      const [renewedBoard, filledRowsNumber] = renewFilledRows(board);
+      expect(filledRowsNumber).toBe(0);
+      expect(renewedBoard).toEqual(board);
+      expect(renewedBoard.rows[0].cells[0].tetrominoId).toBe("testId");
+      expect(renewedBoard.rows[0].cells[1].tetrominoId).toBe("testId");
+      expect(renewedBoard.rows[0].cells[2].tetrominoId).toBe("testId");
       expect(renewedBoard.rows[1].cells[0].tetrominoId).toBeNull();
-      expect(renewedBoard.rows[1].cells[1].tetrominoId).toBeNull();
-      expect(renewedBoard.rows[1].cells[2].tetrominoId).toBeNull();
     });
 
-    it("should not remove any rows if there are no filled rows", () => {
+    it("should remove filled rows and add new empty rows at the top", () => {
       const board = initBoard();
-      const renewedBoard = renewFilledRows(board);
-      expect(renewedBoard).toEqual(board);
+      for (let i = 0; i < board.config.colsNumber; i++) {
+        board.rows[0].cells[i].tetrominoId = "testId";
+      }
+      const [renewedBoard, filledRowsNumber] = renewFilledRows(board);
+      expect(filledRowsNumber).toBe(1);
+      expect(renewedBoard).not.toEqual(board);
+      expect(renewedBoard.rows[0].cells[0].tetrominoId).toBeNull();
+      expect(renewedBoard.rows[0].id).not.toBe(board.rows[0].id);
     });
   });
 

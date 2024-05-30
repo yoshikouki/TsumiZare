@@ -76,22 +76,22 @@ export const mergeTetrominoIntoBoard = (tetromino: Tetromino, board: Board) => {
   return newBoard;
 };
 
-export const renewFilledRows = (board: Board): Board => {
+export const renewFilledRows = (board: Board): [Board, number] => {
   const remainingRows = board.rows.filter((row) =>
     row.cells.some((cell) => !cell.tetrominoId),
   );
-  const clearedRowsCount = board.config.rowsNumber - remainingRows.length;
-  if (clearedRowsCount === 0) return board;
+  const filledRowsNumber = board.config.rowsNumber - remainingRows.length;
+  if (filledRowsNumber === 0) return [board, 0];
   const newBoard = {
     ...board,
     rows: [
-      ...Array.from({ length: clearedRowsCount }, () =>
+      ...Array.from({ length: filledRowsNumber }, () =>
         initRow(board.config.colsNumber),
       ),
       ...remainingRows,
     ],
   };
-  return newBoard;
+  return [newBoard, filledRowsNumber];
 };
 
 export const hasTetrominoCollision = (

@@ -11,7 +11,7 @@ export const Tetris = () => {
   const {
     board,
     queuedTetrominos,
-    playTimeString,
+    result,
     gameRef,
     boardRef,
     startTetris,
@@ -72,7 +72,7 @@ export const Tetris = () => {
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           )}
         >
-          <div className="text-primary/50">{playTimeString}</div>
+          <div className="text-primary/50">{result.score}</div>
           <Button
             type="button"
             variant={"ghost"}
