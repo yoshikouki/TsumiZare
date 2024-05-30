@@ -1,21 +1,21 @@
 import { describe, expect, it } from "bun:test";
+import { BLOCKS } from "./block";
 import {
   deepCopyBoard,
-  hasTetrominoCollision,
+  hasBlockCollision,
   initBoard,
   initCell,
   initRow,
-  mergeTetrominoIntoBoard,
+  mergeBlockIntoBoard,
   renewFilledRows,
 } from "./board";
-import { TETROMINOS } from "./tetromino";
 
 describe("Board", () => {
   describe("initCell", () => {
-    it("should initialize a cell with null tetrominoId", () => {
+    it("should initialize a cell with null blockId", () => {
       const cell = initCell();
       expect(cell).toHaveProperty("id");
-      expect(cell.tetrominoId).toBeNull();
+      expect(cell.blockId).toBeNull();
     });
   });
 
@@ -52,69 +52,69 @@ describe("Board", () => {
     });
   });
 
-  describe("mergeTetrominoIntoBoard", () => {
-    it("should merge the tetromino into the board", () => {
-      const tetromino = {
+  describe("mergeBlockIntoBoard", () => {
+    it("should merge the block into the board", () => {
+      const block = {
         id: "testId",
-        shape: TETROMINOS.I,
+        shape: BLOCKS.I,
         position: { x: 2, y: 3 },
       };
       const board = initBoard();
-      const mergedBoard = mergeTetrominoIntoBoard(tetromino, board);
-      expect(mergedBoard.rows[3].cells[2].tetrominoId).toBe(tetromino.id);
-      expect(mergedBoard.rows[3].cells[3].tetrominoId).toBe(tetromino.id);
-      expect(mergedBoard.rows[3].cells[4].tetrominoId).toBe(tetromino.id);
-      expect(mergedBoard.rows[3].cells[5].tetrominoId).toBe(tetromino.id);
+      const mergedBoard = mergeBlockIntoBoard(block, board);
+      expect(mergedBoard.rows[3].cells[2].blockId).toBe(block.id);
+      expect(mergedBoard.rows[3].cells[3].blockId).toBe(block.id);
+      expect(mergedBoard.rows[3].cells[4].blockId).toBe(block.id);
+      expect(mergedBoard.rows[3].cells[5].blockId).toBe(block.id);
     });
   });
 
   describe("renewFilledRows", () => {
     it("should not remove any rows and return board as it is if there are no filled rows", () => {
       const initialBoard = initBoard();
-      initialBoard.rows[0].cells[0].tetrominoId = "testId";
-      initialBoard.rows[0].cells[1].tetrominoId = "testId";
-      initialBoard.rows[0].cells[2].tetrominoId = "testId";
+      initialBoard.rows[0].cells[0].blockId = "testId";
+      initialBoard.rows[0].cells[1].blockId = "testId";
+      initialBoard.rows[0].cells[2].blockId = "testId";
       const { board, filledRowsNumber } = renewFilledRows(initialBoard);
       expect(filledRowsNumber).toBe(0);
       expect(board).toEqual(initialBoard);
-      expect(board.rows[0].cells[0].tetrominoId).toBe("testId");
-      expect(board.rows[0].cells[1].tetrominoId).toBe("testId");
-      expect(board.rows[0].cells[2].tetrominoId).toBe("testId");
-      expect(board.rows[1].cells[0].tetrominoId).toBeNull();
+      expect(board.rows[0].cells[0].blockId).toBe("testId");
+      expect(board.rows[0].cells[1].blockId).toBe("testId");
+      expect(board.rows[0].cells[2].blockId).toBe("testId");
+      expect(board.rows[1].cells[0].blockId).toBeNull();
     });
 
     it("should remove filled rows and add new empty rows at the top", () => {
       const initialBoard = initBoard();
       for (let i = 0; i < initialBoard.config.colsNumber; i++) {
-        initialBoard.rows[0].cells[i].tetrominoId = "testId";
+        initialBoard.rows[0].cells[i].blockId = "testId";
       }
       const { board, filledRowsNumber } = renewFilledRows(initialBoard);
       expect(filledRowsNumber).toBe(1);
       expect(board).not.toEqual(initialBoard);
-      expect(board.rows[0].cells[0].tetrominoId).toBeNull();
+      expect(board.rows[0].cells[0].blockId).toBeNull();
       expect(board.rows[0].id).not.toBe(initialBoard.rows[0].id);
     });
   });
 
-  describe("hasTetrominoCollision", () => {
-    it("should return true if there is a collision between the tetromino and the board", () => {
-      const tetromino = {
-        shape: TETROMINOS.I,
+  describe("hasBlockCollision", () => {
+    it("should return true if there is a collision between the block and the board", () => {
+      const block = {
+        shape: BLOCKS.I,
         position: { x: 2, y: 3 },
       };
       const board = initBoard();
-      board.rows[3].cells[2].tetrominoId = "testId";
-      const hasCollision = hasTetrominoCollision(tetromino, board);
+      board.rows[3].cells[2].blockId = "testId";
+      const hasCollision = hasBlockCollision(block, board);
       expect(hasCollision).toBe(true);
     });
 
-    it("should return false if there is no collision between the tetromino and the board", () => {
-      const tetromino = {
-        shape: TETROMINOS.I,
+    it("should return false if there is no collision between the block and the board", () => {
+      const block = {
+        shape: BLOCKS.I,
         position: { x: 2, y: 3 },
       };
       const board = initBoard();
-      const hasCollision = hasTetrominoCollision(tetromino, board);
+      const hasCollision = hasBlockCollision(block, board);
       expect(hasCollision).toBe(false);
     });
   });

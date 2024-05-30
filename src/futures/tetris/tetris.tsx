@@ -10,7 +10,7 @@ import { useTetris } from "./use-tetris";
 export const Tetris = () => {
   const {
     board,
-    queuedTetrominos,
+    queuedBlocks,
     result,
     gameRef,
     boardRef,
@@ -20,7 +20,7 @@ export const Tetris = () => {
     resumeTetris,
     readyTetris,
     isActiveCell,
-    isBelowActiveTetromino,
+    isBelowActiveBlock,
   } = useTetris();
 
   return (
@@ -41,20 +41,20 @@ export const Tetris = () => {
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           )}
         >
-          {queuedTetrominos[0] && (
+          {queuedBlocks[0] && (
             <>
               <div className="text-primary/50">Next</div>
               <div
                 className="grid gap-[2px]"
                 style={{
-                  gridTemplateColumns: `repeat(${queuedTetrominos[0].shape[0].length}, 1fr)`,
-                  gridTemplateRows: `repeat(${queuedTetrominos[0].shape.length}, 1fr)`,
+                  gridTemplateColumns: `repeat(${queuedBlocks[0].shape[0].length}, 1fr)`,
+                  gridTemplateRows: `repeat(${queuedBlocks[0].shape.length}, 1fr)`,
                 }}
               >
-                {queuedTetrominos[0].shape.map((row, rowIndex) =>
+                {queuedBlocks[0].shape.map((row, rowIndex) =>
                   row.map((cell, cellIndex) => (
                     <div
-                      key={`${queuedTetrominos[0]}-${rowIndex}-${cellIndex}`}
+                      key={`${queuedBlocks[0]}-${rowIndex}-${cellIndex}`}
                       className={cn(
                         "aspect-square min-w-2 bg-primary",
                         cell ? "opacity-100" : "opacity-0",
@@ -102,11 +102,11 @@ export const Tetris = () => {
                 key={cell.id}
                 className={cn(
                   "aspect-square rounded-sm bg-primary/5",
-                  cell.tetrominoId
+                  cell.blockId
                     ? "rounded-none bg-primary"
                     : isActiveCell(cellIndex, rowIndex)
                       ? "bg-primary/90"
-                      : isBelowActiveTetromino(cellIndex, rowIndex) &&
+                      : isBelowActiveBlock(cellIndex, rowIndex) &&
                         "bg-primary/10",
                 )}
               />

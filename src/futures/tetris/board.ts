@@ -1,9 +1,9 @@
+import type { Block } from "./block";
 import { COLS, DROP_INTERVAL, ROWS } from "./constants";
-import type { Tetromino } from "./tetromino";
 
 export type Cell = {
   id: string;
-  tetrominoId: string | null;
+  blockId: string | null;
 };
 
 export type Row = {
@@ -26,7 +26,7 @@ export type Board = {
 export const id = () => Math.random().toString(36).substr(2, 9);
 export const initCell = () => ({
   id: id(),
-  tetrominoId: null,
+  blockId: null,
 });
 export const initRow = (colsNumber = COLS) => ({
   id: id(),
@@ -60,17 +60,17 @@ export const deepCopyBoard = (board: Board): Board => {
   };
 };
 
-export const mergeTetrominoIntoBoard = (tetromino: Tetromino, board: Board) => {
+export const mergeBlockIntoBoard = (block: Block, board: Board) => {
   const newBoard = deepCopyBoard(board);
-  for (let shapeY = 0; shapeY < tetromino.shape.length; shapeY++) {
-    const row = tetromino.shape[shapeY];
+  for (let shapeY = 0; shapeY < block.shape.length; shapeY++) {
+    const row = block.shape[shapeY];
     for (let shapeX = 0; shapeX < row.length; shapeX++) {
       if (row[shapeX] === 0) {
         continue;
       }
-      newBoard.rows[tetromino.position.y + shapeY].cells[
-        tetromino.position.x + shapeX
-      ].tetrominoId = tetromino.id;
+      newBoard.rows[block.position.y + shapeY].cells[
+        block.position.x + shapeX
+      ].blockId = block.id;
     }
   }
   return newBoard;
@@ -83,7 +83,7 @@ export const renewFilledRows = (
   filledRowsNumber: number;
 } => {
   const remainingRows = board.rows.filter((row) =>
-    row.cells.some((cell) => !cell.tetrominoId),
+    row.cells.some((cell) => !cell.blockId),
   );
   const filledRowsNumber = board.config.rowsNumber - remainingRows.length;
   if (filledRowsNumber === 0) return { board, filledRowsNumber };
@@ -102,14 +102,14 @@ export const renewFilledRows = (
   };
 };
 
-export const hasTetrominoCollision = (
-  tetromino: {
-    shape: Tetromino["shape"];
-    position: Tetromino["position"];
+export const hasBlockCollision = (
+  block: {
+    shape: Block["shape"];
+    position: Block["position"];
   },
   board: Board,
 ) => {
-  const { shape, position } = tetromino;
+  const { shape, position } = block;
   for (let shapeY = 0; shapeY < shape.length; shapeY++) {
     const row = shape[shapeY];
     for (let shapeX = 0; shapeX < row.length; shapeX++) {
@@ -122,7 +122,7 @@ export const hasTetrominoCollision = (
         cellX < 0 ||
         COLS <= cellX ||
         ROWS <= cellY ||
-        board.rows[cellY].cells[cellX].tetrominoId
+        board.rows[cellY].cells[cellX].blockId
       ) {
         return true;
       }

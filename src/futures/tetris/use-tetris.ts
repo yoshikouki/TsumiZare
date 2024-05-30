@@ -2,9 +2,9 @@
 
 import { useContext, useRef } from "react";
 
-import { initBoard, mergeTetrominoIntoBoard, renewFilledRows } from "./board";
+import type { Block } from "./block";
+import { initBoard, mergeBlockIntoBoard, renewFilledRows } from "./board";
 import { TetrisContext } from "./tetris-provider";
-import type { Tetromino } from "./tetromino";
 import { useActiveBlock } from "./use-active-block";
 
 export const useTetris = () => {
@@ -65,8 +65,8 @@ export const useTetris = () => {
     updateResult({ filledRowsNumber: mergedResult.filledRowsNumber });
   };
 
-  const mergeIntoBoard = (tetromino: Tetromino) => {
-    const mergedBoard = mergeTetrominoIntoBoard(tetromino, board);
+  const mergeIntoBoard = (block: Block) => {
+    const mergedBoard = mergeBlockIntoBoard(block, board);
     const mergedResult = renewFilledRows(mergedBoard);
     if (!mergedResult) return;
     setBoard(mergedResult.board);
@@ -93,7 +93,7 @@ export const useTetris = () => {
     pauseTetris,
     resumeTetris,
     readyTetris,
-    // Tetromino management
+    // Block management
     mergeIntoBoard,
     runTick,
     hasCollision,

@@ -11,5 +11,5 @@ export const WALL_KICKS = [
   { x: 0, y: -1 },
   { x: -1, y: -1 },
   { x: 1, y: -1 },
-  { x: -3, y: 0 }, // For I tetromino on the right wall
+  { x: -3, y: 0 }, // For I block on the right wall
 ];

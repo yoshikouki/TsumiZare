@@ -1,18 +1,18 @@
 import { id } from "./board";
 import { DEFAULT_TETROMINO_QUEUE_SIZE } from "./constants";
 
-export type TetrominoShape = number[][];
-export type TetrominoPosition = { x: number; y: number };
-export type Tetromino = {
+export type BlockShape = number[][];
+export type BlockPosition = { x: number; y: number };
+export type Block = {
   id: string;
-  shape: TetrominoShape;
-  position: TetrominoPosition;
+  shape: BlockShape;
+  position: BlockPosition;
 };
 
-type TetrominoType = "I" | "O" | "T" | "S" | "Z" | "J" | "L";
+type BlockType = "I" | "O" | "T" | "S" | "Z" | "J" | "L";
 
-type Tetrominos = Record<TetrominoType, Tetromino["shape"]>;
-export const TETROMINOS: Tetrominos = {
+type Blocks = Record<BlockType, Block["shape"]>;
+export const BLOCKS: Blocks = {
   I: [[1, 1, 1, 1]],
   O: [
     [1, 1],
@@ -39,26 +39,24 @@ export const TETROMINOS: Tetrominos = {
     [1, 1, 1],
   ],
 } as const;
-export const TETROMINO_TYPES = Object.keys(TETROMINOS) as TetrominoType[];
+export const TETROMINO_TYPES = Object.keys(BLOCKS) as BlockType[];
 
-export const generateRandomTetromino = () => {
+export const generateRandomBlock = () => {
   const type =
     TETROMINO_TYPES[Math.floor(Math.random() * TETROMINO_TYPES.length)];
   return {
     id: id(),
-    shape: TETROMINOS[type],
+    shape: BLOCKS[type],
     position: { x: 3, y: 0 },
   };
 };
 
-export const generateQueuedTetrominos = (
-  count = DEFAULT_TETROMINO_QUEUE_SIZE,
-) => {
-  const tetrominos = Array.from({ length: count }, generateRandomTetromino);
-  return tetrominos;
+export const generateQueuedBlocks = (count = DEFAULT_TETROMINO_QUEUE_SIZE) => {
+  const blocks = Array.from({ length: count }, generateRandomBlock);
+  return blocks;
 };
 
-export const rotateShape = (shape: TetrominoShape) => {
+export const rotateShape = (shape: BlockShape) => {
   // 90° clockwise rotation
   const newShape = shape[0].map((_, index) =>
     shape.map((row) => row[index]).reverse(),
@@ -66,10 +64,10 @@ export const rotateShape = (shape: TetrominoShape) => {
   return newShape;
 };
 
-export const isFilledTetrominoCell = (
+export const isFilledBlockCell = (
   cellX: number,
   cellY: number,
-  { position, shape }: Tetromino,
+  { position, shape }: Block,
 ) => {
   const maxX = position.x + shape[0].length;
   const maxY = position.y + shape.length;
@@ -86,12 +84,12 @@ export const isFilledTetrominoCell = (
   return shape[cellY - position.y][cellX - position.x] === 1;
 };
 
-export const isCellBelowTetromino = (
+export const isCellBelowBlock = (
   cellX: number,
   cellY: number,
-  tetromino: Tetromino,
+  block: Block,
 ) => {
-  const { position, shape } = tetromino;
+  const { position, shape } = block;
   const maxX = position.x + shape[0].length;
   const isOutside = cellX < position.x || maxX <= cellX;
   const isAbove = cellY <= position.y;

@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 
+import {
+  type Block,
+  type BlockPosition,
+  type BlockShape,
+  generateQueuedBlocks,
+  generateRandomBlock,
+  isCellBelowBlock,
+  isFilledBlockCell,
+  rotateShape,
+} from "./block";
 import { WALL_KICKS } from "./constants";
 import type { TetrisContext } from "./tetris-provider";
-import {
-  type Tetromino,
-  type TetrominoPosition,
-  type TetrominoShape,
-  generateQueuedTetrominos,
-  generateRandomTetromino,
-  isCellBelowTetromino,
-  isFilledTetrominoCell,
-  rotateShape,
-} from "./tetromino";
 import { useKeyboard } from "./use-keyboard";
 import { useTouch } from "./use-touch";
 
@@ -24,86 +24,82 @@ export const useActiveBlock = ({
   board: TetrisContext["board"];
   hasCollision: TetrisContext["hasCollision"];
 }) => {
-  const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
-    null,
-  );
-  const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>([]);
+  const [activeBlock, setActiveBlock] = useState<Block | null>(null);
+  const [queuedBlocks, setQueuedBlocks] = useState<Block[]>([]);
 
-  const isActive = !!activeTetromino;
+  const isActive = !!activeBlock;
 
   const init = () => {
     remove();
-    setQueuedTetrominos(generateQueuedTetrominos());
+    setQueuedBlocks(generateQueuedBlocks());
   };
 
   const remove = () => {
-    const removedBlock = activeTetromino;
-    setActiveTetromino(null);
+    const removedBlock = activeBlock;
+    setActiveBlock(null);
     return removedBlock;
   };
 
   const activate = () => {
-    const [nextTetromino, ...restTetrominos] =
-      queuedTetrominos.length > 0
-        ? queuedTetrominos
-        : generateQueuedTetrominos();
-    if (hasCollision(nextTetromino.shape, nextTetromino.position)) {
+    const [nextBlock, ...restBlocks] =
+      queuedBlocks.length > 0 ? queuedBlocks : generateQueuedBlocks();
+    if (hasCollision(nextBlock.shape, nextBlock.position)) {
       return;
     }
-    setActiveTetromino(nextTetromino);
-    setQueuedTetrominos([...restTetrominos, generateRandomTetromino()]);
-    return nextTetromino;
+    setActiveBlock(nextBlock);
+    setQueuedBlocks([...restBlocks, generateRandomBlock()]);
+    return nextBlock;
   };
 
-  const drop = (tetromino = activeTetromino) => {
-    if (!tetromino) return;
+  const drop = (block = activeBlock) => {
+    if (!block) return;
     const newPosition = {
-      ...tetromino.position,
-      y: tetromino.position.y + 1,
+      ...block.position,
+      y: block.position.y + 1,
     };
-    if (hasCollision(tetromino.shape, newPosition)) {
+    if (hasCollision(block.shape, newPosition)) {
       return;
     }
-    const droppedBlock = { ...tetromino, position: newPosition };
-    setActiveTetromino(droppedBlock);
+    const droppedBlock = { ...block, position: newPosition };
+    setActiveBlock(droppedBlock);
     return droppedBlock;
   };
 
   const move = (direction: "left" | "right" | "down") => {
-    if (!activeTetromino) return;
-    const { position } = activeTetromino;
+    if (!activeBlock) return;
+    const { position } = activeBlock;
     const newPosition =
       direction === "left"
         ? { ...position, x: position.x - 1 }
         : direction === "right"
           ? { ...position, x: position.x + 1 }
           : { ...position, y: position.y + 1 };
-    if (hasCollision(activeTetromino.shape, newPosition)) {
+    if (hasCollision(activeBlock.shape, newPosition)) {
       return;
     }
-    setActiveTetromino({ ...activeTetromino, position: newPosition });
+    setActiveBlock({ ...activeBlock, position: newPosition });
   };
 
   const rotate = () => {
-    if (!activeTetromino) return;
-    const rotatedShape = rotateShape(activeTetromino.shape);
-    if (!hasCollision(rotatedShape, activeTetromino.position)) {
-      setActiveTetromino({
-        ...activeTetromino,
+    if (!activeBlock) return;
+    const rotatedShape = rotateShape(activeBlock.shape);
+    if (!hasCollision(rotatedShape, activeBlock.position)) {
+      setActiveBlock({
+        ...activeBlock,
         shape: rotatedShape,
       });
       return;
     }
-    const newPosition = tryWallKick(rotatedShape, activeTetromino.position);
+    const newPosition = tryWallKick(rotatedShape, activeBlock.position);
     if (!newPosition) return;
-    setActiveTetromino({
-      ...activeTetromino,
+    setActiveBlock({
+      ...activeBlock,
       shape: rotatedShape,
       position: newPosition,
     });
   };
 
-  const tryWallKick = (shape: TetrominoShape, position: TetrominoPosition) => {
+  const tryWallKick = (shape: BlockShape, position: BlockPosition) => {
     for (let i = 0; i < WALL_KICKS.length; i++) {
       const movedPosition = {
         x: position.x + WALL_KICKS[i].x,
@@ -117,13 +113,13 @@ export const useActiveBlock = ({
   };
 
   const isActiveCell = (cellX: number, cellY: number) => {
-    if (!activeTetromino) return false;
-    return isFilledTetrominoCell(cellX, cellY, activeTetromino);
+    if (!activeBlock) return false;
+    return isFilledBlockCell(cellX, cellY, activeBlock);
   };
 
   const isBelowActiveBlock = (cellX: number, cellY: number) => {
-    if (!activeTetromino) return false;
-    return isCellBelowTetromino(cellX, cellY, activeTetromino);
+    if (!activeBlock) return false;
+    return isCellBelowBlock(cellX, cellY, activeBlock);
   };
 
   // Touch event
@@ -148,8 +144,8 @@ export const useActiveBlock = ({
   });
 
   return {
-    activeTetromino,
-    queuedTetrominos,
+    activeBlock,
+    queuedBlocks,
     boardRef, // For touch event
     init,
     remove,
@@ -160,6 +156,6 @@ export const useActiveBlock = ({
     // Cell management
     isActive,
     isActiveCell,
-    isBelowActiveTetromino: isBelowActiveBlock,
+    isBelowActiveBlock: isBelowActiveBlock,
   };
 };
