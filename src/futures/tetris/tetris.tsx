@@ -11,6 +11,7 @@ export const Tetris = () => {
   const {
     board,
     queuedTetrominos,
+    playTimeString,
     gameRef,
     boardRef,
     startTetris,
@@ -66,6 +67,7 @@ export const Tetris = () => {
           )}
         </div>
         <div>
+          <div className="text-primary/50">{playTimeString}</div>
           <Button
             type="button"
             variant={"ghost"}

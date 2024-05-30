@@ -41,6 +41,8 @@ export const useTetris = () => {
   const updatePlayTime = () => {
     playMilliSecondsRef.current += board.config.dropInterval;
   };
+  const playMilliSeconds = playMilliSecondsRef.current;
+  const playTimeString = new Date(playMilliSeconds).toISOString().substr(14, 5);
 
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
@@ -201,7 +203,8 @@ export const useTetris = () => {
     board,
     activeTetromino,
     queuedTetrominos,
-    playMilliSecondsRef,
+    playMilliSeconds,
+    playTimeString,
     boardRef, // For touch event
     gameRef, // For game loop
     // Game management
