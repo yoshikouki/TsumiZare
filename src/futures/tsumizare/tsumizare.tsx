@@ -1,8 +1,20 @@
 "use client";
 
+import {
+  Award,
+  Box,
+  Crown,
+  DoorOpen,
+  Pause,
+  Play,
+  RefreshCcw,
+  Square,
+  StepForward,
+  StepForwardIcon,
+} from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Pause } from "lucide-react";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { useTsumiZare } from "./use-tsumizare";
@@ -79,7 +91,7 @@ export const TsumiZare = () => {
             size={"icon"}
             onClick={pauseTsumiZare}
           >
-            <Pause className="fill-primary stroke-none" />
+            <Pause className="fill-primary stroke-1 stroke-primary" />
           </Button>
         </div>
       </div>
@@ -122,24 +134,80 @@ export const TsumiZare = () => {
           board.status === "playing" && "pointer-events-none opacity-0",
         )}
       >
+        {/* Ready to play */}
         <GameControlContainer isVisible={board.status === "ready"}>
-          <GameControlButton onClick={startTsumiZare}>PLAY</GameControlButton>
-        </GameControlContainer>
-        <GameControlContainer isVisible={board.status === "pause"}>
-          <GameControlButton onClick={resumeTsumiZare}>
-            RESUME
-          </GameControlButton>
-          <GameControlButton onClick={finishTsumiZare} variant={"outline"}>
-            FINISH
+          <GameControlButton onClick={startTsumiZare} className="group">
+            <Play
+              className="fill-primary-foreground stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
+              size="40"
+            />
+            Play
           </GameControlButton>
         </GameControlContainer>
+
+        {/* Pause */}
+        <GameControlContainer
+          isVisible={board.status === "pause"}
+          className="rounded border bg-background p-4"
+        >
+          <div className="py-8">
+            <Pause className="fill-primary stroke-primary" size="40" />
+          </div>
+          <div className="flex w-full gap-2">
+            <GameControlButton
+              onClick={resumeTsumiZare}
+              className="group py-10"
+            >
+              <Play
+                className="fill-primary-foreground stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
+                size="40"
+              />
+            </GameControlButton>
+            <GameControlButton
+              onClick={finishTsumiZare}
+              variant={"outline"}
+              className="aspect-square flex-1 py-10"
+            >
+              <Square className="fill-primary" size="40" />
+            </GameControlButton>
+          </div>
+        </GameControlContainer>
+
+        {/* Finish result */}
         <GameControlContainer isVisible={board.status === "finished"}>
-          <GameControlButton onClick={startTsumiZare}>
-            RESTART
-          </GameControlButton>
-          <GameControlButton onClick={readyTsumiZare} variant={"outline"}>
-            QUIT
-          </GameControlButton>
+          <div className="flex aspect-square w-full flex-col items-center justify-center gap-4 rounded border bg-background p-4">
+            <div className="mb-8 flex items-center justify-center gap-1">
+              <Crown className="fill-primary stroke-primary" size="40" />
+            </div>
+
+            <div className="inline-flex items-center justify-center gap-2">
+              <Award className="stroke-primary" size="32" />
+              <span className="font-black text-4xl">{result.score}</span>
+            </div>
+
+            <div className="inline-flex items-center justify-center gap-2">
+              <Box className="stroke-primary" size="28" />
+              <span className="font-black text-4xl">
+                {result.filledRowsNumber * board.config.colsNumber}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex w-full gap-2">
+            <GameControlButton onClick={startTsumiZare} className="group py-10">
+              <StepForward
+                className="stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
+                size="40"
+              />
+            </GameControlButton>
+            <GameControlButton
+              onClick={readyTsumiZare}
+              variant={"outline"}
+              className="aspect-square flex-1 py-10"
+            >
+              <DoorOpen className="stroke-primary" size="40" />
+            </GameControlButton>
+          </div>
         </GameControlContainer>
       </div>
     </div>
