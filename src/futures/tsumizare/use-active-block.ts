@@ -13,7 +13,7 @@ import {
   rotateShape,
 } from "./block";
 import { WALL_KICKS } from "./constants";
-import type { TetrisContext } from "./tetris-provider";
+import type { TsumiZareContext } from "./tsumizare-provider";
 import { useKeyboard } from "./use-keyboard";
 import { useTouch } from "./use-touch";
 
@@ -21,8 +21,8 @@ export const useActiveBlock = ({
   board,
   hasCollision,
 }: {
-  board: TetrisContext["board"];
-  hasCollision: TetrisContext["hasCollision"];
+  board: TsumiZareContext["board"];
+  hasCollision: TsumiZareContext["hasCollision"];
 }) => {
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);
   const [queuedBlocks, setQueuedBlocks] = useState<Block[]>([]);

@@ -16,7 +16,7 @@ import {
   initResult,
 } from "./result";
 
-export type TetrisContext = {
+export type TsumiZareContext = {
   board: Board;
   setBoard: Dispatch<SetStateAction<Board>>;
   result: Result;
@@ -24,7 +24,7 @@ export type TetrisContext = {
   hasCollision: (shape: BlockShape, position: BlockPosition) => boolean;
 };
 
-export const TetrisContext = createContext<TetrisContext>({
+export const TsumiZareContext = createContext<TsumiZareContext>({
   board: initBoard(),
   setBoard: () => {},
   result: initResult(),
@@ -32,7 +32,9 @@ export const TetrisContext = createContext<TetrisContext>({
   hasCollision: () => false,
 });
 
-export const TetrisProvider = ({ children }: { children: React.ReactNode }) => {
+export const TsumiZareProvider = ({
+  children,
+}: { children: React.ReactNode }) => {
   const [board, setBoard] = useState<Board>(initBoard);
   const [result, setResult] = useState<Result>(initResult);
 
@@ -48,5 +50,5 @@ export const TetrisProvider = ({ children }: { children: React.ReactNode }) => {
     },
   };
 
-  return <TetrisContext value={context}>{children}</TetrisContext>;
+  return <TsumiZareContext value={context}>{children}</TsumiZareContext>;
 };

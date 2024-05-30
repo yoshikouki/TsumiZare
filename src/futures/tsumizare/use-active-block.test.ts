@@ -3,7 +3,7 @@ import { act, renderHook } from "@testing-library/react";
 
 import { BLOCKS, type BlockPosition, type BlockShape } from "./block";
 import { type Board, hasBlockCollision, initBoard } from "./board";
-import { TetrisProvider } from "./tetris-provider";
+import { TsumiZareProvider } from "./tsumizare-provider";
 import { useActiveBlock } from "./use-active-block";
 
 const hasCollision =

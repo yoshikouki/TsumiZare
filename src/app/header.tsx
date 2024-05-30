@@ -1,10 +1,10 @@
 "use client";
 
-import { useTetris } from "@/futures/tetris/use-tetris";
+import { useTsumiZare } from "@/futures/tsumizare/use-tsumizare";
 import { cn } from "@/lib/utils";
 
 export const Header = () => {
-  const { board } = useTetris();
+  const { board } = useTsumiZare();
 
   return (
     <header
@@ -19,7 +19,7 @@ export const Header = () => {
           board.status !== "ready" && "pointer-events-none opacity-0",
         )}
       >
-        <h1 className={"font-black text-4xl"}>Tetris</h1>
+        <h1 className={"font-black text-4xl"}>TsumiZare</h1>
       </div>
     </header>
   );

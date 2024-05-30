@@ -1,14 +1,14 @@
-import { Tetris } from "@/futures/tetris/tetris";
-import { TetrisProvider } from "@/futures/tetris/tetris-provider";
+import { TsumiZare } from "@/futures/tsumizare/tsumizare";
+import { TsumiZareProvider } from "@/futures/tsumizare/tsumizare-provider";
 import { Header } from "./header";
 
 export default async function HomePage() {
   return (
-    <TetrisProvider>
+    <TsumiZareProvider>
       <main className="flex min-h-svh flex-col">
         <Header />
-        <Tetris />
+        <TsumiZare />
       </main>
-    </TetrisProvider>
+    </TsumiZareProvider>
   );
 }

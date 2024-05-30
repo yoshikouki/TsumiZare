@@ -5,23 +5,23 @@ import { cn } from "@/lib/utils";
 import { Pause } from "lucide-react";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
-import { useTetris } from "./use-tetris";
+import { useTsumiZare } from "./use-tsumizare";
 
-export const Tetris = () => {
+export const TsumiZare = () => {
   const {
     board,
     queuedBlocks,
     result,
     gameRef,
     boardRef,
-    startTetris,
-    finishTetris,
-    pauseTetris,
-    resumeTetris,
-    readyTetris,
+    startTsumiZare,
+    finishTsumiZare,
+    pauseTsumiZare,
+    resumeTsumiZare,
+    readyTsumiZare,
     isActiveCell,
     isBelowActiveBlock,
-  } = useTetris();
+  } = useTsumiZare();
 
   return (
     <div
@@ -77,7 +77,7 @@ export const Tetris = () => {
             type="button"
             variant={"ghost"}
             size={"icon"}
-            onClick={pauseTetris}
+            onClick={pauseTsumiZare}
           >
             <Pause className="fill-primary stroke-none" />
           </Button>
@@ -123,17 +123,21 @@ export const Tetris = () => {
         )}
       >
         <GameControlContainer isVisible={board.status === "ready"}>
-          <GameControlButton onClick={startTetris}>PLAY</GameControlButton>
+          <GameControlButton onClick={startTsumiZare}>PLAY</GameControlButton>
         </GameControlContainer>
         <GameControlContainer isVisible={board.status === "pause"}>
-          <GameControlButton onClick={resumeTetris}>RESUME</GameControlButton>
-          <GameControlButton onClick={finishTetris} variant={"outline"}>
+          <GameControlButton onClick={resumeTsumiZare}>
+            RESUME
+          </GameControlButton>
+          <GameControlButton onClick={finishTsumiZare} variant={"outline"}>
             FINISH
           </GameControlButton>
         </GameControlContainer>
         <GameControlContainer isVisible={board.status === "finished"}>
-          <GameControlButton onClick={startTetris}>RESTART</GameControlButton>
-          <GameControlButton onClick={readyTetris} variant={"outline"}>
+          <GameControlButton onClick={startTsumiZare}>
+            RESTART
+          </GameControlButton>
+          <GameControlButton onClick={readyTsumiZare} variant={"outline"}>
             QUIT
           </GameControlButton>
         </GameControlContainer>

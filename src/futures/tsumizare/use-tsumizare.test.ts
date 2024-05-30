@@ -2,12 +2,12 @@ import { describe, expect, it } from "bun:test";
 import { act, renderHook } from "@testing-library/react";
 
 import { BLOCKS } from "./block";
-import { TetrisProvider } from "./tetris-provider";
-import { useTetris } from "./use-tetris";
+import { TsumiZareProvider } from "./tsumizare-provider";
+import { useTsumiZare } from "./use-tsumizare";
 
-describe("useTetris", () => {
+describe("useTsumiZare", () => {
   it("should initialize with the correct initial state", () => {
-    const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+    const { result } = renderHook(useTsumiZare, { wrapper: TsumiZareProvider });
     const { board, activeBlock } = result.current;
 
     expect(board.rows).toHaveLength(20);
@@ -17,7 +17,9 @@ describe("useTetris", () => {
 
   describe("#runTick", () => {
     it("should generate a random block", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      const { result } = renderHook(useTsumiZare, {
+        wrapper: TsumiZareProvider,
+      });
       expect(result.current.activeBlock).toBeNull();
       act(() => result.current.runTick());
       expect(result.current.activeBlock).not.toBeNull();
@@ -25,7 +27,9 @@ describe("useTetris", () => {
     });
 
     it("should drop block correctly", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      const { result } = renderHook(useTsumiZare, {
+        wrapper: TsumiZareProvider,
+      });
       expect(result.current.activeBlock).toBeNull();
       act(() => result.current.runTick());
       expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 0 });
@@ -34,7 +38,9 @@ describe("useTetris", () => {
     });
 
     it("should detect collision correctly", async () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      const { result } = renderHook(useTsumiZare, {
+        wrapper: TsumiZareProvider,
+      });
       act(() => result.current.runTick());
       const { activeBlock } = result.current;
       if (!activeBlock) throw new Error("activeBlock is null");
@@ -56,7 +62,7 @@ describe("useTetris", () => {
         result: {
           current: { hasCollision },
         },
-      } = renderHook(useTetris, { wrapper: TetrisProvider });
+      } = renderHook(useTsumiZare, { wrapper: TsumiZareProvider });
       const shape = BLOCKS.O;
       expect(hasCollision(shape, { x: 0, y: 0 })).toBe(false);
       expect(hasCollision(shape, { x: 0, y: 18 })).toBe(false);
@@ -67,7 +73,9 @@ describe("useTetris", () => {
     });
 
     it("should detect collision of other blocks correctly", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
+      const { result } = renderHook(useTsumiZare, {
+        wrapper: TsumiZareProvider,
+      });
       const shape = BLOCKS.O;
       act(() => {
         result.current.mergeIntoBoard({

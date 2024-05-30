@@ -4,12 +4,12 @@ import { useContext, useRef } from "react";
 
 import type { Block } from "./block";
 import { initBoard, mergeBlockIntoBoard, renewFilledRows } from "./board";
-import { TetrisContext } from "./tetris-provider";
+import { TsumiZareContext } from "./tsumizare-provider";
 import { useActiveBlock } from "./use-active-block";
 
-export const useTetris = () => {
+export const useTsumiZare = () => {
   const { board, result, setBoard, hasCollision, updateResult } =
-    useContext(TetrisContext);
+    useContext(TsumiZareContext);
   const activeBlock = useActiveBlock({
     board,
     hasCollision,
@@ -21,25 +21,25 @@ export const useTetris = () => {
   const playMilliSeconds = playMilliSecondsRef.current;
   const playTimeString = new Date(playMilliSeconds).toISOString().substr(14, 5);
 
-  const startTetris = () => {
+  const startTsumiZare = () => {
     setBoard({ ...initBoard(), status: "playing" });
     activeBlock.init();
   };
 
-  const finishTetris = () => {
+  const finishTsumiZare = () => {
     setBoard((prev) => ({ ...prev, status: "finished" }));
     activeBlock.remove();
   };
 
-  const pauseTetris = () => {
+  const pauseTsumiZare = () => {
     setBoard((prev) => ({ ...prev, status: "pause" }));
   };
 
-  const resumeTetris = () => {
+  const resumeTsumiZare = () => {
     setBoard((prev) => ({ ...prev, status: "playing" }));
   };
 
-  const readyTetris = () => {
+  const readyTsumiZare = () => {
     setBoard(initBoard());
     activeBlock.remove();
   };
@@ -53,7 +53,7 @@ export const useTetris = () => {
     } else {
       const activatedBlock = activeBlock.activate();
       if (activatedBlock) return;
-      finishTetris();
+      finishTsumiZare();
     }
   };
 
@@ -88,11 +88,11 @@ export const useTetris = () => {
     result,
     gameRef, // For game loop
     // Game management
-    startTetris,
-    finishTetris,
-    pauseTetris,
-    resumeTetris,
-    readyTetris,
+    startTsumiZare,
+    finishTsumiZare,
+    pauseTsumiZare,
+    resumeTsumiZare,
+    readyTsumiZare,
     // Block management
     mergeIntoBoard,
     runTick,
