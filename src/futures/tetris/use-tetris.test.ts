@@ -44,26 +44,26 @@ describe("useTetris", () => {
         act(() => result.current.runTick());
       }
       // Check collision at bottom
-      expect(
-        result.current.checkCollision(shape, { x: position.x, y: 20 }),
-      ).toBe(true);
+      expect(result.current.hasCollision(shape, { x: position.x, y: 20 })).toBe(
+        true,
+      );
     });
   });
 
-  describe("#checkCollision", () => {
+  describe("#hasCollision", () => {
     it("should detect collision correctly", () => {
       const {
         result: {
-          current: { checkCollision },
+          current: { hasCollision },
         },
       } = renderHook(useTetris, { wrapper: TetrisProvider });
       const shape = TETROMINOS.O;
-      expect(checkCollision(shape, { x: 0, y: 0 })).toBe(false);
-      expect(checkCollision(shape, { x: 0, y: 18 })).toBe(false);
-      expect(checkCollision(shape, { x: 0, y: 19 })).toBe(true);
-      expect(checkCollision(shape, { x: 8, y: 0 })).toBe(false);
-      expect(checkCollision(shape, { x: 9, y: 0 })).toBe(true);
-      expect(checkCollision(shape, { x: -1, y: 0 })).toBe(true);
+      expect(hasCollision(shape, { x: 0, y: 0 })).toBe(false);
+      expect(hasCollision(shape, { x: 0, y: 18 })).toBe(false);
+      expect(hasCollision(shape, { x: 0, y: 19 })).toBe(true);
+      expect(hasCollision(shape, { x: 8, y: 0 })).toBe(false);
+      expect(hasCollision(shape, { x: 9, y: 0 })).toBe(true);
+      expect(hasCollision(shape, { x: -1, y: 0 })).toBe(true);
     });
 
     it("should detect collision of other tetrominos correctly", () => {
@@ -76,10 +76,10 @@ describe("useTetris", () => {
           position: { x: 0, y: 18 }, // Bottom left
         });
       });
-      expect(result.current.checkCollision(shape, { x: 0, y: 16 })).toBe(false);
-      expect(result.current.checkCollision(shape, { x: 0, y: 17 })).toBe(true);
-      expect(result.current.checkCollision(shape, { x: 2, y: 18 })).toBe(false);
-      expect(result.current.checkCollision(shape, { x: 1, y: 18 })).toBe(true);
+      expect(result.current.hasCollision(shape, { x: 0, y: 16 })).toBe(false);
+      expect(result.current.hasCollision(shape, { x: 0, y: 17 })).toBe(true);
+      expect(result.current.hasCollision(shape, { x: 2, y: 18 })).toBe(false);
+      expect(result.current.hasCollision(shape, { x: 1, y: 18 })).toBe(true);
     });
   });
 

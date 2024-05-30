@@ -2,12 +2,7 @@
 
 import { useContext, useRef, useState } from "react";
 
-import {
-  hasTetrominoCollision,
-  initBoard,
-  mergeTetrominoIntoBoard,
-  renewFilledRows,
-} from "./board";
+import { initBoard, mergeTetrominoIntoBoard, renewFilledRows } from "./board";
 import { TetrisContext } from "./tetris-provider";
 import {
   type Tetromino,
@@ -32,7 +27,8 @@ const WALL_KICKS = [
 ];
 
 export const useTetris = () => {
-  const { board, setBoard, result, updateResult } = useContext(TetrisContext);
+  const { board, result, setBoard, hasCollision, updateResult } =
+    useContext(TetrisContext);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
   );
@@ -73,7 +69,7 @@ export const useTetris = () => {
       queuedTetrominos.length > 0
         ? queuedTetrominos
         : generateQueuedTetrominos();
-    if (checkCollision(nextTetromino.shape, nextTetromino.position)) {
+    if (hasCollision(nextTetromino.shape, nextTetromino.position)) {
       finishTetris();
     } else {
       setActiveTetromino(nextTetromino);
@@ -101,18 +97,11 @@ export const useTetris = () => {
   const dropTetromino = (tetromino: Tetromino) => {
     const { position } = tetromino;
     const newPosition = { ...position, y: position.y + 1 };
-    if (checkCollision(tetromino.shape, newPosition)) {
+    if (hasCollision(tetromino.shape, newPosition)) {
       mergeTetromino(tetromino);
     } else {
       setActiveTetromino({ ...tetromino, position: newPosition });
     }
-  };
-
-  const checkCollision = (
-    shape: TetrominoShape,
-    position: TetrominoPosition,
-  ) => {
-    return hasTetrominoCollision({ shape, position }, board);
   };
 
   const moveActiveTetromino = (direction: "left" | "right" | "down") => {
@@ -124,7 +113,7 @@ export const useTetris = () => {
         : direction === "right"
           ? { ...position, x: position.x + 1 }
           : { ...position, y: position.y + 1 };
-    if (checkCollision(activeTetromino.shape, newPosition)) {
+    if (hasCollision(activeTetromino.shape, newPosition)) {
       return;
     }
     setActiveTetromino({ ...activeTetromino, position: newPosition });
@@ -136,7 +125,7 @@ export const useTetris = () => {
         x: position.x + WALL_KICKS[i].x,
         y: position.y + WALL_KICKS[i].y,
       };
-      if (!checkCollision(shape, newPosition)) {
+      if (!hasCollision(shape, newPosition)) {
         return newPosition;
       }
     }
@@ -146,7 +135,7 @@ export const useTetris = () => {
   const rotateActiveTetromino = () => {
     if (!activeTetromino) return;
     const rotatedShape = rotateShape(activeTetromino.shape);
-    if (!checkCollision(rotatedShape, activeTetromino.position)) {
+    if (!hasCollision(rotatedShape, activeTetromino.position)) {
       setActiveTetromino({
         ...activeTetromino,
         shape: rotatedShape,
@@ -219,7 +208,7 @@ export const useTetris = () => {
     mergeTetromino,
     runTick,
     dropTetromino,
-    checkCollision,
+    hasCollision,
     rotateActiveTetromino,
     // Cell management
     isActiveTetromino,
