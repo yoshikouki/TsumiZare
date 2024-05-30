@@ -31,7 +31,7 @@ export const Tetris = () => {
       {/* Game Header */}
       <div
         className={cn(
-          "flex w-full max-w-xs justify-between pt-4 opacity-100 transition-all duration-200",
+          "flex w-full max-w-xs justify-between pt-4 pb-1 opacity-100 transition-all duration-200",
           board.status === "ready" && "pointer-events-none opacity-0",
         )}
       >
@@ -43,7 +43,7 @@ export const Tetris = () => {
         >
           {queuedTetrominos[0] && (
             <>
-              Next
+              <div className="text-primary/50">Next</div>
               <div
                 className="grid gap-[2px]"
                 style={{
@@ -66,7 +66,12 @@ export const Tetris = () => {
             </>
           )}
         </div>
-        <div>
+        <div
+          className={cn(
+            "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          )}
+        >
           <div className="text-primary/50">{playTimeString}</div>
           <Button
             type="button"
