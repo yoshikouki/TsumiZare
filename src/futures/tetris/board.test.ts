@@ -70,29 +70,29 @@ describe("Board", () => {
 
   describe("renewFilledRows", () => {
     it("should not remove any rows and return board as it is if there are no filled rows", () => {
-      const board = initBoard();
-      board.rows[0].cells[0].tetrominoId = "testId";
-      board.rows[0].cells[1].tetrominoId = "testId";
-      board.rows[0].cells[2].tetrominoId = "testId";
-      const [renewedBoard, filledRowsNumber] = renewFilledRows(board);
+      const initialBoard = initBoard();
+      initialBoard.rows[0].cells[0].tetrominoId = "testId";
+      initialBoard.rows[0].cells[1].tetrominoId = "testId";
+      initialBoard.rows[0].cells[2].tetrominoId = "testId";
+      const { board, filledRowsNumber } = renewFilledRows(initialBoard);
       expect(filledRowsNumber).toBe(0);
-      expect(renewedBoard).toEqual(board);
-      expect(renewedBoard.rows[0].cells[0].tetrominoId).toBe("testId");
-      expect(renewedBoard.rows[0].cells[1].tetrominoId).toBe("testId");
-      expect(renewedBoard.rows[0].cells[2].tetrominoId).toBe("testId");
-      expect(renewedBoard.rows[1].cells[0].tetrominoId).toBeNull();
+      expect(board).toEqual(initialBoard);
+      expect(board.rows[0].cells[0].tetrominoId).toBe("testId");
+      expect(board.rows[0].cells[1].tetrominoId).toBe("testId");
+      expect(board.rows[0].cells[2].tetrominoId).toBe("testId");
+      expect(board.rows[1].cells[0].tetrominoId).toBeNull();
     });
 
     it("should remove filled rows and add new empty rows at the top", () => {
-      const board = initBoard();
-      for (let i = 0; i < board.config.colsNumber; i++) {
-        board.rows[0].cells[i].tetrominoId = "testId";
+      const initialBoard = initBoard();
+      for (let i = 0; i < initialBoard.config.colsNumber; i++) {
+        initialBoard.rows[0].cells[i].tetrominoId = "testId";
       }
-      const [renewedBoard, filledRowsNumber] = renewFilledRows(board);
+      const { board, filledRowsNumber } = renewFilledRows(initialBoard);
       expect(filledRowsNumber).toBe(1);
-      expect(renewedBoard).not.toEqual(board);
-      expect(renewedBoard.rows[0].cells[0].tetrominoId).toBeNull();
-      expect(renewedBoard.rows[0].id).not.toBe(board.rows[0].id);
+      expect(board).not.toEqual(initialBoard);
+      expect(board.rows[0].cells[0].tetrominoId).toBeNull();
+      expect(board.rows[0].id).not.toBe(initialBoard.rows[0].id);
     });
   });
 

@@ -70,7 +70,7 @@ describe("useTetris", () => {
       const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
       const shape = TETROMINOS.O;
       act(() => {
-        result.current.mergeTetromino({
+        result.current.mergeIntoBoard({
           id: "testId",
           shape,
           position: { x: 0, y: 18 }, // Bottom left
@@ -80,66 +80,6 @@ describe("useTetris", () => {
       expect(result.current.hasCollision(shape, { x: 0, y: 17 })).toBe(true);
       expect(result.current.hasCollision(shape, { x: 2, y: 18 })).toBe(false);
       expect(result.current.hasCollision(shape, { x: 1, y: 18 })).toBe(true);
-    });
-  });
-
-  describe("#dropTetromino", () => {
-    it("should update the active tetromino position when there is no collision", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
-      act(() =>
-        result.current.dropTetromino({
-          id: "testId",
-          shape: TETROMINOS.O,
-          position: { x: 0, y: 17 },
-        }),
-      );
-      expect(result.current.activeTetromino?.position).toEqual({ x: 0, y: 18 });
-      expect(result.current.board.rows[18].cells[0].tetrominoId).toBeNull();
-      expect(result.current.board.rows[18].cells[1].tetrominoId).toBeNull();
-      expect(result.current.board.rows[19].cells[0].tetrominoId).toBeNull();
-      expect(result.current.board.rows[19].cells[1].tetrominoId).toBeNull();
-    });
-
-    it("should merge tetromino into the board when there is a collision", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
-      act(() =>
-        result.current.dropTetromino({
-          id: "testId",
-          shape: TETROMINOS.O,
-          position: { x: 0, y: 18 },
-        }),
-      );
-      expect(result.current.activeTetromino).toBeNull();
-      expect(result.current.board.rows[18].cells[0].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[18].cells[1].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[19].cells[0].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[19].cells[1].tetrominoId).toBe("testId");
-    });
-
-    it("should clear filled rows after merging tetromino", () => {
-      const { result } = renderHook(useTetris, { wrapper: TetrisProvider });
-      // Fill the bottom cells of 2 ~ 9 columns
-      act(() =>
-        result.current.mergeTetromino({
-          id: "1",
-          shape: [Array(8).fill(1)],
-          position: { x: 2, y: 19 },
-        }),
-      );
-      act(() =>
-        result.current.dropTetromino({
-          id: "testId",
-          shape: TETROMINOS.O,
-          position: { x: 0, y: 18 },
-        }),
-      );
-      expect(result.current.activeTetromino).toBeNull();
-      expect(result.current.board.rows[18].cells[0].tetrominoId).toBeNull();
-      expect(result.current.board.rows[18].cells[1].tetrominoId).toBeNull();
-      expect(result.current.board.rows[19].cells[0].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[19].cells[1].tetrominoId).toBe("testId");
-      expect(result.current.board.rows[19].cells[2].tetrominoId).toBeNull();
-      expect(result.current.board.rows[19].cells[9].tetrominoId).toBeNull();
     });
   });
 });

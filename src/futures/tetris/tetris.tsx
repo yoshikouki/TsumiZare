@@ -19,7 +19,7 @@ export const Tetris = () => {
     pauseTetris,
     resumeTetris,
     readyTetris,
-    isActiveTetromino,
+    isActiveCell,
     isBelowActiveTetromino,
   } = useTetris();
 
@@ -104,7 +104,7 @@ export const Tetris = () => {
                   "aspect-square rounded-sm bg-primary/5",
                   cell.tetrominoId
                     ? "rounded-none bg-primary"
-                    : isActiveTetromino(cellIndex, rowIndex)
+                    : isActiveCell(cellIndex, rowIndex)
                       ? "bg-primary/90"
                       : isBelowActiveTetromino(cellIndex, rowIndex) &&
                         "bg-primary/10",

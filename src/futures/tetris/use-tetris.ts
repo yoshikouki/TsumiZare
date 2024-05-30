@@ -1,38 +1,19 @@
 "use client";
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 
 import { initBoard, mergeTetrominoIntoBoard, renewFilledRows } from "./board";
 import { TetrisContext } from "./tetris-provider";
-import {
-  type Tetromino,
-  type TetrominoPosition,
-  type TetrominoShape,
-  generateQueuedTetrominos,
-  generateRandomTetromino,
-  isCellBelowTetromino,
-  isFilledTetrominoCell,
-  rotateShape,
-} from "./tetromino";
-import { useKeyboard } from "./use-keyboard";
-import { useTouch } from "./use-touch";
-
-const WALL_KICKS = [
-  { x: -1, y: 0 },
-  { x: 1, y: 0 },
-  { x: 0, y: -1 },
-  { x: -1, y: -1 },
-  { x: 1, y: -1 },
-  { x: -3, y: 0 }, // For I tetromino on the right wall
-];
+import type { Tetromino } from "./tetromino";
+import { useActiveBlock } from "./use-active-block";
 
 export const useTetris = () => {
   const { board, result, setBoard, hasCollision, updateResult } =
     useContext(TetrisContext);
-  const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
-    null,
-  );
-  const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>([]);
+  const activeBlock = useActiveBlock({
+    board,
+    hasCollision,
+  });
   const playMilliSecondsRef = useRef(0);
   const updatePlayTime = () => {
     playMilliSecondsRef.current += board.config.dropInterval;
@@ -42,13 +23,12 @@ export const useTetris = () => {
 
   const startTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
-    setActiveTetromino(null);
-    setQueuedTetrominos(generateQueuedTetrominos());
+    activeBlock.init();
   };
 
   const finishTetris = () => {
     setBoard((prev) => ({ ...prev, status: "finished" }));
-    setActiveTetromino(null);
+    activeBlock.remove();
   };
 
   const pauseTetris = () => {
@@ -61,126 +41,37 @@ export const useTetris = () => {
 
   const readyTetris = () => {
     setBoard(initBoard());
-    setActiveTetromino(null);
-  };
-
-  const activateNextTetromino = () => {
-    const [nextTetromino, ...restTetrominos] =
-      queuedTetrominos.length > 0
-        ? queuedTetrominos
-        : generateQueuedTetrominos();
-    if (hasCollision(nextTetromino.shape, nextTetromino.position)) {
-      finishTetris();
-    } else {
-      setActiveTetromino(nextTetromino);
-      setQueuedTetrominos([...restTetrominos, generateRandomTetromino()]);
-    }
+    activeBlock.remove();
   };
 
   const runTick = () => {
-    if (activeTetromino) {
-      dropTetromino(activeTetromino);
-    } else {
-      activateNextTetromino();
-    }
     updatePlayTime();
-  };
-
-  const mergeTetromino = (tetromino: Tetromino) => {
-    const mergedBoard = mergeTetrominoIntoBoard(tetromino, board);
-    const [newBoard, filledRowsNumber] = renewFilledRows(mergedBoard);
-    setBoard(newBoard);
-    setActiveTetromino(null);
-    updateResult({ filledRowsNumber });
-  };
-
-  const dropTetromino = (tetromino: Tetromino) => {
-    const { position } = tetromino;
-    const newPosition = { ...position, y: position.y + 1 };
-    if (hasCollision(tetromino.shape, newPosition)) {
-      mergeTetromino(tetromino);
+    if (activeBlock.isActive) {
+      const droppedBlock = activeBlock.drop();
+      if (droppedBlock) return;
+      updateBoard();
     } else {
-      setActiveTetromino({ ...tetromino, position: newPosition });
+      const activatedBlock = activeBlock.activate();
+      if (activatedBlock) return;
+      finishTetris();
     }
   };
 
-  const moveActiveTetromino = (direction: "left" | "right" | "down") => {
-    if (!activeTetromino) return;
-    const { position } = activeTetromino;
-    const newPosition =
-      direction === "left"
-        ? { ...position, x: position.x - 1 }
-        : direction === "right"
-          ? { ...position, x: position.x + 1 }
-          : { ...position, y: position.y + 1 };
-    if (hasCollision(activeTetromino.shape, newPosition)) {
-      return;
-    }
-    setActiveTetromino({ ...activeTetromino, position: newPosition });
+  const updateBoard = () => {
+    const removedBlock = activeBlock.remove();
+    if (!removedBlock) return;
+    const mergedResult = mergeIntoBoard(removedBlock);
+    if (!mergedResult) return;
+    updateResult({ filledRowsNumber: mergedResult.filledRowsNumber });
   };
 
-  const tryWallKick = (shape: TetrominoShape, position: TetrominoPosition) => {
-    for (let i = 0; i < WALL_KICKS.length; i++) {
-      const newPosition = {
-        x: position.x + WALL_KICKS[i].x,
-        y: position.y + WALL_KICKS[i].y,
-      };
-      if (!hasCollision(shape, newPosition)) {
-        return newPosition;
-      }
-    }
-    return null;
+  const mergeIntoBoard = (tetromino: Tetromino) => {
+    const mergedBoard = mergeTetrominoIntoBoard(tetromino, board);
+    const mergedResult = renewFilledRows(mergedBoard);
+    if (!mergedResult) return;
+    setBoard(mergedResult.board);
+    return mergedResult;
   };
-
-  const rotateActiveTetromino = () => {
-    if (!activeTetromino) return;
-    const rotatedShape = rotateShape(activeTetromino.shape);
-    if (!hasCollision(rotatedShape, activeTetromino.position)) {
-      setActiveTetromino({
-        ...activeTetromino,
-        shape: rotatedShape,
-      });
-      return;
-    }
-    const newPosition = tryWallKick(rotatedShape, activeTetromino.position);
-    if (!newPosition) return;
-    setActiveTetromino({
-      ...activeTetromino,
-      shape: rotatedShape,
-      position: newPosition,
-    });
-  };
-
-  const isActiveTetromino = (cellX: number, cellY: number) => {
-    if (!activeTetromino) return false;
-    return isFilledTetrominoCell(cellX, cellY, activeTetromino);
-  };
-
-  const isBelowActiveTetromino = (cellX: number, cellY: number) => {
-    if (!activeTetromino) return false;
-    return isCellBelowTetromino(cellX, cellY, activeTetromino);
-  };
-
-  // Touch event
-  const boardRef = useTouch({
-    onSwipeLeft: () => moveActiveTetromino("left"),
-    onSwipeRight: () => moveActiveTetromino("right"),
-    onSwipeDown: () => moveActiveTetromino("down"),
-    onSwipeUp: rotateActiveTetromino,
-    onTap: rotateActiveTetromino,
-    isPreventTouchDefault: () => board.status === "playing",
-  });
-
-  // Keyboard event
-  useKeyboard({
-    onKeyDown: {
-      ArrowLeft: () => moveActiveTetromino("left"),
-      ArrowRight: () => moveActiveTetromino("right"),
-      ArrowDown: () => moveActiveTetromino("down"),
-      ArrowUp: rotateActiveTetromino,
-      " ": rotateActiveTetromino,
-    },
-  });
 
   // Game loop
   const gameRef = (ref: HTMLDivElement) => {
@@ -190,13 +81,11 @@ export const useTetris = () => {
   };
 
   return {
+    ...activeBlock,
     board,
-    activeTetromino,
-    queuedTetrominos,
     playMilliSeconds,
     playTimeString,
     result,
-    boardRef, // For touch event
     gameRef, // For game loop
     // Game management
     startTetris,
@@ -205,13 +94,8 @@ export const useTetris = () => {
     resumeTetris,
     readyTetris,
     // Tetromino management
-    mergeTetromino,
+    mergeIntoBoard,
     runTick,
-    dropTetromino,
     hasCollision,
-    rotateActiveTetromino,
-    // Cell management
-    isActiveTetromino,
-    isBelowActiveTetromino,
   };
 };

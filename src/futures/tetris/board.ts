@@ -76,12 +76,17 @@ export const mergeTetrominoIntoBoard = (tetromino: Tetromino, board: Board) => {
   return newBoard;
 };
 
-export const renewFilledRows = (board: Board): [Board, number] => {
+export const renewFilledRows = (
+  board: Board,
+): {
+  board: Board;
+  filledRowsNumber: number;
+} => {
   const remainingRows = board.rows.filter((row) =>
     row.cells.some((cell) => !cell.tetrominoId),
   );
   const filledRowsNumber = board.config.rowsNumber - remainingRows.length;
-  if (filledRowsNumber === 0) return [board, 0];
+  if (filledRowsNumber === 0) return { board, filledRowsNumber };
   const newBoard = {
     ...board,
     rows: [
@@ -91,7 +96,10 @@ export const renewFilledRows = (board: Board): [Board, number] => {
       ...remainingRows,
     ],
   };
-  return [newBoard, filledRowsNumber];
+  return {
+    board: newBoard,
+    filledRowsNumber,
+  };
 };
 
 export const hasTetrominoCollision = (
