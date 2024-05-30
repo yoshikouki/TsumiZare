@@ -12,9 +12,9 @@ export type Row = {
 };
 
 export type BoardConfig = {
-  rowsNumber?: number;
-  colsNumber?: number;
-  dropInterval?: number;
+  rowsNumber: number;
+  colsNumber: number;
+  dropInterval: number;
 };
 export type Board = {
   id: string;
