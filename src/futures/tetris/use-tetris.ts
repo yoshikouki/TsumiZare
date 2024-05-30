@@ -8,12 +8,6 @@ import {
   mergeTetrominoIntoBoard,
   renewFilledRows,
 } from "./board";
-import {
-  type Outcome,
-  type Result,
-  calculateNewResult,
-  initResult,
-} from "./result";
 import { TetrisContext } from "./tetris-provider";
 import {
   type Tetromino,
@@ -38,12 +32,11 @@ const WALL_KICKS = [
 ];
 
 export const useTetris = () => {
-  const { board, setBoard } = useContext(TetrisContext);
+  const { board, setBoard, result, updateResult } = useContext(TetrisContext);
   const [activeTetromino, setActiveTetromino] = useState<Tetromino | null>(
     null,
   );
   const [queuedTetrominos, setQueuedTetrominos] = useState<Tetromino[]>([]);
-  const [result, setResult] = useState<Result>(initResult);
   const playMilliSecondsRef = useRef(0);
   const updatePlayTime = () => {
     playMilliSecondsRef.current += board.config.dropInterval;
@@ -55,7 +48,6 @@ export const useTetris = () => {
     setBoard({ ...initBoard(), status: "playing" });
     setActiveTetromino(null);
     setQueuedTetrominos(generateQueuedTetrominos());
-    setResult(initResult);
   };
 
   const finishTetris = () => {
@@ -103,11 +95,7 @@ export const useTetris = () => {
     const [newBoard, filledRowsNumber] = renewFilledRows(mergedBoard);
     setBoard(newBoard);
     setActiveTetromino(null);
-    updateGameResult({ filledRowsNumber });
-  };
-
-  const updateGameResult = (outcome: Outcome) => {
-    setResult((prev) => calculateNewResult(outcome, prev, board));
+    updateResult({ filledRowsNumber });
   };
 
   const dropTetromino = (tetromino: Tetromino) => {
