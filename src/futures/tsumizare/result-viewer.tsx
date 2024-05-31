@@ -20,7 +20,7 @@ const generateResultImage = async ({
   const svgString = await satori(scoreboard({ score, filledCellsNumber }), {
     width: 320,
     height: 320,
-    debug: true,
+    debug: false,
     fonts: [
       {
         name: "Roboto",
