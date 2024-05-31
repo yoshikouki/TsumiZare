@@ -1,22 +1,12 @@
 "use client";
 
-import {
-  Award,
-  Box,
-  Crown,
-  DoorOpen,
-  Pause,
-  Play,
-  RefreshCcw,
-  Square,
-  StepForward,
-  StepForwardIcon,
-} from "lucide-react";
+import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
+import { ResultViewer } from "./result-viewer";
 import { useTsumiZare } from "./use-tsumizare";
 
 export const TsumiZare = () => {
@@ -175,23 +165,12 @@ export const TsumiZare = () => {
 
         {/* Finish result */}
         <GameControlContainer isVisible={board.status === "finished"}>
-          <div className="flex aspect-square w-full flex-col items-center justify-center gap-4 rounded border bg-background p-4">
-            <div className="mb-8 flex items-center justify-center gap-1">
-              <Crown className="fill-primary stroke-primary" size="40" />
-            </div>
-
-            <div className="inline-flex items-center justify-center gap-2">
-              <Award className="stroke-primary" size="32" />
-              <span className="font-black text-4xl">{result.score}</span>
-            </div>
-
-            <div className="inline-flex items-center justify-center gap-2">
-              <Box className="stroke-primary" size="28" />
-              <span className="font-black text-4xl">
-                {result.filledRowsNumber * board.config.colsNumber}
-              </span>
-            </div>
-          </div>
+          <ResultViewer
+            score={result.score}
+            filledCellsNumber={
+              result.filledRowsNumber * board.config.colsNumber
+            }
+          />
 
           <div className="flex w-full gap-2">
             <GameControlButton onClick={startTsumiZare} className="group py-10">
