@@ -17,11 +17,11 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "hono": "^4.3.11",
-    "html2canvas": "^1.4.1",
     "lucide-react": "^0.379.0",
     "next": "^15.0.0-rc.0",
     "react": "^19.0.0-rc-935180c7e0-20240524",
     "react-dom": "^19.0.0-rc-935180c7e0-20240524",
+    "satori": "^0.10.13",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
