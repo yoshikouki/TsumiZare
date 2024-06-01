@@ -156,6 +156,6 @@ export const useActiveBlock = ({
     // Cell management
     isActive,
     isActiveCell,
-    isBelowActiveBlock: isBelowActiveBlock,
+    isBelowActiveBlock,
   };
 };

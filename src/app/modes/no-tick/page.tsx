@@ -1,5 +1,5 @@
 import { Header } from "@/app/header";
-import { TsumiZare } from "@/futures/tsumizare/tsumizare";
+import { NoTickGame } from "./no-tick-game";
 import { TsumiZareProvider } from "@/futures/tsumizare/tsumizare-provider";
 
 export default function NoTickModePage() {
@@ -7,7 +7,7 @@ export default function NoTickModePage() {
     <TsumiZareProvider>
       <Header />
       <main className="flex min-h-svh flex-col items-center">
-        <TsumiZare />
+        <NoTickGame />
       </main>
     </TsumiZareProvider>
   );

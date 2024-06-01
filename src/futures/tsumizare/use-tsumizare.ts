@@ -88,11 +88,14 @@ export const useTsumiZare = () => {
   };
 
   return {
-    ...activeBlock,
     board,
+    activeBlock,
+    queuedBlocks: activeBlock.queuedBlocks,
+    result: board.result,
     playMilliSeconds,
     playTimeString,
-    result: board.result,
+    // Refs
+    boardRef: activeBlock.boardRef,
     tickRunnerRef,
     // Game management
     startTsumiZare,
@@ -104,5 +107,8 @@ export const useTsumiZare = () => {
     mergeIntoBoard,
     runTick,
     hasCollision,
+    // Cell management
+    isActiveCell: activeBlock.isActiveCell,
+    isBelowActiveBlock: activeBlock.isBelowActiveBlock,
   };
 };
