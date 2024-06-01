@@ -81,7 +81,7 @@ export const useTsumiZare = () => {
   };
 
   // Game loop
-  const gameRef = (ref: HTMLDivElement) => {
+  const tickRunnerRef = (ref: HTMLDivElement) => {
     if (board.status !== "playing") return;
     const interval = setInterval(runTick, board.config.dropInterval);
     return () => clearInterval(interval);
@@ -93,7 +93,7 @@ export const useTsumiZare = () => {
     playMilliSeconds,
     playTimeString,
     result: board.result,
-    gameRef, // For game loop
+    tickRunnerRef,
     // Game management
     startTsumiZare,
     finishTsumiZare,

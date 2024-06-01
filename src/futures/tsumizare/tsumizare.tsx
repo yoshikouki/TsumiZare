@@ -3,10 +3,11 @@
 import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
+import { TickRunner } from "./tick-runner";
+import { cn } from "@/lib/utils";
 import { useTsumiZare } from "./use-tsumizare";
 
 export const TsumiZare = () => {
@@ -14,8 +15,8 @@ export const TsumiZare = () => {
     board,
     queuedBlocks,
     result,
-    gameRef,
     boardRef,
+    tickRunnerRef,
     startTsumiZare,
     finishTsumiZare,
     pauseTsumiZare,
@@ -26,10 +27,8 @@ export const TsumiZare = () => {
   } = useTsumiZare();
 
   return (
-    <div
-      className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none"
-      ref={gameRef}
-    >
+    <div className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none">
+      <TickRunner tickRunnerRef={tickRunnerRef} />
       {/* Game Header */}
       <div
         className={cn(
