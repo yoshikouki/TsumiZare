@@ -8,11 +8,10 @@ import { useTsumiZare } from "./use-tsumizare";
 describe("useTsumiZare", () => {
   it("should initialize with the correct initial state", () => {
     const { result } = renderHook(useTsumiZare, { wrapper: TsumiZareProvider });
-    const { board, activeBlock } = result.current;
 
-    expect(board.rows).toHaveLength(20);
-    expect(board.rows[0].cells).toHaveLength(10);
-    expect(activeBlock).toBeNull();
+    expect(result.current.board.rows).toHaveLength(20);
+    expect(result.current.board.rows[0].cells).toHaveLength(10);
+    expect(result.current.activeBlock.activeBlock).toBeNull();
   });
 
   describe("#runTick", () => {
@@ -20,21 +19,30 @@ describe("useTsumiZare", () => {
       const { result } = renderHook(useTsumiZare, {
         wrapper: TsumiZareProvider,
       });
-      expect(result.current.activeBlock).toBeNull();
+      expect(result.current.activeBlock.activeBlock).toBeNull();
       act(() => result.current.runTick());
-      expect(result.current.activeBlock).not.toBeNull();
-      expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 0 });
+      expect(result.current.activeBlock.activeBlock).not.toBeNull();
+      expect(result.current.activeBlock.activeBlock?.position).toEqual({
+        x: 3,
+        y: 0,
+      });
     });
 
     it("should drop block correctly", () => {
       const { result } = renderHook(useTsumiZare, {
         wrapper: TsumiZareProvider,
       });
-      expect(result.current.activeBlock).toBeNull();
+      expect(result.current.activeBlock.activeBlock).toBeNull();
       act(() => result.current.runTick());
-      expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 0 });
+      expect(result.current.activeBlock.activeBlock?.position).toEqual({
+        x: 3,
+        y: 0,
+      });
       act(() => result.current.runTick());
-      expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 1 });
+      expect(result.current.activeBlock.activeBlock?.position).toEqual({
+        x: 3,
+        y: 1,
+      });
     });
 
     it("should detect collision correctly", async () => {
@@ -42,9 +50,9 @@ describe("useTsumiZare", () => {
         wrapper: TsumiZareProvider,
       });
       act(() => result.current.runTick());
-      const { activeBlock } = result.current;
-      if (!activeBlock) throw new Error("activeBlock is null");
-      const { shape, position } = activeBlock;
+      if (!result.current.activeBlock.activeBlock)
+        throw new Error("activeBlock is null");
+      const { shape, position } = result.current.activeBlock.activeBlock;
       // Move block to the bottom
       for (let i = 0; i < 19; i++) {
         act(() => result.current.runTick());
