@@ -1,6 +1,6 @@
 import { Header } from "@/app/header";
-import { NoTickGame } from "./no-tick-game";
 import { TsumiZareProvider } from "@/futures/tsumizare/tsumizare-provider";
+import { NoTickGame } from "./no-tick-game";
 
 export default function NoTickModePage() {
   return (

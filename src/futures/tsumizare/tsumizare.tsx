@@ -3,11 +3,11 @@
 import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
 import { TickRunner } from "./tick-runner";
-import { cn } from "@/lib/utils";
 import { useTsumiZare } from "./use-tsumizare";
 
 export const TsumiZare = () => {
