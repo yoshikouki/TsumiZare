@@ -23,7 +23,9 @@ export const NoTickGame = () => {
     readyTsumiZare,
     isActiveCell,
     isBelowActiveBlock,
-  } = useTsumiZare();
+  } = useTsumiZare({
+    upAction: "moveUp",
+  });
 
   const startGame = () => {
     startTsumiZare();

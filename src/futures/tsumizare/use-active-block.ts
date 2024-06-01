@@ -16,13 +16,16 @@ import { WALL_KICKS } from "./constants";
 import type { TsumiZareContext } from "./tsumizare-provider";
 import { useKeyboard } from "./use-keyboard";
 import { useTouch } from "./use-touch";
+import type { UpAction } from "./use-tsumizare";
 
 export const useActiveBlock = ({
   board,
   hasCollision,
+  upAction = "rotate",
 }: {
   board: TsumiZareContext["board"];
   hasCollision: TsumiZareContext["hasCollision"];
+  upAction?: UpAction;
 }) => {
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);
   const [queuedBlocks, setQueuedBlocks] = useState<Block[]>([]);
@@ -65,15 +68,24 @@ export const useActiveBlock = ({
     return droppedBlock;
   };
 
-  const move = (direction: "left" | "right" | "down") => {
+  const move = (direction: "left" | "right" | "down" | "up") => {
     if (!activeBlock) return;
     const { position } = activeBlock;
-    const newPosition =
-      direction === "left"
-        ? { ...position, x: position.x - 1 }
-        : direction === "right"
-          ? { ...position, x: position.x + 1 }
-          : { ...position, y: position.y + 1 };
+    let newPosition: BlockPosition;
+    switch (direction) {
+      case "left":
+        newPosition = { ...position, x: position.x - 1 };
+        break;
+      case "right":
+        newPosition = { ...position, x: position.x + 1 };
+        break;
+      case "down":
+        newPosition = { ...position, y: position.y + 1 };
+        break;
+      case "up":
+        newPosition = { ...position, y: position.y - 1 };
+        break;
+    }
     if (hasCollision(activeBlock.shape, newPosition)) {
       return;
     }
@@ -122,12 +134,18 @@ export const useActiveBlock = ({
     return isCellBelowBlock(cellX, cellY, activeBlock);
   };
 
+  const upActions = {
+    rotate: rotate,
+    moveUp: () => move("up"),
+  } as const;
+  const handleUpAction = upActions[upAction];
+
   // Touch event
   const boardRef = useTouch({
     onSwipeLeft: () => move("left"),
     onSwipeRight: () => move("right"),
     onSwipeDown: () => move("down"),
-    onSwipeUp: rotate,
+    onSwipeUp: handleUpAction,
     onTap: rotate,
     isPreventTouchDefault: () => board.status === "playing",
   });
@@ -138,7 +156,7 @@ export const useActiveBlock = ({
       ArrowLeft: () => move("left"),
       ArrowRight: () => move("right"),
       ArrowDown: () => move("down"),
-      ArrowUp: rotate,
+      ArrowUp: handleUpAction,
       " ": rotate,
     },
     isPreventTouchDefault: board.status === "playing",

@@ -8,11 +8,16 @@ import type { Block } from "./block";
 import { TsumiZareContext } from "./tsumizare-provider";
 import { useActiveBlock } from "./use-active-block";
 
-export const useTsumiZare = () => {
+export type UpAction = "rotate" | "moveUp";
+
+export const useTsumiZare = (option?: {
+  upAction?: UpAction;
+}) => {
   const { board, setBoard, hasCollision } = useContext(TsumiZareContext);
   const activeBlock = useActiveBlock({
     board,
     hasCollision,
+    upAction: option?.upAction,
   });
   const playMilliSecondsRef = useRef(0);
   const updatePlayTime = () => {

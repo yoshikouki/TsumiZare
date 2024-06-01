@@ -125,6 +125,7 @@ export const hasBlockCollision = (
       if (
         cellX < 0 ||
         COLS <= cellX ||
+        cellY < 0 ||
         ROWS <= cellY ||
         board.rows[cellY].cells[cellX].blockId
       ) {
