@@ -15,19 +15,19 @@ export const scoreboard = ({
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      gap: "16px",
-      borderRadius: "8px",
+      gap: "1rem",
+      borderRadius: "0.25rem",
       border: "1px solid #e5e5e5",
       backgroundColor: "#ffffff",
     }}
   >
     <div
       style={{
-        marginBottom: "32px",
+        marginBottom: "2rem",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "4px",
+        gap: "0.25rem",
       }}
     >
       {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
@@ -52,7 +52,7 @@ export const scoreboard = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "8px",
+        gap: "0.5rem",
       }}
     >
       {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
@@ -73,7 +73,7 @@ export const scoreboard = ({
       <span
         style={{
           fontWeight: "900",
-          fontSize: "36px",
+          fontSize: "2.25rem",
         }}
       >
         {score}
@@ -85,7 +85,7 @@ export const scoreboard = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "8px",
+        gap: "0.5rem",
       }}
     >
       {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
@@ -107,7 +107,7 @@ export const scoreboard = ({
       <span
         style={{
           fontWeight: "900",
-          fontSize: "36px",
+          fontSize: "2.25rem",
         }}
       >
         {filledCellsNumber}

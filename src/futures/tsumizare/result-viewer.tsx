@@ -30,8 +30,14 @@ const generateResultImage = async ({
       },
     ],
   });
-  const blob = new Blob([svgString], { type: "image/svg+xml" });
-  return blob;
+  const canvas = await svgStringToCanvas({
+    svgString,
+    width: 1200,
+    height: 1200,
+  });
+  const pngBlob = await canvasToBlob(canvas);
+
+  return pngBlob;
 };
 
 const svgStringToCanvas = ({
@@ -68,6 +74,8 @@ const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob | null> => {
   });
 };
 
+const imageFileName = () => `TsumiZare-result-${new Date().toISOString()}.png`;
+
 export const ResultViewer = ({
   score,
   filledCellsNumber,
@@ -77,21 +85,14 @@ export const ResultViewer = ({
 }) => {
   const shareResultImage = async () => {
     const blob = await generateResultImage({ score, filledCellsNumber });
-    const svgString = await blob.text();
-    const canvas = await svgStringToCanvas({
-      svgString,
-      width: 320,
-      height: 320,
-    });
-    const pngBlob = await canvasToBlob(canvas);
-    if (!pngBlob) {
+    if (!blob) {
       console.error("Failed to convert canvas to blob");
       return;
     }
 
     if (navigator.share) {
       try {
-        const file = new File([pngBlob], "capture.png", {
+        const file = new File([blob], imageFileName(), {
           type: "image/png",
         });
         await navigator.share({
@@ -106,16 +107,21 @@ export const ResultViewer = ({
     } else {
       console.log("Sharing is not supported");
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(pngBlob);
+      link.href = URL.createObjectURL(blob);
       link.click();
     }
   };
 
   const downloadResultImage = async () => {
     const blob = await generateResultImage({ score, filledCellsNumber });
+    if (!blob) {
+      console.error("Failed to convert canvas to blob");
+      return;
+    }
+
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `TsumiZare-result-${new Date().toISOString()}.png`;
+    link.download = imageFileName();
     link.click();
   };
 
