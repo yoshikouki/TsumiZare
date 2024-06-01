@@ -2,6 +2,7 @@
 
 import { useTsumiZare } from "@/futures/tsumizare/use-tsumizare";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export const Header = () => {
   const { board } = useTsumiZare();
@@ -19,7 +20,9 @@ export const Header = () => {
           board.status !== "ready" && "pointer-events-none opacity-0",
         )}
       >
-        <h1 className={"font-black text-4xl"}>TsumiZare</h1>
+        <Link href="/">
+          <h1 className={"font-black text-4xl"}>TsumiZare</h1>
+        </Link>
       </div>
     </header>
   );
