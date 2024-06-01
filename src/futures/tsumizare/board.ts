@@ -1,5 +1,7 @@
-import type { Block } from "./block";
 import { COLS, DROP_INTERVAL, ROWS } from "./constants";
+import { type Result, initResult } from "./result";
+
+import type { Block } from "./block";
 
 export type Cell = {
   id: string;
@@ -20,6 +22,7 @@ export type Board = {
   id: string;
   rows: Row[];
   status: "ready" | "playing" | "finished" | "pause";
+  result: Result;
   config: BoardConfig;
 };
 
@@ -40,6 +43,7 @@ export const initBoard = (config?: Partial<BoardConfig>): Board => {
     id: id(),
     rows: Array.from({ length: rowsNumber }, () => initRow(colsNumber)),
     status: "ready",
+    result: initResult(),
     config: {
       rowsNumber,
       colsNumber,

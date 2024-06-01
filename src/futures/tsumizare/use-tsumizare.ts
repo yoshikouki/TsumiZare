@@ -1,15 +1,15 @@
 "use client";
 
 import { useContext, useRef } from "react";
+import { initBoard, mergeBlockIntoBoard, renewFilledRows } from "./board";
+import { type Outcome, calculateNewResult } from "./result";
 
 import type { Block } from "./block";
-import { initBoard, mergeBlockIntoBoard, renewFilledRows } from "./board";
 import { TsumiZareContext } from "./tsumizare-provider";
 import { useActiveBlock } from "./use-active-block";
 
 export const useTsumiZare = () => {
-  const { board, result, setBoard, hasCollision, updateResult } =
-    useContext(TsumiZareContext);
+  const { board, setBoard, hasCollision } = useContext(TsumiZareContext);
   const activeBlock = useActiveBlock({
     board,
     hasCollision,
@@ -73,6 +73,13 @@ export const useTsumiZare = () => {
     return mergedResult;
   };
 
+  const updateResult = (outcome: Outcome) => {
+    setBoard((prev) => ({
+      ...prev,
+      result: calculateNewResult(outcome, prev.result, prev),
+    }));
+  };
+
   // Game loop
   const gameRef = (ref: HTMLDivElement) => {
     if (board.status !== "playing") return;
@@ -85,7 +92,7 @@ export const useTsumiZare = () => {
     board,
     playMilliSeconds,
     playTimeString,
-    result,
+    result: board.result,
     gameRef, // For game loop
     // Game management
     startTsumiZare,
