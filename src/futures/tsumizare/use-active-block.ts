@@ -141,6 +141,7 @@ export const useActiveBlock = ({
       ArrowUp: rotate,
       " ": rotate,
     },
+    isPreventTouchDefault: board.status === "playing",
   });
 
   return {
