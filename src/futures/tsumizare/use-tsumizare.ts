@@ -63,9 +63,7 @@ export const useTsumiZare = (option?: {
       if (droppedBlock) return;
       updateBoard();
     } else {
-      const activatedBlock = activeBlock.activate();
-      if (activatedBlock) return;
-      finishTsumiZare();
+      activateBlockOrFinish();
     }
   };
 
@@ -90,6 +88,12 @@ export const useTsumiZare = (option?: {
       ...prev,
       result: calculateNewResult(outcome, prev.result, prev),
     }));
+  };
+
+  const activateBlockOrFinish = () => {
+    const activatedBlock = activeBlock.activate();
+    if (activatedBlock) return;
+    finishTsumiZare();
   };
 
   // Cell management
@@ -137,6 +141,8 @@ export const useTsumiZare = (option?: {
     mergeIntoBoard,
     runTick,
     hasCollision,
+    updateBoard,
+    activateBlockOrFinish,
     // Cell management
     detectCellVariant,
     isActiveCell: activeBlock.isActiveCell,

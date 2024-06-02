@@ -1,7 +1,14 @@
 "use client";
 
 import { Board, BoardCell } from "@/futures/tsumizare/components/board";
-import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
+import {
+  DoorOpen,
+  Pause,
+  Play,
+  Square,
+  SquareCheckBig,
+  StepForward,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { BlockViewer } from "@/futures/tsumizare/components/block-viewer";
@@ -24,6 +31,8 @@ export const NoTickGame = () => {
     resumeTsumiZare,
     readyTsumiZare,
     detectCellVariant,
+    activateBlockOrFinish,
+    updateBoard,
   } = useTsumiZare({
     upAction: "moveUp",
   });
@@ -42,7 +51,10 @@ export const NoTickGame = () => {
           board.status === "ready" && "pointer-events-none opacity-0",
         )}
       >
-        <div
+        <Button
+          type="button"
+          variant={"outline"}
+          onClick={activateBlockOrFinish}
           className={cn(
             "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -54,14 +66,21 @@ export const NoTickGame = () => {
               <BlockViewer block={queuedBlocks[0]} />
             </>
           )}
-        </div>
+        </Button>
         <div
           className={cn(
             "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           )}
         >
-          <div className="text-primary/50">{result.score}</div>
+          <Button
+            type="button"
+            variant={"ghost"}
+            size={"icon"}
+            onClick={updateBoard}
+          >
+            <SquareCheckBig className="stroke-primary" />
+          </Button>
           <Button
             type="button"
             variant={"ghost"}
