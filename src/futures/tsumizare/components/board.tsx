@@ -1,4 +1,4 @@
-import type { BoardConfig } from "../../../../packages/tsumizare/src/core/board";
+import type { BoardConfig } from "tsumizare";
 
 import { cn } from "@/lib/utils";
 import { type VariantProps, cva } from "class-variance-authority";

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useTsumiZare } from "../../packages/tsumizare/src/hooks/use-tsumizare";
+import { useTsumiZare } from "tsumizare";
 
 export const Header = () => {
   const { board } = useTsumiZare();

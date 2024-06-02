@@ -5,7 +5,7 @@ import { Board, BoardCell } from "./components/board";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useTsumiZare } from "../../../packages/tsumizare/src/hooks/use-tsumizare";
+import { useTsumiZare } from "tsumizare";
 import { BlockViewer } from "./components/block-viewer";
 import { TickRunner } from "./components/tick-runner";
 import { GameControlButton } from "./game-control-button";

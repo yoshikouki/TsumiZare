@@ -16,7 +16,7 @@ import { GameControlButton } from "@/futures/tsumizare/game-control-button";
 import { GameControlContainer } from "@/futures/tsumizare/game-control-container";
 import { ResultViewer } from "@/futures/tsumizare/result-viewer";
 import { cn } from "@/lib/utils";
-import { useTsumiZare } from "../../../../packages/tsumizare/src/hooks/use-tsumizare";
+import { useTsumiZare } from "tsumizare";
 
 export const NoTickGame = () => {
   const {
