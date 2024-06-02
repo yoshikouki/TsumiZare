@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "bun build ./src/index.ts  --minify --outdir dist",
+    "build": "bun build ./src/index.ts  --minify --outdir dist --target browser",
     "lint": "bunx @biomejs/biome check .",
     "format": "bunx @biomejs/biome check --apply .",
     "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",
