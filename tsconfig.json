@@ -18,8 +18,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "tsumizare": ["./packages/tsumizare/src/index.ts"]
+      "@/*": ["./src/*"]
     },
     "target": "ES2017"
   },

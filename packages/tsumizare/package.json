@@ -1,10 +1,9 @@
 {
   "name": "tsumizare",
-  "module": "src/index.ts",
   "version": "0.0.1",
   "description": "Core functionalities for TsumiZare game",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
   "scripts": {
     "build": "tsup",
     "lint": "bunx @biomejs/biome check .",
@@ -23,6 +22,6 @@
     "react": "^19.0.0-rc-935180c7e0-20240524",
     "react-dom": "^19.0.0-rc-935180c7e0-20240524"
   },
-  "files": ["dist", "src"],
+  "files": ["dist"],
   "author": "yoshikouki"
 }
