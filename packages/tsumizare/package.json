@@ -1,7 +1,7 @@
 {
   "name": "tsumizare",
   "module": "src/index.ts",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Core functionalities for TsumiZare game",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

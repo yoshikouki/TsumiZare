@@ -1,0 +1,6 @@
+# test files
+*.test.ts
+
+# configuration files
+tsconfig.json
+bun.lockb
