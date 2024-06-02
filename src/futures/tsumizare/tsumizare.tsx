@@ -1,9 +1,11 @@
 "use client";
 
 import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
+import { Board, BoardCell } from "./components/board";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BlockViewer } from "./components/block-viewer";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
@@ -22,8 +24,7 @@ export const TsumiZare = () => {
     pauseTsumiZare,
     resumeTsumiZare,
     readyTsumiZare,
-    isActiveCell,
-    isBelowActiveBlock,
+    detectCellVariant,
   } = useTsumiZare();
 
   return (
@@ -45,25 +46,7 @@ export const TsumiZare = () => {
           {queuedBlocks[0] && (
             <>
               <div className="text-primary/50">Next</div>
-              <div
-                className="grid gap-[2px]"
-                style={{
-                  gridTemplateColumns: `repeat(${queuedBlocks[0].shape[0].length}, 1fr)`,
-                  gridTemplateRows: `repeat(${queuedBlocks[0].shape.length}, 1fr)`,
-                }}
-              >
-                {queuedBlocks[0].shape.map((row, rowIndex) =>
-                  row.map((cell, cellIndex) => (
-                    <div
-                      key={`${queuedBlocks[0]}-${rowIndex}-${cellIndex}`}
-                      className={cn(
-                        "aspect-square min-w-2 bg-primary",
-                        cell ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                  )),
-                )}
-              </div>
+              <BlockViewer block={queuedBlocks[0]} />
             </>
           )}
         </div>
@@ -86,35 +69,16 @@ export const TsumiZare = () => {
       </div>
 
       {/* Game Board */}
-      <div
-        className="flex h-full w-full flex-col items-center px-4"
-        ref={boardRef}
-      >
-        <div
-          className={cn("grid max-h-svh w-full max-w-xs gap-1")}
-          style={{
-            gridTemplateRows: `repeat(${board.config.rowsNumber}, 1fr)`,
-            gridTemplateColumns: `repeat(${board.config.colsNumber}, 1fr)`,
-          }}
-        >
-          {board.rows.map((row, rowIndex) =>
-            row.cells.map((cell, cellIndex) => (
-              <div
-                key={cell.id}
-                className={cn(
-                  "aspect-square rounded-sm bg-primary/5",
-                  cell.blockId
-                    ? "rounded-none bg-primary"
-                    : isActiveCell(cellIndex, rowIndex)
-                      ? "bg-primary/90"
-                      : isBelowActiveBlock(cellIndex, rowIndex) &&
-                        "bg-primary/10",
-                )}
-              />
-            )),
-          )}
-        </div>
-      </div>
+      <Board boardRef={boardRef} boardConfig={board.config}>
+        {board.rows.map((row, rowIndex) =>
+          row.cells.map((cell, cellIndex) => (
+            <BoardCell
+              key={cell.id}
+              variant={detectCellVariant(cell, cellIndex, rowIndex)}
+            />
+          )),
+        )}
+      </Board>
 
       {/* Game Controller */}
       <div

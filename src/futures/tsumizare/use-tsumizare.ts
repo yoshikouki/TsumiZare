@@ -1,7 +1,12 @@
 "use client";
 
 import { useContext, useRef } from "react";
-import { initBoard, mergeBlockIntoBoard, renewFilledRows } from "./board";
+import {
+  type Cell,
+  initBoard,
+  mergeBlockIntoBoard,
+  renewFilledRows,
+} from "./board";
 import { type Outcome, calculateNewResult } from "./result";
 
 import type { Block } from "./block";
@@ -9,6 +14,8 @@ import { TsumiZareContext } from "./tsumizare-provider";
 import { useActiveBlock } from "./use-active-block";
 
 export type UpAction = "rotate" | "moveUp";
+
+export type CellVariants = "empty" | "filled" | "active" | "belowActiveBlock";
 
 export const useTsumiZare = (option?: {
   upAction?: UpAction;
@@ -85,6 +92,24 @@ export const useTsumiZare = (option?: {
     }));
   };
 
+  // Cell management
+  const detectCellVariant = (
+    cell: Cell,
+    x: number,
+    y: number,
+  ): CellVariants => {
+    if (cell.blockId) {
+      return "filled";
+    }
+    if (activeBlock.isActiveCell(x, y)) {
+      return "active";
+    }
+    if (activeBlock.isBelowActiveBlock(x, y)) {
+      return "belowActiveBlock";
+    }
+    return "empty";
+  };
+
   // Game loop
   const tickRunnerRef = (ref: HTMLDivElement) => {
     if (board.status !== "playing") return;
@@ -113,6 +138,7 @@ export const useTsumiZare = (option?: {
     runTick,
     hasCollision,
     // Cell management
+    detectCellVariant,
     isActiveCell: activeBlock.isActiveCell,
     isBelowActiveBlock: activeBlock.isBelowActiveBlock,
   };
