@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import type { TsumiZareContext } from "../components//tsumizare-provider";
 import {
   type Block,
   type BlockPosition,
@@ -11,9 +12,8 @@ import {
   isCellBelowBlock,
   isFilledBlockCell,
   rotateShape,
-} from "./block";
-import { WALL_KICKS } from "./constants";
-import type { TsumiZareContext } from "./tsumizare-provider";
+} from "../core/block";
+import { WALL_KICKS } from "../core/constants";
 import { useKeyboard } from "./use-keyboard";
 import { useTouch } from "./use-touch";
 import type { UpAction } from "./use-tsumizare";

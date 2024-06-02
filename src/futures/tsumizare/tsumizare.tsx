@@ -5,12 +5,12 @@ import { Board, BoardCell } from "./components/board";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTsumiZare } from "../../../packages/tsumizare/src/hooks/use-tsumizare";
 import { BlockViewer } from "./components/block-viewer";
+import { TickRunner } from "./components/tick-runner";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
-import { TickRunner } from "./tick-runner";
-import { useTsumiZare } from "./use-tsumizare";
 
 export const TsumiZare = () => {
   const {

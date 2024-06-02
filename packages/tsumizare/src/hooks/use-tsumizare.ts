@@ -6,11 +6,11 @@ import {
   initBoard,
   mergeBlockIntoBoard,
   renewFilledRows,
-} from "./board";
-import { type Outcome, calculateNewResult } from "./result";
+} from "../core/board";
+import { type Outcome, calculateNewResult } from "../core/result";
 
-import type { Block } from "./block";
-import { TsumiZareContext } from "./tsumizare-provider";
+import { TsumiZareContext } from "../components/tsumizare-provider";
+import type { Block } from "../core/block";
 import { useActiveBlock } from "./use-active-block";
 
 export type UpAction = "rotate" | "moveUp";

@@ -1,0 +1,26 @@
+{
+  "name": "tsumizare",
+  "module": "src/index.ts",
+  "version": "0.0.1",
+  "description": "Core functionalities for TsumiZare game",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "bun build ./src/index.ts  --minify --outdir dist",
+    "lint": "bunx @biomejs/biome check .",
+    "format": "bunx @biomejs/biome check --apply .",
+    "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",
+    "update:all": "bunx npm-check-updates -u"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "npm:types-react@beta",
+    "@types/react-dom": "npm:types-react-dom@beta",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0-rc-935180c7e0-20240524",
+    "react-dom": "^19.0.0-rc-935180c7e0-20240524"
+  },
+  "author": "yoshikouki"
+}

@@ -1,9 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { act, renderHook } from "@testing-library/react";
 
-import { BLOCKS, type BlockPosition, type BlockShape } from "./block";
-import { type Board, hasBlockCollision, initBoard } from "./board";
-import { TsumiZareProvider } from "./tsumizare-provider";
+import { BLOCKS, type BlockPosition, type BlockShape } from "../core/block";
+import { type Board, hasBlockCollision, initBoard } from "../core/board";
 import { useActiveBlock } from "./use-active-block";
 
 const hasCollision =

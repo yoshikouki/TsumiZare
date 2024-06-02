@@ -2,7 +2,7 @@ import {
   SWIPE_THRESHOLD,
   TAP_DURATION_THRESHOLD,
   TAP_MOVE_THRESHOLD,
-} from "./constants";
+} from "../core//constants";
 
 import { useRef } from "react";
 

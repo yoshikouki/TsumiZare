@@ -1,5 +1,5 @@
 import { id } from "./board";
-import { DEFAULT_TETROMINO_QUEUE_SIZE } from "./constants";
+import { DEFAULT_QUEUED_BLOCK_SIZE } from "./constants";
 
 export type BlockShape = number[][];
 export type BlockPosition = { x: number; y: number };
@@ -51,7 +51,7 @@ export const generateRandomBlock = () => {
   };
 };
 
-export const generateQueuedBlocks = (count = DEFAULT_TETROMINO_QUEUE_SIZE) => {
+export const generateQueuedBlocks = (count = DEFAULT_QUEUED_BLOCK_SIZE) => {
   const blocks = Array.from({ length: count }, generateRandomBlock);
   return blocks;
 };

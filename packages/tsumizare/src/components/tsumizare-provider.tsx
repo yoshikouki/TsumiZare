@@ -7,14 +7,8 @@ import {
   useState,
 } from "react";
 
-import type { BlockPosition, BlockShape } from "./block";
-import { type Board, hasBlockCollision, initBoard } from "./board";
-import {
-  type Outcome,
-  type Result,
-  calculateNewResult,
-  initResult,
-} from "./result";
+import type { BlockPosition, BlockShape } from "../core/block";
+import { type Board, hasBlockCollision, initBoard } from "../core/board";
 
 export type TsumiZareContext = {
   board: Board;

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
-import { TsumiZareProvider } from "@/futures/tsumizare/tsumizare-provider";
 import Link from "next/link";
+import { TsumiZareProvider } from "../../packages/tsumizare/src/components/tsumizare-provider";
 import { Header } from "./header";
 
 export default async function HomePage() {

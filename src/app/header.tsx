@@ -1,8 +1,8 @@
 "use client";
 
-import { useTsumiZare } from "@/futures/tsumizare/use-tsumizare";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useTsumiZare } from "../../packages/tsumizare/src/hooks/use-tsumizare";
 
 export const Header = () => {
   const { board } = useTsumiZare();

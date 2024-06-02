@@ -1,5 +1,5 @@
 import { Header } from "@/app/header";
-import { TsumiZareProvider } from "@/futures/tsumizare/tsumizare-provider";
+import { TsumiZareProvider } from "../../../../packages/tsumizare/src/components/tsumizare-provider";
 import { NoTickGame } from "./no-tick-game";
 
 export default function NoTickModePage() {

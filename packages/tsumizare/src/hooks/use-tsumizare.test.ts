@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { act, renderHook } from "@testing-library/react";
 
-import { BLOCKS } from "./block";
-import { TsumiZareProvider } from "./tsumizare-provider";
+import { TsumiZareProvider } from "../components//tsumizare-provider";
+import { BLOCKS } from "../core/block";
 import { useTsumiZare } from "./use-tsumizare";
 
 describe("useTsumiZare", () => {

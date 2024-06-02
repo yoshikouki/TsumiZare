@@ -7,7 +7,6 @@ import {
   Pause,
   Play,
   Square,
-  SquareCheckBig,
   StepForward,
 } from "lucide-react";
 
@@ -16,8 +15,8 @@ import { BlockViewer } from "@/futures/tsumizare/components/block-viewer";
 import { GameControlButton } from "@/futures/tsumizare/game-control-button";
 import { GameControlContainer } from "@/futures/tsumizare/game-control-container";
 import { ResultViewer } from "@/futures/tsumizare/result-viewer";
-import { useTsumiZare } from "@/futures/tsumizare/use-tsumizare";
 import { cn } from "@/lib/utils";
+import { useTsumiZare } from "../../../../packages/tsumizare/src/hooks/use-tsumizare";
 
 export const NoTickGame = () => {
   const {
