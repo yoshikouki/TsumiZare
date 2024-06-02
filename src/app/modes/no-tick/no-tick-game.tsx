@@ -3,6 +3,7 @@
 import { Board, BoardCell } from "@/futures/tsumizare/components/board";
 import {
   DoorOpen,
+  Grid2x2Check,
   Pause,
   Play,
   Square,
@@ -41,6 +42,10 @@ export const NoTickGame = () => {
     startTsumiZare();
     runTick();
   };
+  const confirmBlock = () => {
+    updateBoard();
+    activateBlockOrFinish();
+  };
 
   return (
     <div className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none">
@@ -75,19 +80,19 @@ export const NoTickGame = () => {
         >
           <Button
             type="button"
-            variant={"ghost"}
-            size={"icon"}
-            onClick={updateBoard}
-          >
-            <SquareCheckBig className="stroke-primary" />
-          </Button>
-          <Button
-            type="button"
-            variant={"ghost"}
+            variant={"outline"}
             size={"icon"}
             onClick={pauseTsumiZare}
           >
             <Pause className="fill-primary stroke-1 stroke-primary" />
+          </Button>
+          <Button
+            type="button"
+            variant={"default"}
+            size={"icon"}
+            onClick={confirmBlock}
+          >
+            <Grid2x2Check className="stroke-primary-foreground" />
           </Button>
         </div>
       </div>
