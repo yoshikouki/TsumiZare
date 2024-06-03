@@ -1,5 +1,5 @@
 {
-  "name": "block-game",
+  "name": "@yoshikouki/block-game",
   "version": "0.0.1",
   "description": "Core functionalities for BlockGame game",
   "main": "dist/index.mjs",
