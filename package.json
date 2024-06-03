@@ -15,6 +15,7 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
     "babel-plugin-react-compiler": "^0.0.0-experimental-592953e-20240517",
+    "blocky-game": "^0.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "hono": "^4.3.11",
@@ -25,8 +26,7 @@
     "satori": "^0.10.13",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7",
-    "blocky-game": "file:packages/blocky-game"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
