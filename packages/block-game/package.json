@@ -1,6 +1,6 @@
 {
   "name": "block-game",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "Core functionalities for BlockGame game",
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",
