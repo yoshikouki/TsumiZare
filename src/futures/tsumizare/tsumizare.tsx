@@ -5,7 +5,7 @@ import { Board, BoardCell } from "./components/board";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useBlockGame } from "block-game";
+import { useBlockyGame } from "blocky-game";
 import { BlockViewer } from "./components/block-viewer";
 import { TickRunner } from "./components/tick-runner";
 import { GameControlButton } from "./game-control-button";
@@ -19,13 +19,13 @@ export const TsumiZare = () => {
     result,
     boardRef,
     tickRunnerRef,
-    startBlockGame,
-    finishBlockGame,
-    pauseBlockGame,
-    resumeBlockGame,
-    readyBlockGame,
+    startBlockyGame,
+    finishBlockyGame,
+    pauseBlockyGame,
+    resumeBlockyGame,
+    readyBlockyGame,
     detectCellVariant,
-  } = useBlockGame();
+  } = useBlockyGame();
 
   return (
     <div className="relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none">
@@ -61,7 +61,7 @@ export const TsumiZare = () => {
             type="button"
             variant={"ghost"}
             size={"icon"}
-            onClick={pauseBlockGame}
+            onClick={pauseBlockyGame}
           >
             <Pause className="fill-primary stroke-1 stroke-primary" />
           </Button>
@@ -89,7 +89,7 @@ export const TsumiZare = () => {
       >
         {/* Ready to play */}
         <GameControlContainer isVisible={board.status === "ready"}>
-          <GameControlButton onClick={startBlockGame} className="group">
+          <GameControlButton onClick={startBlockyGame} className="group">
             <Play
               className="fill-primary-foreground stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
               size="40"
@@ -108,7 +108,7 @@ export const TsumiZare = () => {
           </div>
           <div className="flex w-full gap-2">
             <GameControlButton
-              onClick={resumeBlockGame}
+              onClick={resumeBlockyGame}
               className="group py-10"
             >
               <Play
@@ -117,7 +117,7 @@ export const TsumiZare = () => {
               />
             </GameControlButton>
             <GameControlButton
-              onClick={finishBlockGame}
+              onClick={finishBlockyGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
             >
@@ -136,14 +136,17 @@ export const TsumiZare = () => {
           />
 
           <div className="flex w-full gap-2">
-            <GameControlButton onClick={startBlockGame} className="group py-10">
+            <GameControlButton
+              onClick={startBlockyGame}
+              className="group py-10"
+            >
               <StepForward
                 className="stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
                 size="40"
               />
             </GameControlButton>
             <GameControlButton
-              onClick={readyBlockGame}
+              onClick={readyBlockyGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
             >

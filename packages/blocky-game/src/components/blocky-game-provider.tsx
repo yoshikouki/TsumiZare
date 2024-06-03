@@ -10,19 +10,19 @@ import {
 import type { BlockPosition, BlockShape } from "../core/block";
 import { type Board, hasBlockCollision, initBoard } from "../core/board";
 
-export type BlockGameContext = {
+export type BlockyGameContext = {
   board: Board;
   setBoard: Dispatch<SetStateAction<Board>>;
   hasCollision: (shape: BlockShape, position: BlockPosition) => boolean;
 };
 
-export const BlockGameContext = createContext<BlockGameContext>({
+export const BlockyGameContext = createContext<BlockyGameContext>({
   board: initBoard(),
   setBoard: () => {},
   hasCollision: () => false,
 });
 
-export const BlockGameProvider = ({
+export const BlockyGameProvider = ({
   children,
 }: { children: React.ReactNode }) => {
   const [board, setBoard] = useState<Board>(initBoard);
@@ -35,5 +35,5 @@ export const BlockGameProvider = ({
     },
   };
 
-  return <BlockGameContext value={context}>{children}</BlockGameContext>;
+  return <BlockyGameContext value={context}>{children}</BlockyGameContext>;
 };

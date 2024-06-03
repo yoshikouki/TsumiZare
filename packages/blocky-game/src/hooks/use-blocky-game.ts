@@ -9,7 +9,7 @@ import {
 } from "../core/board";
 import { type Outcome, calculateNewResult } from "../core/result";
 
-import { BlockGameContext } from "../components/block-game-provider";
+import { BlockyGameContext } from "../components/blocky-game-provider";
 import type { Block } from "../core/block";
 import { useActiveBlock } from "./use-active-block";
 
@@ -17,10 +17,10 @@ export type UpAction = "rotate" | "moveUp";
 
 export type CellVariants = "empty" | "filled" | "active" | "belowActiveBlock";
 
-export const useBlockGame = (option?: {
+export const useBlockyGame = (option?: {
   upAction?: UpAction;
 }) => {
-  const { board, setBoard, hasCollision } = useContext(BlockGameContext);
+  const { board, setBoard, hasCollision } = useContext(BlockyGameContext);
   const activeBlock = useActiveBlock({
     board,
     hasCollision,
@@ -33,25 +33,25 @@ export const useBlockGame = (option?: {
   const playMilliSeconds = playMilliSecondsRef.current;
   const playTimeString = new Date(playMilliSeconds).toISOString().substr(14, 5);
 
-  const startBlockGame = () => {
+  const startBlockyGame = () => {
     setBoard({ ...initBoard(), status: "playing" });
     activeBlock.init();
   };
 
-  const finishBlockGame = () => {
+  const finishBlockyGame = () => {
     setBoard((prev) => ({ ...prev, status: "finished" }));
     activeBlock.remove();
   };
 
-  const pauseBlockGame = () => {
+  const pauseBlockyGame = () => {
     setBoard((prev) => ({ ...prev, status: "pause" }));
   };
 
-  const resumeBlockGame = () => {
+  const resumeBlockyGame = () => {
     setBoard((prev) => ({ ...prev, status: "playing" }));
   };
 
-  const readyBlockGame = () => {
+  const readyBlockyGame = () => {
     setBoard(initBoard());
     activeBlock.remove();
   };
@@ -93,7 +93,7 @@ export const useBlockGame = (option?: {
   const activateBlockOrFinish = () => {
     const activatedBlock = activeBlock.activate();
     if (activatedBlock) return;
-    finishBlockGame();
+    finishBlockyGame();
   };
 
   // Cell management
@@ -132,11 +132,11 @@ export const useBlockGame = (option?: {
     boardRef: activeBlock.boardRef,
     tickRunnerRef,
     // Game management
-    startBlockGame,
-    finishBlockGame,
-    pauseBlockGame,
-    resumeBlockGame,
-    readyBlockGame,
+    startBlockyGame,
+    finishBlockyGame,
+    pauseBlockyGame,
+    resumeBlockyGame,
+    readyBlockyGame,
     // Block management
     mergeIntoBoard,
     runTick,

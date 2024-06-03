@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useBlockGame } from "block-game";
+import { useBlockyGame } from "blocky-game";
 import Link from "next/link";
 
 export const Header = () => {
-  const { board } = useBlockGame();
+  const { board } = useBlockyGame();
 
   return (
     <header

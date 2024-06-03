@@ -1,13 +1,15 @@
 import { describe, expect, it } from "bun:test";
 import { act, renderHook } from "@testing-library/react";
 
-import { BlockGameProvider } from "../components/block-game-provider";
+import { BlockyGameProvider } from "../components/blocky-game-provider";
 import { BLOCKS } from "../core/block";
-import { useBlockGame } from "./use-block-game";
+import { useBlockyGame } from "./use-blocky-game";
 
-describe("useBlockGame", () => {
+describe("useBlockyGame", () => {
   it("should initialize with the correct initial state", () => {
-    const { result } = renderHook(useBlockGame, { wrapper: BlockGameProvider });
+    const { result } = renderHook(useBlockyGame, {
+      wrapper: BlockyGameProvider,
+    });
 
     expect(result.current.board.rows).toHaveLength(20);
     expect(result.current.board.rows[0].cells).toHaveLength(10);
@@ -16,8 +18,8 @@ describe("useBlockGame", () => {
 
   describe("#runTick", () => {
     it("should generate a random block", () => {
-      const { result } = renderHook(useBlockGame, {
-        wrapper: BlockGameProvider,
+      const { result } = renderHook(useBlockyGame, {
+        wrapper: BlockyGameProvider,
       });
       expect(result.current.activeBlock.activeBlock).toBeNull();
       act(() => result.current.runTick());
@@ -29,8 +31,8 @@ describe("useBlockGame", () => {
     });
 
     it("should drop block correctly", () => {
-      const { result } = renderHook(useBlockGame, {
-        wrapper: BlockGameProvider,
+      const { result } = renderHook(useBlockyGame, {
+        wrapper: BlockyGameProvider,
       });
       expect(result.current.activeBlock.activeBlock).toBeNull();
       act(() => result.current.runTick());
@@ -46,8 +48,8 @@ describe("useBlockGame", () => {
     });
 
     it("should detect collision correctly", async () => {
-      const { result } = renderHook(useBlockGame, {
-        wrapper: BlockGameProvider,
+      const { result } = renderHook(useBlockyGame, {
+        wrapper: BlockyGameProvider,
       });
       act(() => result.current.runTick());
       if (!result.current.activeBlock.activeBlock)
@@ -70,7 +72,7 @@ describe("useBlockGame", () => {
         result: {
           current: { hasCollision },
         },
-      } = renderHook(useBlockGame, { wrapper: BlockGameProvider });
+      } = renderHook(useBlockyGame, { wrapper: BlockyGameProvider });
       const shape = BLOCKS.O;
       expect(hasCollision(shape, { x: 0, y: 0 })).toBe(false);
       expect(hasCollision(shape, { x: 0, y: 18 })).toBe(false);
@@ -81,8 +83,8 @@ describe("useBlockGame", () => {
     });
 
     it("should detect collision of other blocks correctly", () => {
-      const { result } = renderHook(useBlockGame, {
-        wrapper: BlockGameProvider,
+      const { result } = renderHook(useBlockyGame, {
+        wrapper: BlockyGameProvider,
       });
       const shape = BLOCKS.O;
       act(() => {

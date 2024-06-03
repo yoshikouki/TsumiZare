@@ -1,4 +1,4 @@
-import type { BoardConfig } from "block-game";
+import type { BoardConfig } from "blocky-game";
 
 import { cn } from "@/lib/utils";
 import { type VariantProps, cva } from "class-variance-authority";

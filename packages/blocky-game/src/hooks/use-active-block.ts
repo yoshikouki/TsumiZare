@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { BlockGameContext } from "../components/block-game-provider";
+import type { BlockyGameContext } from "../components/blocky-game-provider";
 import {
   type Block,
   type BlockPosition,
@@ -14,7 +14,7 @@ import {
   rotateShape,
 } from "../core/block";
 import { WALL_KICKS } from "../core/constants";
-import type { UpAction } from "./use-block-game";
+import type { UpAction } from "./use-blocky-game";
 import { useKeyboard } from "./use-keyboard";
 import { useTouch } from "./use-touch";
 
@@ -23,8 +23,8 @@ export const useActiveBlock = ({
   hasCollision,
   upAction = "rotate",
 }: {
-  board: BlockGameContext["board"];
-  hasCollision: BlockGameContext["hasCollision"];
+  board: BlockyGameContext["board"];
+  hasCollision: BlockyGameContext["hasCollision"];
   upAction?: UpAction;
 }) => {
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);
