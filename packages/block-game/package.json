@@ -1,7 +1,7 @@
 {
-  "name": "tsumizare",
+  "name": "block-game",
   "version": "0.0.2",
-  "description": "Core functionalities for TsumiZare game",
+  "description": "Core functionalities for BlockGame game",
   "main": "dist/index.mjs",
   "types": "dist/index.d.mts",
   "scripts": {

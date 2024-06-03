@@ -10,19 +10,19 @@ import {
 import type { BlockPosition, BlockShape } from "../core/block";
 import { type Board, hasBlockCollision, initBoard } from "../core/board";
 
-export type TsumiZareContext = {
+export type BlockGameContext = {
   board: Board;
   setBoard: Dispatch<SetStateAction<Board>>;
   hasCollision: (shape: BlockShape, position: BlockPosition) => boolean;
 };
 
-export const TsumiZareContext = createContext<TsumiZareContext>({
+export const BlockGameContext = createContext<BlockGameContext>({
   board: initBoard(),
   setBoard: () => {},
   hasCollision: () => false,
 });
 
-export const TsumiZareProvider = ({
+export const BlockGameProvider = ({
   children,
 }: { children: React.ReactNode }) => {
   const [board, setBoard] = useState<Board>(initBoard);
@@ -35,5 +35,5 @@ export const TsumiZareProvider = ({
     },
   };
 
-  return <TsumiZareContext value={context}>{children}</TsumiZareContext>;
+  return <BlockGameContext value={context}>{children}</BlockGameContext>;
 };

@@ -9,7 +9,7 @@ import {
 } from "../core/board";
 import { type Outcome, calculateNewResult } from "../core/result";
 
-import { TsumiZareContext } from "../components/tsumizare-provider";
+import { BlockGameContext } from "../components/block-game-provider";
 import type { Block } from "../core/block";
 import { useActiveBlock } from "./use-active-block";
 
@@ -17,10 +17,10 @@ export type UpAction = "rotate" | "moveUp";
 
 export type CellVariants = "empty" | "filled" | "active" | "belowActiveBlock";
 
-export const useTsumiZare = (option?: {
+export const useBlockGame = (option?: {
   upAction?: UpAction;
 }) => {
-  const { board, setBoard, hasCollision } = useContext(TsumiZareContext);
+  const { board, setBoard, hasCollision } = useContext(BlockGameContext);
   const activeBlock = useActiveBlock({
     board,
     hasCollision,
@@ -33,25 +33,25 @@ export const useTsumiZare = (option?: {
   const playMilliSeconds = playMilliSecondsRef.current;
   const playTimeString = new Date(playMilliSeconds).toISOString().substr(14, 5);
 
-  const startTsumiZare = () => {
+  const startBlockGame = () => {
     setBoard({ ...initBoard(), status: "playing" });
     activeBlock.init();
   };
 
-  const finishTsumiZare = () => {
+  const finishBlockGame = () => {
     setBoard((prev) => ({ ...prev, status: "finished" }));
     activeBlock.remove();
   };
 
-  const pauseTsumiZare = () => {
+  const pauseBlockGame = () => {
     setBoard((prev) => ({ ...prev, status: "pause" }));
   };
 
-  const resumeTsumiZare = () => {
+  const resumeBlockGame = () => {
     setBoard((prev) => ({ ...prev, status: "playing" }));
   };
 
-  const readyTsumiZare = () => {
+  const readyBlockGame = () => {
     setBoard(initBoard());
     activeBlock.remove();
   };
@@ -93,7 +93,7 @@ export const useTsumiZare = (option?: {
   const activateBlockOrFinish = () => {
     const activatedBlock = activeBlock.activate();
     if (activatedBlock) return;
-    finishTsumiZare();
+    finishBlockGame();
   };
 
   // Cell management
@@ -132,11 +132,11 @@ export const useTsumiZare = (option?: {
     boardRef: activeBlock.boardRef,
     tickRunnerRef,
     // Game management
-    startTsumiZare,
-    finishTsumiZare,
-    pauseTsumiZare,
-    resumeTsumiZare,
-    readyTsumiZare,
+    startBlockGame,
+    finishBlockGame,
+    pauseBlockGame,
+    resumeBlockGame,
+    readyBlockGame,
     // Block management
     mergeIntoBoard,
     runTick,

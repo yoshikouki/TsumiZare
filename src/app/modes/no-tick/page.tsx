@@ -1,14 +1,14 @@
 import { Header } from "@/app/header";
-import { TsumiZareProvider } from "tsumizare";
+import { BlockGameProvider } from "block-game";
 import { NoTickGame } from "./no-tick-game";
 
 export default function NoTickModePage() {
   return (
-    <TsumiZareProvider>
+    <BlockGameProvider>
       <Header />
       <main className="flex min-h-svh flex-col items-center">
         <NoTickGame />
       </main>
-    </TsumiZareProvider>
+    </BlockGameProvider>
   );
 }

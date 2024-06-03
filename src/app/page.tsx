@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
+import { BlockGameProvider } from "block-game";
 import Link from "next/link";
-import { TsumiZareProvider } from "tsumizare";
 import { Header } from "./header";
 
 export default async function HomePage() {
   return (
-    <TsumiZareProvider>
+    <BlockGameProvider>
       <Header />
       <main className="flex min-h-svh flex-col items-center">
         <TsumiZare />
@@ -17,6 +17,6 @@ export default async function HomePage() {
           </Button>
         </div>
       </main>
-    </TsumiZareProvider>
+    </BlockGameProvider>
   );
 }

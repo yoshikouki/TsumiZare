@@ -1,13 +1,13 @@
 import { describe, expect, it } from "bun:test";
 import { act, renderHook } from "@testing-library/react";
 
-import { TsumiZareProvider } from "../components//tsumizare-provider";
+import { BlockGameProvider } from "../components/block-game-provider";
 import { BLOCKS } from "../core/block";
-import { useTsumiZare } from "./use-tsumizare";
+import { useBlockGame } from "./use-block-game";
 
-describe("useTsumiZare", () => {
+describe("useBlockGame", () => {
   it("should initialize with the correct initial state", () => {
-    const { result } = renderHook(useTsumiZare, { wrapper: TsumiZareProvider });
+    const { result } = renderHook(useBlockGame, { wrapper: BlockGameProvider });
 
     expect(result.current.board.rows).toHaveLength(20);
     expect(result.current.board.rows[0].cells).toHaveLength(10);
@@ -16,8 +16,8 @@ describe("useTsumiZare", () => {
 
   describe("#runTick", () => {
     it("should generate a random block", () => {
-      const { result } = renderHook(useTsumiZare, {
-        wrapper: TsumiZareProvider,
+      const { result } = renderHook(useBlockGame, {
+        wrapper: BlockGameProvider,
       });
       expect(result.current.activeBlock.activeBlock).toBeNull();
       act(() => result.current.runTick());
@@ -29,8 +29,8 @@ describe("useTsumiZare", () => {
     });
 
     it("should drop block correctly", () => {
-      const { result } = renderHook(useTsumiZare, {
-        wrapper: TsumiZareProvider,
+      const { result } = renderHook(useBlockGame, {
+        wrapper: BlockGameProvider,
       });
       expect(result.current.activeBlock.activeBlock).toBeNull();
       act(() => result.current.runTick());
@@ -46,8 +46,8 @@ describe("useTsumiZare", () => {
     });
 
     it("should detect collision correctly", async () => {
-      const { result } = renderHook(useTsumiZare, {
-        wrapper: TsumiZareProvider,
+      const { result } = renderHook(useBlockGame, {
+        wrapper: BlockGameProvider,
       });
       act(() => result.current.runTick());
       if (!result.current.activeBlock.activeBlock)
@@ -70,7 +70,7 @@ describe("useTsumiZare", () => {
         result: {
           current: { hasCollision },
         },
-      } = renderHook(useTsumiZare, { wrapper: TsumiZareProvider });
+      } = renderHook(useBlockGame, { wrapper: BlockGameProvider });
       const shape = BLOCKS.O;
       expect(hasCollision(shape, { x: 0, y: 0 })).toBe(false);
       expect(hasCollision(shape, { x: 0, y: 18 })).toBe(false);
@@ -81,8 +81,8 @@ describe("useTsumiZare", () => {
     });
 
     it("should detect collision of other blocks correctly", () => {
-      const { result } = renderHook(useTsumiZare, {
-        wrapper: TsumiZareProvider,
+      const { result } = renderHook(useBlockGame, {
+        wrapper: BlockGameProvider,
       });
       const shape = BLOCKS.O;
       act(() => {

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { Block } from "tsumizare";
+import type { Block } from "block-game";
 
 export const BlockViewer = ({
   block,

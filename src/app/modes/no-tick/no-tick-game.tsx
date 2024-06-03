@@ -16,7 +16,7 @@ import { GameControlButton } from "@/futures/tsumizare/game-control-button";
 import { GameControlContainer } from "@/futures/tsumizare/game-control-container";
 import { ResultViewer } from "@/futures/tsumizare/result-viewer";
 import { cn } from "@/lib/utils";
-import { useTsumiZare } from "tsumizare";
+import { useBlockGame } from "block-game";
 
 export const NoTickGame = () => {
   const {
@@ -25,20 +25,20 @@ export const NoTickGame = () => {
     result,
     runTick,
     boardRef,
-    startTsumiZare,
-    finishTsumiZare,
-    pauseTsumiZare,
-    resumeTsumiZare,
-    readyTsumiZare,
+    startBlockGame,
+    finishBlockGame,
+    pauseBlockGame,
+    resumeBlockGame,
+    readyBlockGame,
     detectCellVariant,
     activateBlockOrFinish,
     updateBoard,
-  } = useTsumiZare({
+  } = useBlockGame({
     upAction: "moveUp",
   });
 
   const startGame = () => {
-    startTsumiZare();
+    startBlockGame();
     runTick();
   };
   const confirmBlock = () => {
@@ -81,7 +81,7 @@ export const NoTickGame = () => {
             type="button"
             variant={"outline"}
             size={"icon"}
-            onClick={pauseTsumiZare}
+            onClick={pauseBlockGame}
           >
             <Pause className="fill-primary stroke-1 stroke-primary" />
           </Button>
@@ -136,7 +136,7 @@ export const NoTickGame = () => {
           </div>
           <div className="flex w-full gap-2">
             <GameControlButton
-              onClick={resumeTsumiZare}
+              onClick={resumeBlockGame}
               className="group py-10"
             >
               <Play
@@ -145,7 +145,7 @@ export const NoTickGame = () => {
               />
             </GameControlButton>
             <GameControlButton
-              onClick={finishTsumiZare}
+              onClick={finishBlockGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
             >
@@ -171,7 +171,7 @@ export const NoTickGame = () => {
               />
             </GameControlButton>
             <GameControlButton
-              onClick={readyTsumiZare}
+              onClick={readyBlockGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
             >

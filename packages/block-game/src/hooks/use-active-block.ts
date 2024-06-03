@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { TsumiZareContext } from "../components//tsumizare-provider";
+import type { BlockGameContext } from "../components/block-game-provider";
 import {
   type Block,
   type BlockPosition,
@@ -14,17 +14,17 @@ import {
   rotateShape,
 } from "../core/block";
 import { WALL_KICKS } from "../core/constants";
+import type { UpAction } from "./use-block-game";
 import { useKeyboard } from "./use-keyboard";
 import { useTouch } from "./use-touch";
-import type { UpAction } from "./use-tsumizare";
 
 export const useActiveBlock = ({
   board,
   hasCollision,
   upAction = "rotate",
 }: {
-  board: TsumiZareContext["board"];
-  hasCollision: TsumiZareContext["hasCollision"];
+  board: BlockGameContext["board"];
+  hasCollision: BlockGameContext["hasCollision"];
   upAction?: UpAction;
 }) => {
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);

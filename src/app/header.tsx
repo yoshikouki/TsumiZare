@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useBlockGame } from "block-game";
 import Link from "next/link";
-import { useTsumiZare } from "tsumizare";
 
 export const Header = () => {
-  const { board } = useTsumiZare();
+  const { board } = useBlockGame();
 
   return (
     <header

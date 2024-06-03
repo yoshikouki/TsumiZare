@@ -1,4 +1,4 @@
-# tsumizare
+# block-game
 
 To install dependencies:
 
