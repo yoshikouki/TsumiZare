@@ -17,14 +17,13 @@ import {
   TypographyH4,
   TypographyLead,
   TypographyMuted,
-  TypographyP,
 } from "@/components/ui/typography";
 import { BlockViewer } from "@/futures/tsumizare/components/block-viewer";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
-import { ArrowBigLeft, ArrowBigRight, Smartphone } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { Header } from "./header";
 
-export default async function HomePage() {
+export default function HomePage() {
   return (
     <BlockyGameProvider>
       <Header />
@@ -78,7 +77,7 @@ export default async function HomePage() {
               </div>
               <div className="space-y-4">
                 <TypographyH4>移動</TypographyH4>
-                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl border">
+                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-10 rounded-xl border">
                   <BlockViewer
                     className="w-1/4 animate-swipe-x"
                     block={{
@@ -92,7 +91,7 @@ export default async function HomePage() {
               </div>
               <div className="space-y-4">
                 <TypographyH4>回転</TypographyH4>
-                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl border">
+                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-10 rounded-xl border">
                   <BlockViewer
                     className="w-1/4 animate-rotate"
                     block={{
@@ -122,14 +121,14 @@ export default async function HomePage() {
                     }}
                   />
                   <div className="flex w-full justify-center gap-8">
-                    <ArrowBigLeft className="size-20 fill-primary" />
-                    <ArrowBigRight className="size-20 fill-primary" />
+                    <ArrowBigLeft className="size-12 fill-primary" />
+                    <ArrowBigRight className="size-12 fill-primary" />
                   </div>
                 </div>
               </div>
               <div className="space-y-4">
                 <TypographyH4>回転</TypographyH4>
-                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl border">
+                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-10 rounded-xl border">
                   <BlockViewer
                     className="w-1/4 animate-rotate"
                     block={{
