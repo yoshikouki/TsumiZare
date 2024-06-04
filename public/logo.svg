@@ -1,13 +1,13 @@
-<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" fill="#F0F9F9">
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="#F0F9F9">
   <title>TsumiZare</title>
-  <rect x="0" y="0" width="300" height="300" fill="#F0F9F9"></rect>
-  <rect x="100" y="100" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
-  <rect x="134.5" y="100" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
-  <rect x="169" y="100" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
-  <rect x="100" y="134.5" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%, 0.05)"></rect>
-  <rect x="134.5" y="134.5" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
-  <rect x="169" y="134.5" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%, 0.05)"></rect>
-  <rect x="100" y="169" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
-  <rect x="134.5" y="169" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%, 0.05)"></rect>
-  <rect x="169" y="169" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
+  <rect x="0" y="0" width="200" height="200" fill="#F0F9F9"></rect>
+  <rect x="50" y="50" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
+  <rect x="84.5" y="50" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
+  <rect x="119" y="50" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
+  <rect x="50" y="84.5" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%, 0.05)"></rect>
+  <rect x="84.5" y="84.5" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
+  <rect x="119" y="84.5" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%, 0.05)"></rect>
+  <rect x="50" y="119" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
+  <rect x="84.5" y="119" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%, 0.05)"></rect>
+  <rect x="119" y="119" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
 </svg>
