@@ -4,17 +4,14 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { TypographyH2, TypographyLead } from "@/components/ui/typography";
+  TypographyH2,
+  TypographyLead,
+  TypographyP,
+} from "@/components/ui/typography";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
 import { cn } from "@/lib/utils";
 import { GameModes } from "./game-modes";
+import { GitHubIcon } from "./github-icon";
 import { Header } from "./header";
 import { HowToPlay } from "./how-to-play";
 
@@ -46,6 +43,25 @@ export default function HomePage() {
 
         <section id="how-to-play" className="w-full max-w-xs space-y-4 py-4">
           <HowToPlay />
+        </section>
+
+        <section id="development" className="flex max-w-xs flex-col gap-4 py-4">
+          <TypographyH2>開発</TypographyH2>
+          <TypographyP>
+            ブロックゲームをライブラリとして公開しています。ゲームを作りたい方はご利用ください。
+          </TypographyP>
+          <Button asChild variant="outline">
+            <Link
+              href="https://github.com/yoshikouki/TsumiZare/tree/main/packages/blocky-game"
+              target="_blank"
+              className="flex items-center gap-2"
+            >
+              <GitHubIcon className="h-full w-fit" /> GitHub
+            </Link>
+          </Button>
+          <TypographyP>
+            当アプリへのコミットメントもお待ちしております。
+          </TypographyP>
         </section>
       </main>
     </BlockyGameProvider>
