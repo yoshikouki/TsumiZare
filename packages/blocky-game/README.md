@@ -5,13 +5,13 @@
 ## Install
 
 ```bash
-npm install @yoshikouki/blocky-game
+npm install blocky-game
 ```
 
 or
 
 ```bash
-bun add @yoshikouki/blocky-game
+bun add blocky-game
 ```
 
 ## Usage
@@ -148,3 +148,7 @@ export const BlockyGame = () => {
   );
 };
 ```
+
+## Requirement
+
+- React 19 RC +
