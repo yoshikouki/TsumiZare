@@ -70,3 +70,9 @@ export function TypographyLead({ children, className }: TypographyProps) {
     <p className={cn("text-muted-foreground text-xl", className)}>{children}</p>
   );
 }
+
+export function TypographyMuted({ children, className }: TypographyProps) {
+  return (
+    <p className={cn("text-muted-foreground text-sm", className)}>{children}</p>
+  );
+}

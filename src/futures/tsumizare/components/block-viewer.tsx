@@ -3,12 +3,14 @@ import type { Block } from "blocky-game";
 
 export const BlockViewer = ({
   block,
+  className,
 }: {
   block: Block;
+  className?: string;
 }) => {
   return (
     <div
-      className="grid gap-[2px]"
+      className={cn("grid gap-[2px]", className)}
       style={{
         gridTemplateColumns: `repeat(${block.shape[0].length}, 1fr)`,
         gridTemplateRows: `repeat(${block.shape.length}, 1fr)`,
