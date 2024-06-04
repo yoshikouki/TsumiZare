@@ -1,5 +1,6 @@
 <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" fill="#F0F9F9">
   <title>TsumiZare</title>
+  <rect x="0" y="0" width="300" height="300" fill="#F0F9F9"></rect>
   <rect x="100" y="100" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
   <rect x="134.5" y="100" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
   <rect x="169" y="100" width="31" height="31" rx="4" ry="4" fill="hsl(24, 9.8%, 10%)"></rect>
