@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/typography";
 import { BlockViewer } from "@/futures/tsumizare/components/block-viewer";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
-import { Smartphone } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, Smartphone } from "lucide-react";
 import { Header } from "./header";
 
 export default async function HomePage() {
@@ -105,8 +105,42 @@ export default async function HomePage() {
                 </div>
               </div>
             </TabsContent>
-            <TabsContent value="keyboard">
-              矢印キーでブロックを動かし、スペースキーで回転。下矢印キーでブロックを早く落とす。
+            <TabsContent value="keyboard" className="space-y-8">
+              <div className="space-y-4">
+                <TypographyH3>キーボード操作</TypographyH3>
+                <TypographyMuted>パソコンで遊ぶ場合</TypographyMuted>
+              </div>
+              <div className="space-y-4">
+                <TypographyH4>移動</TypographyH4>
+                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-10 rounded-xl border">
+                  <BlockViewer
+                    className="w-1/4 animate-swipe-x"
+                    block={{
+                      id: "z-block",
+                      shape: BLOCKS.Z,
+                      position: { x: 0, y: 0 },
+                    }}
+                  />
+                  <div className="flex w-full justify-center gap-8">
+                    <ArrowBigLeft className="size-20 fill-primary" />
+                    <ArrowBigRight className="size-20 fill-primary" />
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <TypographyH4>回転</TypographyH4>
+                <div className="flex aspect-square w-full flex-1 flex-col items-center justify-center gap-4 rounded-xl border">
+                  <BlockViewer
+                    className="w-1/4 animate-rotate"
+                    block={{
+                      id: "z-block",
+                      shape: BLOCKS.Z,
+                      position: { x: 0, y: 0 },
+                    }}
+                  />
+                  <div className="animate-touch border px-8 py-4">Space</div>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </section>
