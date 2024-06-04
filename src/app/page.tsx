@@ -56,7 +56,7 @@ export default function HomePage() {
               target="_blank"
               className="flex items-center gap-2"
             >
-              <GitHubIcon className="h-full w-fit" /> GitHub
+              <GitHubIcon className="w-5 flex-none" /> GitHub
             </Link>
           </Button>
           <TypographyP>

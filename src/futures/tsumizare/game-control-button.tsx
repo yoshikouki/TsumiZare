@@ -12,7 +12,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground",
-        outline: "border border-input bg-background text-primary",
+        outline: "border border-input bg-white text-primary",
         secondary: "bg-secondary text-secondary-foreground",
       },
     },
