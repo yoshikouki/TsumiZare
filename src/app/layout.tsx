@@ -25,21 +25,21 @@ export const metadata: Metadata = {
       url: "/logo.svg",
       sizes: "1200x1200",
       type: "image/svg+xml",
-      color: "#F0F9F9",
+      color: "#F7F6F3",
       fetchPriority: "high",
     },
     {
       url: "/icons/icon-192x192.png",
       sizes: "192x192",
       type: "image/png",
-      color: "#F0F9F9",
+      color: "#F7F6F3",
       fetchPriority: "auto",
     },
     {
       url: "/icons/icon-512x512.png",
       sizes: "512x512",
       type: "image/png",
-      color: "#F0F9F9",
+      color: "#F7F6F3",
       fetchPriority: "auto",
     },
   ],
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F0F9F9",
+  themeColor: "#F7F6F3",
 };
 
 export default function RootLayout({

@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "TsumiZare 積戯は、テトリス風のブロック落としゲームです。ブラウザでゲームを楽しもう！",
     start_url: "/",
     display: "standalone",
-    background_color: "#F0F9F9",
-    theme_color: "#F0F9F9",
+    background_color: "#F7F6F3",
+    theme_color: "#F7F6F3",
     icons: [
       {
         src: "/logo.svg",
