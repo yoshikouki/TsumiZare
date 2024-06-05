@@ -3,12 +3,9 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Footer } from "./footer";
+import { description, title } from "./metadata";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const title = "TsumiZare - テトリス風パズルゲーム";
-export const description =
-  "TsumiZare 積戯は、ブラウザで遊べるテトリス風パズルゲームです。ゲームがまだ難しい子どもでもプレイできるモードを用意しています。";
 
 export const metadata: Metadata = {
   title,
