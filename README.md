@@ -2,7 +2,7 @@
 
 https://tsumizare.app/
 
-![App screenshot](/img/screenshot-play.webp)
+![App screenshot](/img/screenshot-play.png)
 
 ## Custom hook
 

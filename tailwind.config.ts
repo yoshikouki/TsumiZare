@@ -84,9 +84,9 @@ const config = {
           "100%": { transform: "rotate(360deg)" },
         },
         touch: {
-          "0%": { transform: "scale(1)" },
-          "20%": { transform: "scale(0.9)" },
-          "50%": { transform: "scale(1)" },
+          "40%": { transform: "scale(1)" },
+          "70%": { transform: "scale(0.8)" },
+          "100%": { transform: "scale(1)" },
         },
       },
       animation: {

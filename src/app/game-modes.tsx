@@ -32,11 +32,11 @@ export const GameModes = () => {
           <CardHeader>
             <CardTitle>つみき</CardTitle>
             <CardDescription>
-              積み木遊びのように楽しめる、子ども向けのモードです。
+              ブロックが自動で落下せず、自由に操作できます。
             </CardDescription>
           </CardHeader>
           <CardContent>
-            ブロックが自動で落下せず、自由に操作できます。
+            積み木遊びのように楽しめる、子ども向けのモードです。
           </CardContent>
           <CardFooter>
             <Button type="button" className="w-full">

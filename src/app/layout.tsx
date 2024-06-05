@@ -6,15 +6,19 @@ import { Footer } from "./footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const title = "TsumiZare - テトリス風パズルゲーム";
+export const description =
+  "TsumiZare 積戯は、ブラウザで遊べるテトリス風パズルゲームです。ゲームがまだ難しい子どもでもプレイできるモードを用意しています。";
+
 export const metadata: Metadata = {
-  title: "TsumiZare - 無料で遊べるテトリス風のブロック落としゲーム",
-  description:
-    "TsumiZare 積戯は、テトリス風のブロック落としゲームです。ブラウザでゲームを楽しもう！",
+  title,
+  description,
   keywords: [
     "TsumiZare",
     "積戯",
     "つみざれ",
     "ツミザレ",
+    "パズルゲーム",
     "ブロック落としゲーム",
     "ブロックゲーム",
     "Block Game",
@@ -46,13 +50,12 @@ export const metadata: Metadata = {
   robots: "index, follow",
   openGraph: {
     url: "https://tsumizare.app/",
-    title: "TsumiZare - 無料で遊べるテトリス風のブロック落としゲーム",
-    description:
-      "TsumiZare 積戯は、テトリス風のブロック落としゲームです。ブラウザでゲームを楽しもう！",
+    title,
+    description,
     images: [
       {
         url: "https://tsumizare.app/logo.svg",
-        alt: "TsumiZare - 無料で遊べるテトリス風のブロック落としゲーム",
+        alt: title,
         width: 1200,
         height: 1200,
       },
@@ -62,9 +65,8 @@ export const metadata: Metadata = {
     card: "summary",
     site: "@yoshikouki_",
     creator: "@yoshikouki_",
-    title: "TsumiZare - 無料で遊べるテトリス風のブロック落としゲーム",
-    description:
-      "TsumiZare 積戯は、テトリス風のブロック落としゲームです。ブラウザでゲームを楽しもう！",
+    title,
+    description,
     images: "https://tsumizare.app/logo.svg",
   },
 };

@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
+import { description } from "./layout";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "TsumiZare",
     short_name: "TsumiZare",
-    description:
-      "TsumiZare 積戯は、テトリス風のブロック落としゲームです。ブラウザでゲームを楽しもう！",
+    description,
     start_url: "/",
     display: "standalone",
     background_color: "#F7F6F3",

@@ -33,7 +33,10 @@ export default function HomePage() {
           <TypographyLead>
             TsumiZare "積戯" は、
             <br />
-            テトリス風のブロック落としゲームです。
+            テトリス風のパズルゲームです。
+          </TypographyLead>
+          <TypographyLead>
+            ゲームがまだ難しい子どもでもプレイできるモードを用意しています。
           </TypographyLead>
         </section>
 
@@ -60,7 +63,7 @@ export default function HomePage() {
             </Link>
           </Button>
           <TypographyP>
-            当アプリへのコミットメントもお待ちしております。
+            当アプリへのフィードバックもお待ちしております。
           </TypographyP>
         </section>
       </main>

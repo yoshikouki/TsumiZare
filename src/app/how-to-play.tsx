@@ -37,7 +37,7 @@ export const HowToPlay = () => {
                   position: { x: 0, y: 0 },
                 }}
               />
-              <div className="aspect-square w-1/4 animate-swipe-x rounded-full border-white bg-primary/5" />
+              <div className="aspect-square w-1/6 animate-swipe-x rounded-full border-white bg-primary/5" />
             </div>
           </div>
           <div className="space-y-4">
@@ -51,7 +51,7 @@ export const HowToPlay = () => {
                   position: { x: 0, y: 0 },
                 }}
               />
-              <div className="aspect-square w-1/4 animate-touch rounded-full border-white bg-primary/5" />
+              <div className="aspect-square w-1/6 animate-touch rounded-full border-white bg-primary/5" />
             </div>
           </div>
         </TabsContent>
