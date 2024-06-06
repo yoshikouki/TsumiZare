@@ -18,7 +18,7 @@ export const Board = ({
       ref={boardRef}
     >
       <div
-        className={cn("grid max-h-svh w-full max-w-xs gap-1")}
+        className={cn("grid w-full max-w-xs gap-1 pb-4")}
         style={{
           gridTemplateRows: `repeat(${boardConfig.rowsNumber}, 1fr)`,
           gridTemplateColumns: `repeat(${boardConfig.colsNumber}, 1fr)`,
