@@ -30,7 +30,7 @@ export const TsumiZare = () => {
   return (
     <div
       className={cn(
-        "relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none",
+        "relative z-10 flex h-full w-full flex-col items-center justify-center overscroll-none",
         "sm:h-full sm:overflow-hidden sm:overscroll-auto",
       )}
     >
