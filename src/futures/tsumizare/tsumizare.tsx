@@ -34,7 +34,7 @@ export const TsumiZare = () => {
         "sm:h-full sm:overflow-hidden sm:overscroll-auto",
       )}
     >
-      <TickRunner tickRunnerRef={tickRunnerRef} />
+      <TickRunner ref={tickRunnerRef} />
       {/* Game Header */}
       <div
         className={cn(

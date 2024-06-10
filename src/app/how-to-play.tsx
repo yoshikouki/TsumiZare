@@ -1,3 +1,5 @@
+"use client";
+
 import { BLOCKS } from "blocky-game";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 
