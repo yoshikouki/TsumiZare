@@ -33,7 +33,7 @@
     "@happy-dom/global-registrator": "^14.11.0",
     "@testing-library/react": "^15.0.7",
     "@types/bun": "latest",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "npm:types-react@beta",
     "@types/react-dom": "npm:types-react-dom@beta",
     "postcss": "^8",
