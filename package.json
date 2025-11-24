@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
-    "@happy-dom/global-registrator": "^14.11.0",
+    "@happy-dom/global-registrator": "^20.0.10",
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/react": "^15.0.7",
     "@types/bun": "latest",
