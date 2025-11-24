@@ -15,8 +15,7 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
-    "babel-plugin-react-compiler": "^0.0.0-experimental-592953e-20240517",
-    "blocky-game": "^0.0.1",
+    "blocky-game": "file:./packages/blocky-game",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.379.0",
@@ -37,6 +36,7 @@
     "@types/node": "^20",
     "@types/react": "19.2.6",
     "@types/react-dom": "19.2.3",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "postcss": "^8",

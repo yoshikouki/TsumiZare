@@ -1,17 +1,17 @@
-import { glob } from "glob";
 import { defineConfig } from "tsup";
 
-const entryPoints = glob.sync("./src/**/*.+(ts|tsx|json)", {
-  posix: true,
-  ignore: ["./src/**/*.test.+(ts|tsx)"],
-});
-
 export default defineConfig({
-  entry: entryPoints,
+  entry: ["./src/index.ts"],
   dts: true,
   splitting: false,
   minify: false,
-  format: ["esm"],
-  bundle: false,
-  platform: "browser",
+  format: ["esm", "cjs"],
+  bundle: true,
+  platform: "neutral",
+  external: ["react", "react-dom"],
+  esbuildOptions(options) {
+    options.banner = {
+      js: '"use client";',
+    };
+  },
 });
