@@ -13,14 +13,14 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/react": "npm:types-react@beta",
-    "@types/react-dom": "npm:types-react-dom@beta",
-    "tsup": "^8.0.2",
-    "typescript": "^5"
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
   },
   "peerDependencies": {
-    "react": "^19.0.0-rc-935180c7e0-20240524",
-    "react-dom": "^19.0.0-rc-935180c7e0-20240524"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "files": ["dist"],
   "author": "yoshikouki"
