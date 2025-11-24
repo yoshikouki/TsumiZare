@@ -5,7 +5,7 @@ import { type VariantProps, cva } from "class-variance-authority";
 const buttonVariants = cva(
   [
     "cursor-pointer rounded-md border py-12 font-black text-5xl transition-all duration-200 w-full inline-flex items-center justify-center gap-2",
-    "hover:translate-x-[-0.25rem] hover:translate-y-[-0.25rem] hover:bg-accent hover:text-accent-foreground hover:shadow-[0.25rem_0.25rem_#000]",
+    "hover:-translate-x-1 hover:-translate-y-1 hover:bg-accent hover:text-accent-foreground hover:shadow-[0.25rem_0.25rem_#000]",
     "active:translate-x-0 active:translate-y-0 active:shadow-none",
   ].join(" "),
   {

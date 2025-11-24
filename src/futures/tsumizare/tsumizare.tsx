@@ -45,7 +45,7 @@ export const TsumiZare = () => {
         <div
           className={cn(
             "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           )}
         >
           {queuedBlocks[0] && (
@@ -58,7 +58,7 @@ export const TsumiZare = () => {
         <div
           className={cn(
             "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           )}
         >
           <div className="text-primary/50">{result.score}</div>
