@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TypographyH2 } from "@/components/ui/typography";
-import Link from "next/link";
 
 export const GameModes = () => {
   return (

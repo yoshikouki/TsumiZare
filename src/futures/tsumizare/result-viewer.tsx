@@ -1,9 +1,8 @@
 "use client";
 
 import { ImageDown, Share } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import satori from "satori";
+import { Button } from "@/components/ui/button";
 import { scoreboard } from "./result-scoreboard";
 
 const generateResultImage = async ({

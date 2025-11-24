@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  createContext,
   type Dispatch,
   type SetStateAction,
-  createContext,
   useState,
 } from "react";
 
@@ -24,7 +24,9 @@ export const BlockyGameContext = createContext<BlockyGameContext>({
 
 export const BlockyGameProvider = ({
   children,
-}: { children: React.ReactNode }) => {
+}: {
+  children: React.ReactNode;
+}) => {
   const [board, setBoard] = useState<Board>(initBoard);
 
   const context = {

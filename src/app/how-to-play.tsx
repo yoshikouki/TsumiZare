@@ -4,8 +4,8 @@ import { BLOCKS } from "blocky-game";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TypographyH2 } from "@/components/ui/typography";
 import {
+  TypographyH2,
   TypographyH3,
   TypographyH4,
   TypographyMuted,

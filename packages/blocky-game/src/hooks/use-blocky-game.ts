@@ -1,25 +1,22 @@
 "use client";
 
 import { useContext, useRef } from "react";
+import { BlockyGameContext } from "../components/blocky-game-provider";
+import type { Block } from "../core/block";
 import {
   type Cell,
   initBoard,
   mergeBlockIntoBoard,
   renewFilledRows,
 } from "../core/board";
-import { type Outcome, calculateNewResult } from "../core/result";
-
-import { BlockyGameContext } from "../components/blocky-game-provider";
-import type { Block } from "../core/block";
+import { calculateNewResult, type Outcome } from "../core/result";
 import { useActiveBlock } from "./use-active-block";
 
 export type UpAction = "rotate" | "moveUp";
 
 export type CellVariants = "empty" | "filled" | "active" | "belowActiveBlock";
 
-export const useBlockyGame = (option?: {
-  upAction?: UpAction;
-}) => {
+export const useBlockyGame = (option?: { upAction?: UpAction }) => {
   const { board, setBoard, hasCollision } = useContext(BlockyGameContext);
   const activeBlock = useActiveBlock({
     board,
@@ -115,7 +112,7 @@ export const useBlockyGame = (option?: {
   };
 
   // Game loop
-  const tickRunnerRef = (ref: HTMLDivElement) => {
+  const tickRunnerRef = (_ref: HTMLDivElement) => {
     if (board.status !== "playing") return;
     const interval = setInterval(runTick, board.config.dropInterval);
     return () => clearInterval(interval);

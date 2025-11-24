@@ -1,6 +1,6 @@
 "use client";
 
-import { Board, BoardCell } from "@/futures/tsumizare/components/board";
+import { useBlockyGame } from "blocky-game";
 import {
   DoorOpen,
   Grid2x2Check,
@@ -12,11 +12,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { BlockViewer } from "@/futures/tsumizare/components/block-viewer";
+import { Board, BoardCell } from "@/futures/tsumizare/components/board";
 import { GameControlButton } from "@/futures/tsumizare/game-control-button";
 import { GameControlContainer } from "@/futures/tsumizare/game-control-container";
 import { ResultViewer } from "@/futures/tsumizare/result-viewer";
 import { cn } from "@/lib/utils";
-import { useBlockyGame } from "blocky-game";
 
 export const NoTickGame = () => {
   const {

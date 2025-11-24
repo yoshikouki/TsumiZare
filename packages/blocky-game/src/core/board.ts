@@ -1,7 +1,6 @@
-import { COLS, DROP_INTERVAL, ROWS } from "./constants";
-import { type Result, initResult } from "./result";
-
 import type { Block } from "./block";
+import { COLS, DROP_INTERVAL, ROWS } from "./constants";
+import { initResult, type Result } from "./result";
 
 export type Cell = {
   id: string;

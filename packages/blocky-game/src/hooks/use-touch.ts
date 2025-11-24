@@ -1,10 +1,9 @@
+import { useRef } from "react";
 import {
   SWIPE_THRESHOLD,
   TAP_DURATION_THRESHOLD,
   TAP_MOVE_THRESHOLD,
 } from "../core/constants";
-
-import { useRef } from "react";
 
 export const useTouch = ({
   onSwipeUp,

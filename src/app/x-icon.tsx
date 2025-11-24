@@ -1,5 +1,5 @@
 export const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  // biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
+  // biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon
   <svg
     width="1200"
     height="1227"

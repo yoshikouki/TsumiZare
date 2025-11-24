@@ -28,7 +28,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.3",
+    "@biomejs/biome": "^2.3.7",
     "@happy-dom/global-registrator": "^20.0.10",
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/react": "^15.0.7",

@@ -1,12 +1,12 @@
 "use client";
 
+import { useBlockyGame } from "blocky-game";
 import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
-import { Board, BoardCell } from "./components/board";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useBlockyGame } from "blocky-game";
 import { BlockViewer } from "./components/block-viewer";
+import { Board, BoardCell } from "./components/board";
 import { TickRunner } from "./components/tick-runner";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";

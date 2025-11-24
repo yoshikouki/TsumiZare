@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type TypographyProps = {
   children: ReactNode;
@@ -59,9 +59,7 @@ export function TypographyH4({ children, className }: TypographyProps) {
 
 export function TypographyP({ children, className }: TypographyProps) {
   return (
-    <p className={cn("leading-7 not-first:mt-6", className)}>
-      {children}
-    </p>
+    <p className={cn("not-first:mt-6 leading-7", className)}>{children}</p>
   );
 }
 

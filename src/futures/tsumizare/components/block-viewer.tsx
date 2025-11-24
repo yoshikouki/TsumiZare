@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import type { Block } from "blocky-game";
+import { cn } from "@/lib/utils";
 
 export const BlockViewer = ({
   block,

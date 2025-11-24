@@ -30,7 +30,7 @@ export const scoreboard = ({
         gap: "0.25rem",
       }}
     >
-      {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
+      {/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon */}
       <svg
         width="40"
         height="40"
@@ -55,7 +55,7 @@ export const scoreboard = ({
         gap: "0.5rem",
       }}
     >
-      {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
+      {/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="32"
@@ -88,7 +88,7 @@ export const scoreboard = ({
         gap: "0.5rem",
       }}
     >
-      {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
+      {/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative icon */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="28"
