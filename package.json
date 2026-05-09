@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun --bun x next dev",
-    "build": "bun run build:packages && bun install && bun --bun x next build",
-    "start": "bun --bun x next start",
+    "dev": "next dev",
+    "build": "bun run build:packages && bun install && next build",
+    "start": "next start",
     "lint": "bunx @biomejs/biome check .",
     "format": "bunx @biomejs/biome check --apply .",
     "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",
@@ -49,5 +49,6 @@
   "overrides": {
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3"
-  }
+  },
+  "packageManager": "bun@1.3.12"
 }
