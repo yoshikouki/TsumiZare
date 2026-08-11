@@ -3,6 +3,9 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "bun run build:packages && bun install && next build",
@@ -11,12 +14,12 @@
     "format": "bunx @biomejs/biome check --apply .",
     "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",
     "update:all": "bunx npm-check-updates -u",
-    "build:packages": "cd packages/blocky-game && rm -rf dist && bun install && bun run build"
+    "build:packages": "rm -rf packages/blocky-game/dist && bun run --filter blocky-game build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
-    "blocky-game": "file:./packages/blocky-game",
+    "blocky-game": "workspace:*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.554.0",
