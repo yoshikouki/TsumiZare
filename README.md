@@ -32,13 +32,6 @@ Workerコードと静的アセットはこのリポジトリ、独自ドメイ�
 Wranglerに独自ドメインやrouteを追加して管理を二重化しない。
 `/healthz` で配信中のGit SHAとWorker version IDを確認できる。
 
-初回切替は、Workerを先に配備してPreview URLで検証し、その後Terraformで
-Pagesの独自ドメインとCNAMEをWorkers Custom Domainへ移す。
-初回Worker作成には `bun run build` と
-`bunx wrangler deploy --var "DEPLOYMENT_GIT_SHA:$(git rev-parse HEAD)"` を使う。
-Pagesの自動デプロイを無効にしてから移行版をmainへ統合する。
-Pagesプロジェクトの削除は切替と復旧確認の後に別途行う。
-
 配信検証は `bun run scripts/smoke-deployment.ts <URL> [Git SHA] [version ID]`。
 通常リリースで検証に失敗すると、CIは直前のWorker versionへ戻す。
 
