@@ -18,6 +18,7 @@ export const BlockViewer = ({
     >
       {block.shape.map((row, rowIndex) =>
         row.map((cell, cellIndex) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: Stateless grid cells are identified by their coordinates.
           <div
             key={`${block.id}-${rowIndex}-${cellIndex}`}
             className={cn(
