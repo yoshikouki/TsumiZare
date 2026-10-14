@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +13,7 @@ export const GameModes = () => {
   return (
     <>
       <TypographyH2>ゲームモード</TypographyH2>
-      <Link href="/">
+      <a href="/">
         <Card className="py-4">
           <CardHeader>
             <CardTitle>TsumiZare</CardTitle>
@@ -26,8 +25,8 @@ export const GameModes = () => {
             </Button>
           </CardFooter>
         </Card>
-      </Link>
-      <Link href="/modes/no-tick">
+      </a>
+      <a href="/modes/no-tick">
         <Card className="py-4">
           <CardHeader>
             <CardTitle>つみき</CardTitle>
@@ -44,7 +43,7 @@ export const GameModes = () => {
             </Button>
           </CardFooter>
         </Card>
-      </Link>
+      </a>
     </>
   );
 };

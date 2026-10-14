@@ -1,8 +1,8 @@
 "use client";
 
 import { ImageDown, Share } from "lucide-react";
-import satori from "satori";
 import { Button } from "@/components/ui/button";
+import { appUrl } from "@/config/site";
 import { scoreboard } from "./result-scoreboard";
 
 const generateResultImage = async ({
@@ -16,6 +16,7 @@ const generateResultImage = async ({
     res.arrayBuffer(),
   );
 
+  const { default: satori } = await import("satori");
   const svgString = await satori(scoreboard({ score, filledCellsNumber }), {
     width: 320,
     height: 320,
@@ -97,7 +98,7 @@ export const ResultViewer = ({
         await navigator.share({
           files: [file],
           title: `TsumiZare Result: ${new Date().toISOString()} points`,
-          text: `あー楽しかった！ #TsumiZare \n ${process.env.NEXT_PUBLIC_APP_URL}`,
+          text: `あー楽しかった！ #TsumiZare \n ${appUrl}`,
         });
         console.log("Shared successfully");
       } catch (error) {
@@ -131,10 +132,20 @@ export const ResultViewer = ({
       </div>
 
       <div className="flex w-full gap-2">
-        <Button onClick={shareResultImage} variant={"outline"} size="icon">
+        <Button
+          aria-label="結果を共有"
+          onClick={shareResultImage}
+          variant={"outline"}
+          size="icon"
+        >
           <Share />
         </Button>
-        <Button onClick={downloadResultImage} variant={"outline"} size="icon">
+        <Button
+          aria-label="結果画像を保存"
+          onClick={downloadResultImage}
+          variant={"outline"}
+          size="icon"
+        >
           <ImageDown />
         </Button>
       </div>

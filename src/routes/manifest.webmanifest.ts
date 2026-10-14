@@ -1,7 +1,7 @@
-import type { MetadataRoute } from "next";
-import { description } from "./metadata";
+import { Hono } from "hono";
+import { description } from "@/config/site";
 
-export default function manifest(): MetadataRoute.Manifest {
+function manifest() {
   return {
     name: "TsumiZare",
     short_name: "TsumiZare",
@@ -29,3 +29,9 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   };
 }
+
+export default new Hono().get("/", (c) =>
+  c.body(JSON.stringify(manifest()), 200, {
+    "Content-Type": "application/manifest+json",
+  }),
+);

@@ -12,7 +12,8 @@ export const Board = ({
   boardConfig: BoardConfig;
 }) => {
   return (
-    <div
+    <section
+      aria-label="ゲーム盤"
       className="flex h-full w-full flex-col items-center px-4"
       ref={boardRef}
     >
@@ -25,7 +26,7 @@ export const Board = ({
       >
         {children}
       </div>
-    </div>
+    </section>
   );
 };
 
@@ -50,5 +51,10 @@ export const BoardCell = ({
   variant: VariantProps<typeof cellVariants>["variant"];
   className?: string;
 }) => {
-  return <div className={cn(cellVariants({ variant, className }))} />;
+  return (
+    <div
+      data-state={variant}
+      className={cn(cellVariants({ variant, className }))}
+    />
+  );
 };

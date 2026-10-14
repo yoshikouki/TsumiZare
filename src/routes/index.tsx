@@ -1,7 +1,11 @@
 import { BlockyGameProvider } from "blocky-game";
-import Link from "next/link";
+import { Hono } from "hono";
 
 import { Logo } from "@/components/logo";
+import { GameModes } from "@/components/site/game-modes";
+import { GitHubIcon } from "@/components/site/github-icon";
+import { Header } from "@/components/site/header";
+import { HowToPlay } from "@/components/site/how-to-play";
 import { Button } from "@/components/ui/button";
 import {
   TypographyH2,
@@ -10,19 +14,15 @@ import {
 } from "@/components/ui/typography";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
 import { cn } from "@/lib/utils";
-import { GameModes } from "./game-modes";
-import { GitHubIcon } from "./github-icon";
-import { Header } from "./header";
-import { HowToPlay } from "./how-to-play";
 
-export default function HomePage() {
+export function HomePage() {
   return (
     <BlockyGameProvider>
       <Header>
-        <Link href="/" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <Logo className={cn("size-8")} />
           <h1 className={"font-black text-4xl"}>TsumiZare</h1>
-        </Link>
+        </a>
       </Header>
 
       <main className="flex flex-col items-center gap-4">
@@ -54,13 +54,14 @@ export default function HomePage() {
             ブロックゲームをライブラリとして公開しています。ゲームを作りたい方はご利用ください。
           </TypographyP>
           <Button asChild variant="outline">
-            <Link
+            <a
               href="https://github.com/yoshikouki/TsumiZare/tree/main/packages/blocky-game"
               target="_blank"
               className="flex items-center gap-2"
+              rel="noopener"
             >
               <GitHubIcon className="w-5 flex-none" /> GitHub
-            </Link>
+            </a>
           </Button>
           <TypographyP>
             当アプリへのフィードバックもお待ちしております。
@@ -70,3 +71,5 @@ export default function HomePage() {
     </BlockyGameProvider>
   );
 }
+
+export default new Hono().get("/", (c) => c.render(<HomePage />));

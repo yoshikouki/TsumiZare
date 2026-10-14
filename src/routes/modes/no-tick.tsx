@@ -1,21 +1,20 @@
 import { BlockyGameProvider } from "blocky-game";
-import Link from "next/link";
-
-import { GameModes } from "@/app/game-modes";
-import { Header } from "@/app/header";
-import { HowToPlay } from "@/app/how-to-play";
+import { Hono } from "hono";
 import { Logo } from "@/components/logo";
+import { GameModes } from "@/components/site/game-modes";
+import { Header } from "@/components/site/header";
+import { HowToPlay } from "@/components/site/how-to-play";
+import { NoTickGame } from "@/futures/tsumizare/no-tick-game";
 import { cn } from "@/lib/utils";
-import { NoTickGame } from "./no-tick-game";
 
-export default function NoTickModePage() {
+export function NoTickModePage() {
   return (
     <BlockyGameProvider>
       <Header>
         <div className="flex w-full max-w-xs items-center justify-between">
-          <Link href="/" className="flex-1">
+          <a href="/" className="flex-1">
             <Logo className={cn("size-8")} />
-          </Link>
+          </a>
           <h1 className={"grow text-center font-black text-4xl"}>つみき</h1>
           <div className="flex-1" />
         </div>
@@ -35,3 +34,5 @@ export default function NoTickModePage() {
     </BlockyGameProvider>
   );
 }
+
+export default new Hono().get("/", (c) => c.render(<NoTickModePage />));

@@ -7,14 +7,18 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "next dev",
-    "build": "bun run build:packages && bun install && next build",
-    "start": "next start",
-    "lint": "bunx @biomejs/biome check .",
-    "format": "bunx @biomejs/biome check --apply .",
-    "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",
-    "update:all": "bunx npm-check-updates -u",
-    "build:packages": "rm -rf packages/blocky-game/dist && bun run --filter blocky-game build"
+    "dev": "vite",
+    "build": "bun run build:packages && vite build",
+    "preview": "NODE_ENV=production wrangler dev --local --port 8787",
+    "test": "bun test packages",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "format:unsafe": "biome check --write --unsafe .",
+    "build:packages": "bun run --filter blocky-game build",
+    "deploy": "bun run build && wrangler deploy",
+    "test:e2e": "playwright test",
+    "test:worker": "TEST_TARGET=worker playwright test"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
@@ -23,18 +27,18 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.554.0",
-    "next": "16.3.6",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "satori": "^0.18.3",
-    "swr": "^2.2.5",
     "tailwind-merge": "^3.4.0",
-    "tailwindcss-animate": "^1.0.7"
+    "hono": "^4.12.8",
+    "@yoshikouki/hono-file-router": "github:yoshikouki/hono-kit#f80daa6be994156fcc307dcc83b91558ad8caf5e",
+    "@yoshikouki/hono-rsc-renderer": "github:yoshikouki/hono-kit#f80daa6be994156fcc307dcc83b91558ad8caf5e",
+    "@fontsource-variable/inter": "^5.2.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.7",
     "@happy-dom/global-registrator": "^20.0.10",
-    "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
     "@types/bun": "latest",
@@ -42,16 +46,20 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.6",
-    "postcss": "^8",
     "tailwindcss": "^4.1.17",
     "tsup": "^8.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.0.1",
+    "@vitejs/plugin-rsc": "^0.5.21",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@rolldown/plugin-babel": "^0.2.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "wrangler": "^4.131.1",
+    "@playwright/test": "^1.60.0"
   },
   "overrides": {
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3"
   },
-  "packageManager": "bun@1.3.12"
+  "packageManager": "bun@1.3.14"
 }

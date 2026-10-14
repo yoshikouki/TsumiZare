@@ -1,4 +1,7 @@
+"use client";
+
 import { cva, type VariantProps } from "class-variance-authority";
+import { type ComponentProps, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -27,15 +30,16 @@ export const GameControlButton = ({
   onClick,
   className,
   variant,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  className?: string;
-  variant?: VariantProps<typeof buttonVariants>["variant"];
-}) => {
+  disabled,
+  ...props
+}: ComponentProps<typeof Button> & VariantProps<typeof buttonVariants>) => {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
   return (
     <Button
+      {...props}
       type="button"
+      disabled={disabled || !hydrated}
       onClick={onClick}
       className={cn(buttonVariants({ variant, className }))}
     >
