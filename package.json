@@ -30,7 +30,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "satori": "^0.18.3",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "^3.7.0",
     "hono": "^4.12.8",
     "@yoshikouki/hono-file-router": "github:yoshikouki/hono-kit#f80daa6be994156fcc307dcc83b91558ad8caf5e",
     "@yoshikouki/hono-rsc-renderer": "github:yoshikouki/hono-kit#f80daa6be994156fcc307dcc83b91558ad8caf5e",
