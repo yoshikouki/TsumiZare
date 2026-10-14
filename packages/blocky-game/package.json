@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "Core functionalities for block game",
   "main": "dist/index.mjs",
-  "types": "dist/index.d.mts",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc -p tsconfig.json",
     "lint": "bunx @biomejs/biome check .",
     "format": "bunx @biomejs/biome check --apply .",
     "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",

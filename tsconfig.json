@@ -8,7 +8,6 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["@types/bun", "@vitejs/plugin-rsc/types", "vite/client"],
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@yoshikouki/hono-file-router": [
