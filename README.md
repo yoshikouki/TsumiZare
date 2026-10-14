@@ -23,7 +23,6 @@ bun dev
 
 `src/routes` のHono moduleから `c.render()` を呼ぶ。
 ゲーム状態はブラウザ内のReactで持ち、結果画像の保存・共有もブラウザ内で処理する。
-メタデータ・manifest・自己ホストのフォントはNext.jsに依存しない。
 
 本番へのpushはGitHub Actionsで検証後、同じ成果物を配信する。
 `Production` Environmentに `CLOUDFLARE_API_TOKEN` が必要。
