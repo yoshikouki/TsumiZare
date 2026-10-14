@@ -18,7 +18,18 @@ async function get(path: string, headers: Record<string, string> = {}) {
   return response;
 }
 
-const health = await (await get("/healthz")).json();
+let health = await (await get("/healthz")).json();
+// The previous version can briefly remain visible after deployment or rollback.
+for (
+  let attempt = 0;
+  attempt < 15 &&
+  ((expectedGitSha && health.gitSha !== expectedGitSha) ||
+    (expectedVersionId && health.versionId !== expectedVersionId));
+  attempt++
+) {
+  await Bun.sleep(2_000);
+  health = await (await get("/healthz")).json();
+}
 assert.equal(health.status, "ok");
 if (expectedGitSha) assert.equal(health.gitSha, expectedGitSha);
 if (expectedVersionId) assert.equal(health.versionId, expectedVersionId);
