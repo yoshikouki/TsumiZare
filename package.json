@@ -29,7 +29,7 @@
     "lucide-react": "^1.55.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "satori": "^0.18.3",
+    "satori": "^0.55.1",
     "tailwind-merge": "^3.7.0",
     "hono": "^4.12.8",
     "@yoshikouki/hono-file-router": "github:yoshikouki/hono-kit#f80daa6be994156fcc307dcc83b91558ad8caf5e",
