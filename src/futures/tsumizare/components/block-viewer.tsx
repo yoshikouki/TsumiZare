@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noArrayIndexKey: This stateless grid uses fixed coordinates as cell identities.
 import type { Block } from "blocky-game";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,6 @@ export const BlockViewer = ({
     >
       {block.shape.map((row, rowIndex) =>
         row.map((cell, cellIndex) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: Stateless grid cells are identified by their coordinates.
           <div
             key={`${block.id}-${rowIndex}-${cellIndex}`}
             className={cn(
