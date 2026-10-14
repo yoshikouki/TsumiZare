@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noArrayIndexKey: This stateless grid uses fixed coordinates as cell identities.
 import type { Block } from "blocky-game";
 import { cn } from "@/lib/utils";
 
