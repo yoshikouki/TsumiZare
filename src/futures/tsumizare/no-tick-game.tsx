@@ -86,6 +86,7 @@ export const NoTickGame = () => {
             type="button"
             variant={"outline"}
             size={"icon"}
+            aria-label="一時停止"
             onClick={pauseBlockyGame}
           >
             <Pause className="fill-primary stroke-1 stroke-primary" />
@@ -94,6 +95,7 @@ export const NoTickGame = () => {
             type="button"
             variant={"default"}
             size={"icon"}
+            aria-label="ブロックを置く"
             onClick={confirmBlock}
           >
             <Grid2x2Check className="stroke-primary-foreground" />
@@ -141,6 +143,7 @@ export const NoTickGame = () => {
           </div>
           <div className="flex w-full gap-2">
             <GameControlButton
+              aria-label="再開"
               onClick={resumeBlockyGame}
               className="group py-10"
             >
@@ -150,6 +153,7 @@ export const NoTickGame = () => {
               />
             </GameControlButton>
             <GameControlButton
+              aria-label="終了"
               onClick={finishBlockyGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
@@ -169,13 +173,18 @@ export const NoTickGame = () => {
           />
 
           <div className="flex w-full gap-2">
-            <GameControlButton onClick={startGame} className="group py-10">
+            <GameControlButton
+              aria-label="もう一度遊ぶ"
+              onClick={startGame}
+              className="group py-10"
+            >
               <StepForward
                 className="stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
                 size="40"
               />
             </GameControlButton>
             <GameControlButton
+              aria-label="ゲーム選択に戻る"
               onClick={readyBlockyGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"

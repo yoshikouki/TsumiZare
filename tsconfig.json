@@ -1,33 +1,29 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "target": "ES2022",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "jsx": "react-jsx",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["@types/bun", "@vitejs/plugin-rsc/types", "vite/client"],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    },
-    "target": "ES2017"
+      "@/*": ["./src/*"],
+      "@yoshikouki/hono-file-router": [
+        "./node_modules/@yoshikouki/hono-file-router/packages/hono-file-router/src/index.ts"
+      ],
+      "@yoshikouki/hono-rsc-renderer": [
+        "./node_modules/@yoshikouki/hono-rsc-renderer/packages/hono-rsc-renderer/src/index.ts"
+      ],
+      "@yoshikouki/hono-rsc-renderer/entry.browser": [
+        "./node_modules/@yoshikouki/hono-rsc-renderer/packages/hono-rsc-renderer/src/entry.browser.ts"
+      ],
+      "@yoshikouki/hono-rsc-renderer/entry.ssr": [
+        "./node_modules/@yoshikouki/hono-rsc-renderer/packages/hono-rsc-renderer/src/entry.ssr.ts"
+      ]
+    }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["src", "packages", "scripts", "e2e", "*.ts"]
 }

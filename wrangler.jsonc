@@ -1,0 +1,14 @@
+{
+  "$schema": "https://developers.cloudflare.com/wrangler/schema.json",
+  "name": "tsumizare",
+  "account_id": "1b609bc0539255b20c981004ca8a46d6",
+  "main": "worker/worker-entry.js",
+  "find_additional_modules": true,
+  "compatibility_date": "2026-10-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": true,
+  "vars": { "DEPLOYMENT_GIT_SHA": "" },
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
+  "assets": { "directory": "./dist/client", "binding": "ASSETS" }
+}

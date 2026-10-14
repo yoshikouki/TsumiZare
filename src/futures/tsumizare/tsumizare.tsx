@@ -66,6 +66,7 @@ export const TsumiZare = () => {
             type="button"
             variant={"ghost"}
             size={"icon"}
+            aria-label="一時停止"
             onClick={pauseBlockyGame}
           >
             <Pause className="fill-primary stroke-1 stroke-primary" />
@@ -113,6 +114,7 @@ export const TsumiZare = () => {
           </div>
           <div className="flex w-full gap-2">
             <GameControlButton
+              aria-label="再開"
               onClick={resumeBlockyGame}
               className="group py-10"
             >
@@ -122,6 +124,7 @@ export const TsumiZare = () => {
               />
             </GameControlButton>
             <GameControlButton
+              aria-label="終了"
               onClick={finishBlockyGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
@@ -142,6 +145,7 @@ export const TsumiZare = () => {
 
           <div className="flex w-full gap-2">
             <GameControlButton
+              aria-label="もう一度遊ぶ"
               onClick={startBlockyGame}
               className="group py-10"
             >
@@ -151,6 +155,7 @@ export const TsumiZare = () => {
               />
             </GameControlButton>
             <GameControlButton
+              aria-label="ゲーム選択に戻る"
               onClick={readyBlockyGame}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
