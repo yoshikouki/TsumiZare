@@ -39,3 +39,7 @@ Wranglerに独自ドメインやrouteを追加して管理を二重化しない�
 ## Custom hook
 
 See: [blocky-game](./packages/blocky-game/)
+
+`blocky-game` は tsup で ESM・CommonJS をバンドルし、`tsc` で型定義を生成する。
+型定義はバンドルせず `dist` にソースと同じ構成で出力し、`dist/index.d.ts` から公開する。
+TypeScript の JavaScript API に依存する tsup の `dts` は使わない。

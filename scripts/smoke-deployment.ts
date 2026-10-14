@@ -18,41 +18,45 @@ async function get(path: string, headers: Record<string, string> = {}) {
   return response;
 }
 
-let health = await (await get("/healthz")).json();
-// The previous version can briefly remain visible after deployment or rollback.
-for (
-  let attempt = 0;
-  attempt < 15 &&
-  ((expectedGitSha && health.gitSha !== expectedGitSha) ||
-    (expectedVersionId && health.versionId !== expectedVersionId));
-  attempt++
-) {
-  await Bun.sleep(2_000);
-  health = await (await get("/healthz")).json();
-}
-assert.equal(health.status, "ok");
-if (expectedGitSha) assert.equal(health.gitSha, expectedGitSha);
-if (expectedVersionId) assert.equal(health.versionId, expectedVersionId);
+async function verifyDeployment() {
+  const health = await (await get("/healthz")).json();
+  assert.equal(health.status, "ok");
+  if (expectedGitSha) assert.equal(health.gitSha, expectedGitSha);
+  if (expectedVersionId) assert.equal(health.versionId, expectedVersionId);
 
-for (const path of ["/", "/modes/no-tick"]) {
-  const html = await get(path);
-  assert(html.headers.get("content-type")?.includes("text/html"));
-  const body = await html.text();
-  assert(body.includes("TsumiZare"));
-  const assets = [...body.matchAll(/["'](\/assets\/[^"' ]+\.(?:js|css))["']/g)];
-  assert(assets.length > 0, "Missing fingerprinted assets");
-  for (const [, asset] of assets) await get(asset);
-  const flight = await get(path, { RSC: "1" });
-  assert(flight.headers.get("content-type")?.includes("text/x-component"));
-  assert(flight.headers.get("vary")?.includes("RSC"));
-  assert(flight.headers.get("cache-control")?.includes("no-store"));
-  assert((await flight.text()).includes("BlockyGameProvider"));
+  for (const path of ["/", "/modes/no-tick"]) {
+    const html = await get(path);
+    assert(html.headers.get("content-type")?.includes("text/html"));
+    const body = await html.text();
+    assert(body.includes("TsumiZare"));
+    const assets = [
+      ...body.matchAll(/["'](\/assets\/[^"' ]+\.(?:js|css))["']/g),
+    ];
+    assert(assets.length > 0, "Missing fingerprinted assets");
+    for (const [, asset] of assets) await get(asset);
+    const flight = await get(path, { RSC: "1" });
+    assert(flight.headers.get("content-type")?.includes("text/x-component"));
+    assert(flight.headers.get("vary")?.includes("RSC"));
+    assert(flight.headers.get("cache-control")?.includes("no-store"));
+    assert((await flight.text()).includes("BlockyGameProvider"));
+  }
+
+  const manifest = await (await get("/manifest.webmanifest")).json();
+  assert.equal(manifest.name, "TsumiZare");
+  for (const icon of manifest.icons) await get(icon.src);
+  await get("/fonts/Inter-Black.ttf");
+  console.log(
+    `Verified ${baseUrl}: ${health.gitSha ?? "local"} (${health.versionId ?? "local"})`,
+  );
 }
 
-const manifest = await (await get("/manifest.webmanifest")).json();
-assert.equal(manifest.name, "TsumiZare");
-for (const icon of manifest.icons) await get(icon.src);
-await get("/fonts/Inter-Black.ttf");
-console.log(
-  `Verified ${baseUrl}: ${health.gitSha ?? "local"} (${health.versionId ?? "local"})`,
-);
+// Worker code and static assets can finish propagating at different times.
+for (let attempt = 0; ; attempt++) {
+  try {
+    await verifyDeployment();
+    break;
+  } catch (error) {
+    if (attempt === 15) throw error;
+    await Bun.sleep(2_000);
+  }
+}
