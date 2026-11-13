@@ -1,13 +1,13 @@
 import type { Board } from "./board";
 
-export type Result = {
+export interface Result {
   score: number;
   filledRowsNumber: number;
-};
+}
 
-export type Outcome = {
+export interface Outcome {
   filledRowsNumber?: Result["filledRowsNumber"];
-};
+}
 
 export const initResult = (): Result => ({
   score: 0,

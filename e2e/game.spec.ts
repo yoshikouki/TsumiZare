@@ -1,45 +1,61 @@
 import { readFile } from "node:fs/promises";
 import { devices, expect, test } from "@playwright/test";
 
-test("HTML, Flight, metadata and static assets are served on both game routes", async ({
-  request,
-}) => {
-  for (const path of ["/", "/modes/no-tick"]) {
+const STYLESHEET_PATTERN =
+  /href="(?<hrefFirst>[^"]+)" rel="stylesheet"|rel="stylesheet" href="(?<relFirst>[^"]+)"/u;
+const RESULT_FILENAME_PATTERN = /^TsumiZare-result-.*\.png$/u;
+const FLIGHT_HEADERS: Record<string, string>[] = [
+  { RSC: "1" },
+  { Accept: "text/x-component" },
+];
+
+for (const path of ["/", "/modes/no-tick"]) {
+  test(`${path}: HTML, Flight, metadata and static assets are served`, async ({
+    request,
+  }) => {
     const html = await request.get(path);
     expect(html.status()).toBe(200);
     expect(html.headers()["content-type"]).toContain("text/html");
     const body = await html.text();
     expect(body).toContain('<html lang="ja">');
     expect(body).toContain(`href="https://tsumizare.app${path}"`);
-    const css = body.match(
-      /href="([^"]+)" rel="stylesheet"|rel="stylesheet" href="([^"]+)"/u
-    );
+    const css = body.match(STYLESHEET_PATTERN);
     expect(css).not.toBeNull();
-    const style = await request.get(css?.[1] || css?.[2] || "", {
-      headers: { Accept: "text/css" },
-    });
+    const style = await request.get(
+      css?.groups?.hrefFirst || css?.groups?.relFirst || "",
+      {
+        headers: { Accept: "text/css" },
+      }
+    );
     expect(style.status()).toBe(200);
     expect(style.headers()["content-type"]).toContain("text/css");
-    for (const headers of [
-      { RSC: "1" },
-      { Accept: "text/x-component" },
-    ] as Record<string, string>[]) {
-      const flight = await request.get(path, { headers });
-      expect(flight.status()).toBe(200);
-      expect(flight.headers()["content-type"]).toContain("text/x-component");
-      expect(flight.headers().vary).toContain("RSC");
-      expect(flight.headers()["cache-control"]).toContain("no-store");
-      expect(await flight.text()).toContain("BlockyGameProvider");
-    }
-  }
+    await Promise.all(
+      FLIGHT_HEADERS.map(async (headers) => {
+        const flight = await request.get(path, { headers });
+        expect(flight.status()).toBe(200);
+        expect(flight.headers()["content-type"]).toContain("text/x-component");
+        expect(flight.headers().vary).toContain("RSC");
+        expect(flight.headers()["cache-control"]).toContain("no-store");
+        expect(await flight.text()).toContain("BlockyGameProvider");
+      })
+    );
+  });
+}
+
+test("manifest, icons, fonts and missing routes are served", async ({
+  request,
+}) => {
   const manifest = await request.get("/manifest.webmanifest");
   expect(manifest.headers()["content-type"]).toContain(
     "application/manifest+json"
   );
   const data = await manifest.json();
   expect(data.name).toBe("TsumiZare");
-  for (const icon of data.icons) {
-    expect((await request.get(icon.src)).status()).toBe(200);
+  const icons = await Promise.all(
+    data.icons.map((icon: { src: string }) => request.get(icon.src))
+  );
+  for (const icon of icons) {
+    expect(icon.status()).toBe(200);
   }
   expect((await request.get("/fonts/Inter-Black.ttf")).status()).toBe(200);
   expect((await request.get("/missing")).status()).toBe(404);
@@ -98,7 +114,7 @@ for (const path of ["/", "/modes/no-tick"]) {
     const downloaded = page.waitForEvent("download");
     await page.getByRole("button", { name: "結果画像を保存" }).click();
     const download = await downloaded;
-    expect(download.suggestedFilename()).toMatch(/^TsumiZare-result-.*\.png$/u);
+    expect(download.suggestedFilename()).toMatch(RESULT_FILENAME_PATTERN);
     const file = await download.path();
     expect(file).not.toBeNull();
     const png = await readFile(file as string);

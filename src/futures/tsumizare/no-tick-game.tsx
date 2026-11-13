@@ -69,12 +69,12 @@ export const NoTickGame = () => {
             "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
           )}
         >
-          {queuedBlocks[0] && (
+          {queuedBlocks[0] ? (
             <>
               <div className="text-primary/50">Next</div>
               <BlockViewer block={queuedBlocks[0]} />
             </>
-          )}
+          ) : null}
         </Button>
         <div
           className={cn(

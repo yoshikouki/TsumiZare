@@ -10,15 +10,17 @@ import {
 import type { BlockPosition, BlockShape } from "../core/block";
 import { type Board, hasBlockCollision, initBoard } from "../core/board";
 
-export type BlockyGameContext = {
+export interface BlockyGameContext {
   board: Board;
   setBoard: Dispatch<SetStateAction<Board>>;
   hasCollision: (shape: BlockShape, position: BlockPosition) => boolean;
-};
+}
 
 export const BlockyGameContext = createContext<BlockyGameContext>({
   board: initBoard(),
-  setBoard: () => {},
+  setBoard: () => {
+    // The default context leaves the board unchanged outside a provider.
+  },
   hasCollision: () => false,
 });
 

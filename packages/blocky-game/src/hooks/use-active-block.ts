@@ -89,6 +89,8 @@ export const useActiveBlock = ({
       case "up":
         newPosition = { ...position, y: position.y - 1 };
         break;
+      default:
+        return;
     }
     if (hasCollision(activeBlock.shape, newPosition)) {
       return;
@@ -120,10 +122,10 @@ export const useActiveBlock = ({
   };
 
   const tryWallKick = (shape: BlockShape, position: BlockPosition) => {
-    for (let i = 0; i < WALL_KICKS.length; i++) {
+    for (const offset of WALL_KICKS) {
       const movedPosition = {
-        x: position.x + WALL_KICKS[i].x,
-        y: position.y + WALL_KICKS[i].y,
+        x: position.x + offset.x,
+        y: position.y + offset.y,
       };
       if (!hasCollision(shape, movedPosition)) {
         return movedPosition;
@@ -151,12 +153,15 @@ export const useActiveBlock = ({
     moveUp: () => move("up"),
   } as const;
   const handleUpAction = upActions[upAction];
+  const moveLeft = () => move("left");
+  const moveRight = () => move("right");
+  const moveDown = () => move("down");
 
   // Touch event
   const boardRef = useTouch({
-    onSwipeLeft: () => move("left"),
-    onSwipeRight: () => move("right"),
-    onSwipeDown: () => move("down"),
+    onSwipeLeft: moveLeft,
+    onSwipeRight: moveRight,
+    onSwipeDown: moveDown,
     onSwipeUp: handleUpAction,
     onTap: rotate,
     isPreventTouchDefault: () => board.status === "playing",
@@ -165,9 +170,9 @@ export const useActiveBlock = ({
   // Keyboard event
   useKeyboard({
     onKeyDown: {
-      ArrowLeft: () => move("left"),
-      ArrowRight: () => move("right"),
-      ArrowDown: () => move("down"),
+      ArrowLeft: moveLeft,
+      ArrowRight: moveRight,
+      ArrowDown: moveDown,
       ArrowUp: handleUpAction,
       " ": rotate,
     },

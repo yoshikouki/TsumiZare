@@ -28,30 +28,35 @@ async function verifyDeployment() {
     assert.equal(health.versionId, expectedVersionId);
   }
 
-  for (const path of ["/", "/modes/no-tick"]) {
-    const html = await get(path);
-    assert(html.headers.get("content-type")?.includes("text/html"));
-    const body = await html.text();
-    assert(body.includes("TsumiZare"));
-    const assets = [
-      ...body.matchAll(/["'](\/assets\/[^"' ]+\.(?:js|css))["']/gu),
-    ];
-    assert(assets.length > 0, "Missing fingerprinted assets");
-    for (const [, asset] of assets) {
-      await get(asset);
-    }
-    const flight = await get(path, { RSC: "1" });
-    assert(flight.headers.get("content-type")?.includes("text/x-component"));
-    assert(flight.headers.get("vary")?.includes("RSC"));
-    assert(flight.headers.get("cache-control")?.includes("no-store"));
-    assert((await flight.text()).includes("BlockyGameProvider"));
-  }
+  await Promise.all(
+    ["/", "/modes/no-tick"].map(async (path) => {
+      const html = await get(path);
+      assert(html.headers.get("content-type")?.includes("text/html"));
+      const body = await html.text();
+      assert(body.includes("TsumiZare"));
+      const assets = [
+        ...body.matchAll(/["'](?<asset>\/assets\/[^"' ]+\.(?:js|css))["']/gu),
+      ];
+      assert(assets.length > 0, "Missing fingerprinted assets");
+      await Promise.all(
+        assets.map((match) => {
+          assert(match.groups);
+          return get(match.groups.asset);
+        })
+      );
+      const flight = await get(path, { RSC: "1" });
+      assert(flight.headers.get("content-type")?.includes("text/x-component"));
+      assert(flight.headers.get("vary")?.includes("RSC"));
+      assert(flight.headers.get("cache-control")?.includes("no-store"));
+      assert((await flight.text()).includes("BlockyGameProvider"));
+    })
+  );
 
   const manifest = await (await get("/manifest.webmanifest")).json();
   assert.equal(manifest.name, "TsumiZare");
-  for (const icon of manifest.icons) {
-    await get(icon.src);
-  }
+  await Promise.all(
+    manifest.icons.map((icon: { src: string }) => get(icon.src))
+  );
   await get("/fonts/Inter-Black.ttf");
   console.log(
     `Verified ${baseUrl}: ${health.gitSha ?? "local"} (${health.versionId ?? "local"})`
@@ -59,8 +64,9 @@ async function verifyDeployment() {
 }
 
 // Worker code and static assets can finish propagating at different times.
-for (let attempt = 0; ; attempt++) {
+for (let attempt = 0; ; attempt += 1) {
   try {
+    // biome-ignore lint/performance/noAwaitInLoops: Retry only after the preceding check fails; deployment propagation needs a delay between attempts.
     await verifyDeployment();
     break;
   } catch (error) {

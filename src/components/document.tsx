@@ -58,7 +58,7 @@ export function Document({
       <body>
         {children}
         <Footer />
-        {analytics && (
+        {analytics ? (
           <script
             defer
             src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -66,7 +66,7 @@ export function Document({
               token: "d15d033a2ea2465e9b6dfe96c3d6efe1",
             })}
           />
-        )}
+        ) : null}
       </body>
     </html>
   );

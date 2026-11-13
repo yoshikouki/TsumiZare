@@ -85,7 +85,7 @@ describe("Board", () => {
 
     it("should remove filled rows and add new empty rows at the top", () => {
       const initialBoard = initBoard();
-      for (let i = 0; i < initialBoard.config.colsNumber; i++) {
+      for (let i = 0; i < initialBoard.config.colsNumber; i += 1) {
         initialBoard.rows[0].cells[i].blockId = "testId";
       }
       const { board, filledRowsNumber } = renewFilledRows(initialBoard);

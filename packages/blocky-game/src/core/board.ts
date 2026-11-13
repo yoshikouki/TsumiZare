@@ -2,30 +2,30 @@ import type { Block } from "./block";
 import { COLS, DROP_INTERVAL, ROWS } from "./constants";
 import { initResult, type Result } from "./result";
 
-export type Cell = {
+export interface Cell {
   id: string;
   blockId: string | null;
-};
+}
 
-export type Row = {
+export interface Row {
   id: string;
   cells: Cell[];
-};
+}
 
-export type BoardConfig = {
+export interface BoardConfig {
   rowsNumber: number;
   colsNumber: number;
   dropInterval: number;
-};
-export type Board = {
+}
+export interface Board {
   id: string;
   rows: Row[];
   status: "ready" | "playing" | "finished" | "pause";
   result: Result;
   config: BoardConfig;
-};
+}
 
-export const id = () => Math.random().toString(36).substr(2, 9);
+export const id = () => Math.random().toString(36).slice(2, 11);
 export const initCell = () => ({
   id: id(),
   blockId: null,
@@ -63,9 +63,9 @@ export const deepCopyBoard = (board: Board): Board => ({
 
 export const mergeBlockIntoBoard = (block: Block, board: Board) => {
   const newBoard = deepCopyBoard(board);
-  for (let shapeY = 0; shapeY < block.shape.length; shapeY++) {
+  for (let shapeY = 0; shapeY < block.shape.length; shapeY += 1) {
     const row = block.shape[shapeY];
-    for (let shapeX = 0; shapeX < row.length; shapeX++) {
+    for (let shapeX = 0; shapeX < row.length; shapeX += 1) {
       if (row[shapeX] === 0) {
         continue;
       }
@@ -113,9 +113,9 @@ export const hasBlockCollision = (
   board: Board
 ) => {
   const { shape, position } = block;
-  for (let shapeY = 0; shapeY < shape.length; shapeY++) {
+  for (let shapeY = 0; shapeY < shape.length; shapeY += 1) {
     const row = shape[shapeY];
-    for (let shapeX = 0; shapeX < row.length; shapeX++) {
+    for (let shapeX = 0; shapeX < row.length; shapeX += 1) {
       if (row[shapeX] === 0) {
         continue;
       }

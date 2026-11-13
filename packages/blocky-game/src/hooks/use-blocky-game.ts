@@ -28,7 +28,7 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
     playMilliSecondsRef.current += board.config.dropInterval;
   };
   const playMilliSeconds = playMilliSecondsRef.current;
-  const playTimeString = new Date(playMilliSeconds).toISOString().substr(14, 5);
+  const playTimeString = new Date(playMilliSeconds).toISOString().slice(14, 19);
 
   const startBlockyGame = () => {
     setBoard({ ...initBoard(), status: "playing" });
@@ -72,18 +72,12 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
       return;
     }
     const mergedResult = mergeIntoBoard(removedBlock);
-    if (!mergedResult) {
-      return;
-    }
     updateResult({ filledRowsNumber: mergedResult.filledRowsNumber });
   };
 
   const mergeIntoBoard = (block: Block) => {
     const mergedBoard = mergeBlockIntoBoard(block, board);
     const mergedResult = renewFilledRows(mergedBoard);
-    if (!mergedResult) {
-      return;
-    }
     setBoard(mergedResult.board);
     return mergedResult;
   };
