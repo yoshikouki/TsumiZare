@@ -29,7 +29,6 @@
       "tailwindDirectives": true
     }
   },
-  // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
   "linter": {
     "enabled": true,
     "rules": {}
@@ -40,6 +39,12 @@
     "useIgnoreFile": true
   },
   "extends": ["ultracite/biome/core", "ultracite/biome/react"],
+  "overrides": [
+    {
+      "includes": ["scripts/smoke-deployment.ts"],
+      "javascript": { "globals": ["Bun"] }
+    }
+  ],
   "files": {
     "includes": [
       "!**/worker-configuration.d.ts",
@@ -48,205 +53,5 @@
       "!worker",
       "!**/bun.lock"
     ]
-  },
-  "overrides": [
-    {
-      "includes": ["e2e/game.spec.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "performance": {
-            "noAwaitInLoops": "off",
-            "useTopLevelRegex": "off"
-          },
-          "style": {
-            "useNamedCaptureGroup": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "packages/blocky-game/src/components/blocky-game-provider.tsx"
-      ],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "style": {
-            "useConsistentTypeDefinitions": "off"
-          },
-          "suspicious": {
-            "noEmptyBlockStatements": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "packages/blocky-game/src/core/block.ts",
-        "packages/blocky-game/src/core/result.ts",
-        "src/components/ui/typography.tsx"
-      ],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "style": {
-            "useConsistentTypeDefinitions": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/core/board.test.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "style": {
-            "noIncrementDecrement": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/core/board.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "style": {
-            "noIncrementDecrement": "off",
-            "noSubstr": "off",
-            "useConsistentTypeDefinitions": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/hooks/use-active-block.test.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noUndeclaredDependencies": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/hooks/use-active-block.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noComponentHookFactories": "off"
-          },
-          "style": {
-            "noIncrementDecrement": "off",
-            "useDefaultSwitchClause": "off",
-            "useForOf": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/hooks/use-blocky-game.test.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noUndeclaredDependencies": "off"
-          },
-          "style": {
-            "noIncrementDecrement": "off"
-          },
-          "suspicious": {
-            "useAwait": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/hooks/use-blocky-game.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "style": {
-            "noSubstr": "off"
-          },
-          "suspicious": {
-            "noUnnecessaryConditions": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/blocky-game/src/hooks/use-touch.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "style": {
-            "useDestructuring": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["scripts/smoke-deployment.ts"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noUndeclaredVariables": "off"
-          },
-          "performance": {
-            "noAwaitInLoops": "off"
-          },
-          "style": {
-            "noIncrementDecrement": "off",
-            "useNamedCaptureGroup": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "src/components/document.tsx",
-        "src/futures/tsumizare/no-tick-game.tsx",
-        "src/futures/tsumizare/tsumizare.tsx"
-      ],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noLeakedRender": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "src/components/ui/button.tsx",
-        "src/components/ui/card.tsx",
-        "src/components/ui/tabs.tsx"
-      ],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noReactForwardRef": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/globals.css"],
-      // Preserve existing behavior: manual or unsafe rewrites are outside this migration.
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noDuplicateSelectors": "off"
-          }
-        }
-      }
-    }
-  ]
+  }
 }

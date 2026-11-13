@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { act, renderHook } from "@testing-library/react";
+import { act, fireEvent, renderHook } from "@testing-library/react";
 
 import { BLOCKS, type BlockPosition, type BlockShape } from "../core/block";
 import { type Board, hasBlockCollision, initBoard } from "../core/board";
@@ -10,6 +10,62 @@ const hasCollision =
     hasBlockCollision({ shape, position }, board);
 
 describe("useActiveBlock", () => {
+  it("should keep keyboard movement in all four directions", () => {
+    const board = initBoard();
+    const { result, unmount } = renderHook(() =>
+      useActiveBlock({
+        board,
+        hasCollision: hasCollision(board),
+        upAction: "moveUp",
+      })
+    );
+    act(() =>
+      result.current.drop({
+        id: "testId",
+        shape: BLOCKS.O,
+        position: { x: 3, y: 3 },
+      })
+    );
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(result.current.activeBlock?.position).toEqual({ x: 2, y: 4 });
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 4 });
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 5 });
+    fireEvent.keyDown(window, { key: "ArrowUp" });
+    expect(result.current.activeBlock?.position).toEqual({ x: 3, y: 4 });
+    unmount();
+  });
+
+  it("should ignore unsupported movement directions", () => {
+    const board = initBoard();
+    const { result } = renderHook(() =>
+      useActiveBlock({ board, hasCollision: hasCollision(board) })
+    );
+    act(() => result.current.activate());
+    const before = result.current.activeBlock;
+    // @ts-expect-error JavaScript callers can pass a direction outside the union.
+    act(() => result.current.move("diagonal"));
+    expect(result.current.activeBlock).toBe(before);
+  });
+
+  it("should rotate a vertical I block next to the right wall", () => {
+    const board = initBoard();
+    const { result } = renderHook(() =>
+      useActiveBlock({ board, hasCollision: hasCollision(board) })
+    );
+    act(() =>
+      result.current.drop({
+        id: "testId",
+        shape: [[1], [1], [1], [1]],
+        position: { x: 9, y: 1 },
+      })
+    );
+    act(() => result.current.rotate());
+    expect(result.current.activeBlock?.shape).toEqual(BLOCKS.I);
+    expect(result.current.activeBlock?.position).toEqual({ x: 6, y: 2 });
+  });
+
   describe("#activate", () => {
     it("should activate a block", () => {
       const board = initBoard();

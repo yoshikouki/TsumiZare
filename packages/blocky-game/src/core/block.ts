@@ -2,12 +2,15 @@ import { id } from "./board";
 import { DEFAULT_QUEUED_BLOCK_SIZE } from "./constants";
 
 export type BlockShape = number[][];
-export type BlockPosition = { x: number; y: number };
-export type Block = {
+export interface BlockPosition {
+  x: number;
+  y: number;
+}
+export interface Block {
   id: string;
   shape: BlockShape;
   position: BlockPosition;
-};
+}
 
 type BlockType = "I" | "O" | "T" | "S" | "Z" | "J" | "L";
 

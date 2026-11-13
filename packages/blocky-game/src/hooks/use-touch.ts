@@ -39,7 +39,7 @@ export const useTouch = ({
     if (isPreventTouchDefault?.()) {
       e.preventDefault();
     }
-    const touch = e.touches[0];
+    const [touch] = e.touches;
     touchStartX.current = touch.clientX;
     touchStartY.current = touch.clientY;
     moveStartX.current = touch.clientX;
@@ -55,7 +55,7 @@ export const useTouch = ({
     if (e.touches.length !== 1) {
       return;
     }
-    const touch = e.touches[0];
+    const [touch] = e.touches;
     const touchEndX = touch.clientX;
     const touchEndY = touch.clientY;
     const dx = touchEndX - moveStartX.current;
@@ -92,7 +92,7 @@ export const useTouch = ({
     if (e.changedTouches.length !== 1) {
       return;
     }
-    const touch = e.changedTouches[0];
+    const [touch] = e.changedTouches;
     const touchEndX = touch.clientX;
     const touchEndY = touch.clientY;
     const dx = touchEndX - touchStartX.current;

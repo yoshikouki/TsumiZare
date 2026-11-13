@@ -47,7 +47,7 @@ describe("useBlockyGame", () => {
       });
     });
 
-    it("should detect collision correctly", async () => {
+    it("should detect collision correctly", () => {
       const { result } = renderHook(useBlockyGame, {
         wrapper: BlockyGameProvider,
       });
@@ -57,7 +57,7 @@ describe("useBlockyGame", () => {
       }
       const { shape, position } = result.current.activeBlock.activeBlock;
       // Move block to the bottom
-      for (let i = 0; i < 19; i++) {
+      for (let i = 0; i < 19; i += 1) {
         act(() => result.current.runTick());
       }
       // Check collision at bottom
