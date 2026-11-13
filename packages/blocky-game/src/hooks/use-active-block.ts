@@ -55,7 +55,9 @@ export const useActiveBlock = ({
   };
 
   const drop = (block = activeBlock) => {
-    if (!block) return;
+    if (!block) {
+      return;
+    }
     const newPosition = {
       ...block.position,
       y: block.position.y + 1,
@@ -69,7 +71,9 @@ export const useActiveBlock = ({
   };
 
   const move = (direction: "left" | "right" | "down" | "up") => {
-    if (!activeBlock) return;
+    if (!activeBlock) {
+      return;
+    }
     const { position } = activeBlock;
     let newPosition: BlockPosition;
     switch (direction) {
@@ -93,7 +97,9 @@ export const useActiveBlock = ({
   };
 
   const rotate = () => {
-    if (!activeBlock) return;
+    if (!activeBlock) {
+      return;
+    }
     const rotatedShape = rotateShape(activeBlock.shape);
     if (!hasCollision(rotatedShape, activeBlock.position)) {
       setActiveBlock({
@@ -103,7 +109,9 @@ export const useActiveBlock = ({
       return;
     }
     const newPosition = tryWallKick(rotatedShape, activeBlock.position);
-    if (!newPosition) return;
+    if (!newPosition) {
+      return;
+    }
     setActiveBlock({
       ...activeBlock,
       shape: rotatedShape,
@@ -125,17 +133,21 @@ export const useActiveBlock = ({
   };
 
   const isActiveCell = (cellX: number, cellY: number) => {
-    if (!activeBlock) return false;
+    if (!activeBlock) {
+      return false;
+    }
     return isFilledBlockCell(cellX, cellY, activeBlock);
   };
 
   const isBelowActiveBlock = (cellX: number, cellY: number) => {
-    if (!activeBlock) return false;
+    if (!activeBlock) {
+      return false;
+    }
     return isCellBelowBlock(cellX, cellY, activeBlock);
   };
 
   const upActions = {
-    rotate: rotate,
+    rotate,
     moveUp: () => move("up"),
   } as const;
   const handleUpAction = upActions[upAction];

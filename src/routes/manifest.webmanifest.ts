@@ -33,5 +33,5 @@ function manifest() {
 export default new Hono().get("/", (c) =>
   c.body(JSON.stringify(manifest()), 200, {
     "Content-Type": "application/manifest+json",
-  }),
+  })
 );

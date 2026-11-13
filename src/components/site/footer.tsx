@@ -9,7 +9,7 @@ export const Footer = () => {
           <GitHubIcon className="size-6" />
         </a>
         <a href="https://x.com/yoshikouki_">
-          <XIcon className="size-4 stroke-primary" />
+          <XIcon className="stroke-primary size-4" />
         </a>
       </div>
       {/* copyright */}

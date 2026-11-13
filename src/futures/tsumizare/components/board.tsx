@@ -10,31 +10,29 @@ export const Board = ({
   children: React.ReactNode;
   boardRef: React.Ref<HTMLDivElement>;
   boardConfig: BoardConfig;
-}) => {
-  return (
-    <section
-      aria-label="ゲーム盤"
-      className="flex h-full w-full flex-col items-center px-4"
-      ref={boardRef}
+}) => (
+  <section
+    aria-label="ゲーム盤"
+    className="flex h-full w-full flex-col items-center px-4"
+    ref={boardRef}
+  >
+    <div
+      className={cn("grid w-full max-w-xs gap-1 pb-4")}
+      style={{
+        gridTemplateRows: `repeat(${boardConfig.rowsNumber}, 1fr)`,
+        gridTemplateColumns: `repeat(${boardConfig.colsNumber}, 1fr)`,
+      }}
     >
-      <div
-        className={cn("grid w-full max-w-xs gap-1 pb-4")}
-        style={{
-          gridTemplateRows: `repeat(${boardConfig.rowsNumber}, 1fr)`,
-          gridTemplateColumns: `repeat(${boardConfig.colsNumber}, 1fr)`,
-        }}
-      >
-        {children}
-      </div>
-    </section>
-  );
-};
+      {children}
+    </div>
+  </section>
+);
 
-const cellVariants = cva("aspect-square rounded-sm bg-primary/5", {
+const cellVariants = cva("bg-primary/5 aspect-square rounded-sm", {
   variants: {
     variant: {
-      empty: "rounded-sm bg-primary/5",
-      filled: "rounded-none bg-primary",
+      empty: "bg-primary/5 rounded-sm",
+      filled: "bg-primary rounded-none",
       active: "bg-primary/90",
       belowActiveBlock: "bg-primary/10",
     },
@@ -50,11 +48,9 @@ export const BoardCell = ({
 }: {
   variant: VariantProps<typeof cellVariants>["variant"];
   className?: string;
-}) => {
-  return (
-    <div
-      data-state={variant}
-      className={cn(cellVariants({ variant, className }))}
-    />
-  );
-};
+}) => (
+  <div
+    data-state={variant}
+    className={cn(cellVariants({ variant, className }))}
+  />
+);

@@ -17,7 +17,7 @@ describe("useActiveBlock", () => {
         useActiveBlock({
           board,
           hasCollision: hasCollision(board),
-        }),
+        })
       );
       expect(result.current.activeBlock).toBeNull();
       act(() => result.current.activate());
@@ -33,7 +33,7 @@ describe("useActiveBlock", () => {
         useActiveBlock({
           board,
           hasCollision: hasCollision(board),
-        }),
+        })
       );
       expect(result.current.activeBlock).toBeNull();
       act(() => result.current.activate());
@@ -48,14 +48,14 @@ describe("useActiveBlock", () => {
         useActiveBlock({
           board,
           hasCollision: hasCollision(board),
-        }),
+        })
       );
       act(() =>
         result.current.drop({
           id: "testId",
           shape: BLOCKS.O,
           position: { x: 0, y: 17 },
-        }),
+        })
       );
       expect(result.current.activeBlock?.position).toEqual({ x: 0, y: 18 });
     });
@@ -67,14 +67,14 @@ describe("useActiveBlock", () => {
         useActiveBlock({
           board,
           hasCollision: hasCollision(board),
-        }),
+        })
       );
       act(() =>
         result.current.drop({
           id: "testId",
           shape: BLOCKS.O,
           position: { x: 0, y: 18 },
-        }),
+        })
       );
       expect(result.current.activeBlock).toBeNull();
     });

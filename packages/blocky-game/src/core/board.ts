@@ -51,17 +51,15 @@ export const initBoard = (config?: Partial<BoardConfig>): Board => {
   };
 };
 
-export const deepCopyBoard = (board: Board): Board => {
-  return {
-    ...board,
-    rows: board.rows.map((row) => ({
-      ...row,
-      cells: row.cells.map((cell) => ({
-        ...cell,
-      })),
+export const deepCopyBoard = (board: Board): Board => ({
+  ...board,
+  rows: board.rows.map((row) => ({
+    ...row,
+    cells: row.cells.map((cell) => ({
+      ...cell,
     })),
-  };
-};
+  })),
+});
 
 export const mergeBlockIntoBoard = (block: Block, board: Board) => {
   const newBoard = deepCopyBoard(board);
@@ -80,21 +78,23 @@ export const mergeBlockIntoBoard = (block: Block, board: Board) => {
 };
 
 export const renewFilledRows = (
-  board: Board,
+  board: Board
 ): {
   board: Board;
   filledRowsNumber: number;
 } => {
   const remainingRows = board.rows.filter((row) =>
-    row.cells.some((cell) => !cell.blockId),
+    row.cells.some((cell) => !cell.blockId)
   );
   const filledRowsNumber = board.config.rowsNumber - remainingRows.length;
-  if (filledRowsNumber === 0) return { board, filledRowsNumber };
+  if (filledRowsNumber === 0) {
+    return { board, filledRowsNumber };
+  }
   const newBoard = {
     ...board,
     rows: [
       ...Array.from({ length: filledRowsNumber }, () =>
-        initRow(board.config.colsNumber),
+        initRow(board.config.colsNumber)
       ),
       ...remainingRows,
     ],
@@ -110,7 +110,7 @@ export const hasBlockCollision = (
     shape: Block["shape"];
     position: Block["position"];
   },
-  board: Board,
+  board: Board
 ) => {
   const { shape, position } = block;
   for (let shapeY = 0; shapeY < shape.length; shapeY++) {

@@ -8,18 +8,16 @@ export const GameControlContainer = ({
   children: React.ReactNode;
   isVisible: boolean;
   className?: string;
-}) => {
-  return (
-    <div
-      inert={!isVisible}
-      aria-hidden={!isVisible}
-      className={cn(
-        "pointer-events-none absolute flex w-full max-w-xs flex-col items-center justify-center space-y-4 opacity-0 transition duration-200",
-        isVisible && "pointer-events-auto opacity-100",
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-};
+}) => (
+  <div
+    inert={!isVisible}
+    aria-hidden={!isVisible}
+    className={cn(
+      "pointer-events-none absolute flex w-full max-w-xs flex-col items-center justify-center space-y-4 opacity-0 transition duration-200",
+      isVisible && "pointer-events-auto opacity-100",
+      className
+    )}
+  >
+    {children}
+  </div>
+);

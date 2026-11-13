@@ -57,7 +57,9 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
     updatePlayTime();
     if (activeBlock.isActive) {
       const droppedBlock = activeBlock.drop();
-      if (droppedBlock) return;
+      if (droppedBlock) {
+        return;
+      }
       updateBoard();
     } else {
       activateBlockOrFinish();
@@ -66,16 +68,22 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
 
   const updateBoard = () => {
     const removedBlock = activeBlock.remove();
-    if (!removedBlock) return;
+    if (!removedBlock) {
+      return;
+    }
     const mergedResult = mergeIntoBoard(removedBlock);
-    if (!mergedResult) return;
+    if (!mergedResult) {
+      return;
+    }
     updateResult({ filledRowsNumber: mergedResult.filledRowsNumber });
   };
 
   const mergeIntoBoard = (block: Block) => {
     const mergedBoard = mergeBlockIntoBoard(block, board);
     const mergedResult = renewFilledRows(mergedBoard);
-    if (!mergedResult) return;
+    if (!mergedResult) {
+      return;
+    }
     setBoard(mergedResult.board);
     return mergedResult;
   };
@@ -89,7 +97,9 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
 
   const activateBlockOrFinish = () => {
     const activatedBlock = activeBlock.activate();
-    if (activatedBlock) return;
+    if (activatedBlock) {
+      return;
+    }
     finishBlockyGame();
   };
 
@@ -97,7 +107,7 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
   const detectCellVariant = (
     cell: Cell,
     x: number,
-    y: number,
+    y: number
   ): CellVariants => {
     if (cell.blockId) {
       return "filled";
@@ -113,7 +123,9 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
 
   // Game loop
   const tickRunnerRef = (_ref: HTMLDivElement) => {
-    if (board.status !== "playing") return;
+    if (board.status !== "playing") {
+      return;
+    }
     const interval = setInterval(runTick, board.config.dropInterval);
     return () => clearInterval(interval);
   };
