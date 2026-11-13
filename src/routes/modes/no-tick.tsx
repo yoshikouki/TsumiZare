@@ -15,7 +15,7 @@ export function NoTickModePage() {
           <a href="/" className="flex-1">
             <Logo className={cn("size-8")} />
           </a>
-          <h1 className={"grow text-center font-black text-4xl"}>つみき</h1>
+          <h1 className={"grow text-center text-4xl font-black"}>つみき</h1>
           <div className="flex-1" />
         </div>
       </Header>

@@ -21,7 +21,7 @@ export function HomePage() {
       <Header>
         <a href="/" className="flex items-center gap-2">
           <Logo className={cn("size-8")} />
-          <h1 className={"font-black text-4xl"}>TsumiZare</h1>
+          <h1 className={"text-4xl font-black"}>TsumiZare</h1>
         </a>
       </Header>
 

@@ -19,7 +19,7 @@ describe("Result", () => {
           filledRowsNumber: 1,
         },
         initResult(),
-        initBoard(),
+        initBoard()
       );
       expect(result.score).toBe(10);
       expect(result.filledRowsNumber).toBe(1);
@@ -34,7 +34,7 @@ describe("Result", () => {
           score: 10,
           filledRowsNumber: 1,
         },
-        initBoard(),
+        initBoard()
       );
       expect(result.score).toBe(50);
       expect(result.filledRowsNumber).toBe(2);
@@ -49,7 +49,7 @@ describe("Result", () => {
           score: 100,
           filledRowsNumber: 2,
         },
-        initBoard(),
+        initBoard()
       );
       expect(result.score).toBe(100);
       expect(result.filledRowsNumber).toBe(2);

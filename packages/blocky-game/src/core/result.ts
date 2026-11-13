@@ -17,7 +17,7 @@ export const initResult = (): Result => ({
 export const calculateNewResult = (
   outcome: Outcome,
   prev: Result,
-  board: Board,
+  board: Board
 ): Result => {
   const newFilledRowsNumber = outcome.filledRowsNumber
     ? prev.filledRowsNumber + outcome.filledRowsNumber

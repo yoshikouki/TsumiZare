@@ -20,19 +20,19 @@ export default defineConfig({
       "@": new URL("./src", import.meta.url).pathname,
       "@yoshikouki/hono-file-router": new URL(
         "./node_modules/@yoshikouki/hono-file-router/packages/hono-file-router/src/index.ts",
-        import.meta.url,
+        import.meta.url
       ).pathname,
       "@yoshikouki/hono-rsc-renderer/entry.browser": new URL(
         "./node_modules/@yoshikouki/hono-rsc-renderer/packages/hono-rsc-renderer/src/entry.browser.ts",
-        import.meta.url,
+        import.meta.url
       ).pathname,
       "@yoshikouki/hono-rsc-renderer/entry.ssr": new URL(
         "./node_modules/@yoshikouki/hono-rsc-renderer/packages/hono-rsc-renderer/src/entry.ssr.ts",
-        import.meta.url,
+        import.meta.url
       ).pathname,
       "@yoshikouki/hono-rsc-renderer": new URL(
         "./node_modules/@yoshikouki/hono-rsc-renderer/packages/hono-rsc-renderer/src/index.ts",
-        import.meta.url,
+        import.meta.url
       ).pathname,
     },
   },

@@ -52,8 +52,9 @@ describe("useBlockyGame", () => {
         wrapper: BlockyGameProvider,
       });
       act(() => result.current.runTick());
-      if (!result.current.activeBlock.activeBlock)
+      if (!result.current.activeBlock.activeBlock) {
         throw new Error("activeBlock is null");
+      }
       const { shape, position } = result.current.activeBlock.activeBlock;
       // Move block to the bottom
       for (let i = 0; i < 19; i++) {
@@ -61,7 +62,7 @@ describe("useBlockyGame", () => {
       }
       // Check collision at bottom
       expect(result.current.hasCollision(shape, { x: position.x, y: 20 })).toBe(
-        true,
+        true
       );
     });
   });

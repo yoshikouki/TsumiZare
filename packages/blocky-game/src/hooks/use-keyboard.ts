@@ -10,11 +10,17 @@ export const useKeyboard = ({
   isPreventTouchDefault?: boolean;
 }) => {
   useEffect(() => {
-    if (!onKeyDown) return;
+    if (!onKeyDown) {
+      return;
+    }
     const handleKeyDown = (e: KeyboardEvent) => {
       const handler = onKeyDown[e.key];
-      if (!handler) return;
-      if (isPreventTouchDefault) e.preventDefault();
+      if (!handler) {
+        return;
+      }
+      if (isPreventTouchDefault) {
+        e.preventDefault();
+      }
       handler();
     };
     window.addEventListener("keydown", handleKeyDown);

@@ -31,7 +31,7 @@ export const TsumiZare = () => {
     <div
       className={cn(
         "relative z-10 flex h-svh w-full flex-col items-center justify-center overscroll-none",
-        "sm:h-full sm:overflow-hidden sm:overscroll-auto",
+        "sm:h-full sm:overflow-hidden sm:overscroll-auto"
       )}
     >
       <TickRunner ref={tickRunnerRef} />
@@ -39,13 +39,13 @@ export const TsumiZare = () => {
       <div
         className={cn(
           "flex w-full max-w-xs justify-between pt-4 pb-1 opacity-100 transition-all duration-200",
-          board.status === "ready" && "pointer-events-none opacity-0",
+          board.status === "ready" && "pointer-events-none opacity-0"
         )}
       >
         <div
           className={cn(
-            "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
-            "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "flex h-10 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap",
+            "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
           )}
         >
           {queuedBlocks[0] && (
@@ -57,8 +57,8 @@ export const TsumiZare = () => {
         </div>
         <div
           className={cn(
-            "flex h-10 items-center justify-center gap-2 whitespace-nowrap font-medium text-sm",
-            "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "flex h-10 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap",
+            "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
           )}
         >
           <div className="text-primary/50">{result.score}</div>
@@ -69,7 +69,7 @@ export const TsumiZare = () => {
             aria-label="一時停止"
             onClick={pauseBlockyGame}
           >
-            <Pause className="fill-primary stroke-1 stroke-primary" />
+            <Pause className="fill-primary stroke-primary stroke-1" />
           </Button>
         </div>
       </div>
@@ -82,15 +82,15 @@ export const TsumiZare = () => {
               key={cell.id}
               variant={detectCellVariant(cell, cellIndex, rowIndex)}
             />
-          )),
+          ))
         )}
       </Board>
 
       {/* Game Controller */}
       <div
         className={cn(
-          "absolute inset-0 flex flex-col items-center justify-center bg-background/30 opacity-100 transition-all duration-200",
-          board.status === "playing" && "pointer-events-none opacity-0",
+          "bg-background/30 absolute inset-0 flex flex-col items-center justify-center opacity-100 transition-all duration-200",
+          board.status === "playing" && "pointer-events-none opacity-0"
         )}
       >
         {/* Ready to play */}
@@ -107,7 +107,7 @@ export const TsumiZare = () => {
         {/* Pause */}
         <GameControlContainer
           isVisible={board.status === "pause"}
-          className="rounded border bg-background p-4"
+          className="bg-background rounded border p-4"
         >
           <div className="py-8">
             <Pause className="fill-primary stroke-primary" size="40" />

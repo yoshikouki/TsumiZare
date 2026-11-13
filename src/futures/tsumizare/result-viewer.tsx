@@ -13,7 +13,7 @@ const generateResultImage = async ({
   filledCellsNumber: number;
 }) => {
   const fontData = await fetch("/fonts/Inter-Black.ttf").then((res) =>
-    res.arrayBuffer(),
+    res.arrayBuffer()
   );
 
   const { default: satori } = await import("satori");
@@ -48,8 +48,8 @@ const svgStringToCanvas = ({
   svgString: string;
   width: number;
   height: number;
-}): Promise<HTMLCanvasElement> => {
-  return new Promise((resolve, reject) => {
+}): Promise<HTMLCanvasElement> =>
+  new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement("canvas");
@@ -66,13 +66,11 @@ const svgStringToCanvas = ({
     img.onerror = (e) => reject(e);
     img.src = `data:image/svg+xml;base64,${btoa(svgString)}`;
   });
-};
 
-const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob | null> => {
-  return new Promise((resolve) => {
+const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob | null> =>
+  new Promise((resolve) => {
     canvas.toBlob((blob) => resolve(blob), "image/png");
   });
-};
 
 const imageFileName = () => `TsumiZare-result-${new Date().toISOString()}.png`;
 

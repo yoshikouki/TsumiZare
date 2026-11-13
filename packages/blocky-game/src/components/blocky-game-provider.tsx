@@ -32,9 +32,8 @@ export const BlockyGameProvider = ({
   const context = {
     board,
     setBoard,
-    hasCollision: (shape: BlockShape, position: BlockPosition) => {
-      return hasBlockCollision({ shape, position }, board);
-    },
+    hasCollision: (shape: BlockShape, position: BlockPosition) =>
+      hasBlockCollision({ shape, position }, board),
   };
 
   return <BlockyGameContext value={context}>{children}</BlockyGameContext>;

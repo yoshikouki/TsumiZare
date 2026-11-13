@@ -20,8 +20,8 @@ app.use(
         {props.children}
       </Document>
     ),
-    { onError: (error) => console.error(error) },
-  ),
+    { onError: (error) => console.error(error) }
+  )
 );
 
 app.route(
@@ -36,7 +36,7 @@ app.route(
       },
     ],
     strict: false,
-  }),
+  })
 );
 
 app.notFound((c) => {
@@ -45,10 +45,12 @@ app.notFound((c) => {
     <main>
       <h1>ページが見つかりません</h1>
       <a href="/">TsumiZareへ戻る</a>
-    </main>,
+    </main>
   );
 });
 
 export default app.fetch;
 
-if (import.meta.hot) import.meta.hot.accept();
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}

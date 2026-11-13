@@ -59,7 +59,7 @@ export const generateQueuedBlocks = (count = DEFAULT_QUEUED_BLOCK_SIZE) => {
 export const rotateShape = (shape: BlockShape) => {
   // 90° clockwise rotation
   const newShape = shape[0].map((_, index) =>
-    shape.map((row) => row[index]).reverse(),
+    shape.map((row) => row[index]).reverse()
   );
   return newShape;
 };
@@ -67,7 +67,7 @@ export const rotateShape = (shape: BlockShape) => {
 export const isFilledBlockCell = (
   cellX: number,
   cellY: number,
-  { position, shape }: Block,
+  { position, shape }: Block
 ) => {
   const maxX = position.x + shape[0].length;
   const maxY = position.y + shape.length;
@@ -87,7 +87,7 @@ export const isFilledBlockCell = (
 export const isCellBelowBlock = (
   cellX: number,
   cellY: number,
-  block: Block,
+  block: Block
 ) => {
   const { position, shape } = block;
   const maxX = position.x + shape[0].length;

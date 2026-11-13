@@ -15,14 +15,14 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground",
-        outline: "border border-input bg-white text-primary",
+        outline: "border-input text-primary border bg-white",
         secondary: "bg-secondary text-secondary-foreground",
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 export const GameControlButton = ({
