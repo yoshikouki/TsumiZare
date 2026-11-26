@@ -5,11 +5,7 @@
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup && tsc -p tsconfig.json",
-    "lint": "bunx @biomejs/biome check .",
-    "format": "bunx @biomejs/biome check --apply .",
-    "format:unsafe": "bunx @biomejs/biome check --apply-unsafe .",
-    "update:all": "bunx npm-check-updates -u"
+    "build": "tsup && tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/bun": "latest",
