@@ -6,8 +6,7 @@ import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BlockViewer } from "./components/block-viewer";
-import { Board, BoardCell } from "./components/board";
-import { TickRunner } from "./components/tick-runner";
+import { Board } from "./components/board";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
@@ -18,14 +17,13 @@ export const TsumiZare = () => {
     queuedBlocks,
     result,
     boardRef,
-    tickRunnerRef,
     startBlockyGame,
     finishBlockyGame,
     pauseBlockyGame,
     resumeBlockyGame,
     readyBlockyGame,
     detectCellVariant,
-  } = useBlockyGame();
+  } = useBlockyGame({ autoDrop: true });
 
   return (
     <div
@@ -34,7 +32,6 @@ export const TsumiZare = () => {
         "sm:h-full sm:overflow-hidden sm:overscroll-auto"
       )}
     >
-      <TickRunner ref={tickRunnerRef} />
       {/* Game Header */}
       <div
         className={cn(
@@ -77,18 +74,11 @@ export const TsumiZare = () => {
       {/* Game Board */}
       <Board
         boardRef={boardRef}
-        boardConfig={board.config}
+        rows={board.rows}
+        colsNumber={board.config.colsNumber}
         isPaused={board.status === "pause"}
-      >
-        {board.rows.flatMap((row, rowIndex) =>
-          row.cells.map((cell, cellIndex) => (
-            <BoardCell
-              key={cell.id}
-              variant={detectCellVariant(cell, cellIndex, rowIndex)}
-            />
-          ))
-        )}
-      </Board>
+        detectCellVariant={detectCellVariant}
+      />
 
       {/* Game Controller */}
       <div

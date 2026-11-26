@@ -103,6 +103,11 @@ for (const path of ["/", "/modes/no-tick"]) {
       )
       .not.toBe(before);
     if (path === "/modes/no-tick") {
+      // A block placed in the top rows blocks the next one and ends the game.
+      await Array.from({ length: 5 }).reduce<Promise<void>>(
+        (previous) => previous.then(() => page.keyboard.press("ArrowDown")),
+        Promise.resolve()
+      );
       await page.getByRole("button", { name: "ブロックを置く" }).click();
       await expect(
         board.locator('[data-state="filled"]').first()

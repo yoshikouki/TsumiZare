@@ -12,7 +12,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { BlockViewer } from "@/futures/tsumizare/components/block-viewer";
-import { Board, BoardCell } from "@/futures/tsumizare/components/board";
+import { Board } from "@/futures/tsumizare/components/board";
 import { GameControlButton } from "@/futures/tsumizare/game-control-button";
 import { GameControlContainer } from "@/futures/tsumizare/game-control-container";
 import { ResultViewer } from "@/futures/tsumizare/result-viewer";
@@ -31,8 +31,8 @@ export const NoTickGame = () => {
     resumeBlockyGame,
     readyBlockyGame,
     detectCellVariant,
-    activateBlockOrFinish,
-    updateBoard,
+    activateBlock,
+    placeBlock,
   } = useBlockyGame({
     upAction: "moveUp",
   });
@@ -40,10 +40,6 @@ export const NoTickGame = () => {
   const startGame = () => {
     startBlockyGame();
     runTick();
-  };
-  const confirmBlock = () => {
-    updateBoard();
-    activateBlockOrFinish();
   };
 
   return (
@@ -63,7 +59,7 @@ export const NoTickGame = () => {
         <Button
           type="button"
           variant={"outline"}
-          onClick={activateBlockOrFinish}
+          onClick={activateBlock}
           className={cn(
             "flex h-10 items-center justify-center gap-2 text-sm font-medium whitespace-nowrap",
             "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
@@ -96,7 +92,7 @@ export const NoTickGame = () => {
             variant={"default"}
             size={"icon"}
             aria-label="ブロックを置く"
-            onClick={confirmBlock}
+            onClick={placeBlock}
           >
             <Grid2x2Check className="stroke-primary-foreground" />
           </Button>
@@ -106,18 +102,11 @@ export const NoTickGame = () => {
       {/* Game Board */}
       <Board
         boardRef={boardRef}
-        boardConfig={board.config}
+        rows={board.rows}
+        colsNumber={board.config.colsNumber}
         isPaused={board.status === "pause"}
-      >
-        {board.rows.flatMap((row, rowIndex) =>
-          row.cells.map((cell, cellIndex) => (
-            <BoardCell
-              key={cell.id}
-              variant={detectCellVariant(cell, cellIndex, rowIndex)}
-            />
-          ))
-        )}
-      </Board>
+        detectCellVariant={detectCellVariant}
+      />
 
       {/* Game Controller */}
       <div

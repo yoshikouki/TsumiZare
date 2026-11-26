@@ -1,103 +1,77 @@
 "use client";
 
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useEffectEvent } from "react";
 import { BlockyGameContext } from "../components/blocky-game-provider.js";
-import type { Block } from "../core/block.js";
 import {
-  type Cell,
-  initBoard,
-  mergeBlockIntoBoard,
-  renewFilledRows,
-} from "../core/board.js";
-import { calculateNewResult, type Outcome } from "../core/result.js";
-import { useActiveBlock } from "./use-active-block.js";
+  generateQueuedBlocks,
+  generateRandomBlock,
+  isCellBelowBlock,
+  isFilledBlockCell,
+} from "../core/block.js";
+import { type Cell, initBoard } from "../core/board.js";
+import type { Direction } from "../core/game.js";
+import { useKeyboard } from "./use-keyboard.js";
+import { useTouch } from "./use-touch.js";
 
 export type UpAction = "rotate" | "moveUp";
 
 export type CellVariants = "empty" | "filled" | "active" | "belowActiveBlock";
 
-export const useBlockyGame = (option?: { upAction?: UpAction }) => {
-  const { board, setBoard, hasCollision } = useContext(BlockyGameContext);
-  const activeBlock = useActiveBlock({
-    board,
-    hasCollision,
-    upAction: option?.upAction,
+export const useBlockyGameState = () => useContext(BlockyGameContext).game;
+
+export const useBlockyGame = (option?: {
+  upAction?: UpAction;
+  autoDrop?: boolean;
+}) => {
+  const { game, send } = useContext(BlockyGameContext);
+  const { board, activeBlock, queuedBlocks } = game;
+  const isPlaying = board.status === "playing";
+
+  const move = (direction: Direction) => send({ type: "move", direction });
+  const rotate = () => send({ type: "rotate" });
+  const runTick = () =>
+    send({ type: "tick", nextBlock: generateRandomBlock() });
+  const placeBlock = () =>
+    send({ type: "place", nextBlock: generateRandomBlock() });
+  const activateBlock = () =>
+    send({ type: "activate", nextBlock: generateRandomBlock() });
+  const moveLeft = () => move("left");
+  const moveRight = () => move("right");
+  const moveDown = () => move("down");
+  const onUp =
+    option?.upAction === "moveUp" ? () => move("up") : () => rotate();
+
+  const boardRef = useTouch({
+    onSwipeLeft: moveLeft,
+    onSwipeRight: moveRight,
+    onSwipeDown: moveDown,
+    onSwipeUp: onUp,
+    onTap: rotate,
+    isPreventTouchDefault: () => isPlaying,
   });
-  const playMilliSecondsRef = useRef(0);
-  const updatePlayTime = () => {
-    playMilliSecondsRef.current += board.config.dropInterval;
-  };
-  const playMilliSeconds = playMilliSecondsRef.current;
-  const playTimeString = new Date(playMilliSeconds).toISOString().slice(14, 19);
 
-  const startBlockyGame = () => {
-    setBoard({ ...initBoard(), status: "playing" });
-    activeBlock.init();
-  };
+  useKeyboard({
+    onKeyDown: {
+      ArrowLeft: moveLeft,
+      ArrowRight: moveRight,
+      ArrowDown: moveDown,
+      ArrowUp: onUp,
+      " ": rotate,
+    },
+    isPreventTouchDefault: isPlaying,
+  });
 
-  const finishBlockyGame = () => {
-    setBoard((prev) => ({ ...prev, status: "finished" }));
-    activeBlock.remove();
-  };
-
-  const pauseBlockyGame = () => {
-    setBoard((prev) => ({ ...prev, status: "pause" }));
-  };
-
-  const resumeBlockyGame = () => {
-    setBoard((prev) => ({ ...prev, status: "playing" }));
-  };
-
-  const readyBlockyGame = () => {
-    setBoard(initBoard());
-    activeBlock.remove();
-  };
-
-  const runTick = () => {
-    updatePlayTime();
-    if (activeBlock.isActive) {
-      const droppedBlock = activeBlock.drop();
-      if (droppedBlock) {
-        return;
-      }
-      updateBoard();
-    } else {
-      activateBlockOrFinish();
-    }
-  };
-
-  const updateBoard = () => {
-    const removedBlock = activeBlock.remove();
-    if (!removedBlock) {
+  const { dropInterval } = board.config;
+  const autoDrop = option?.autoDrop ?? false;
+  const onTick = useEffectEvent(runTick);
+  useEffect(() => {
+    if (!(autoDrop && isPlaying)) {
       return;
     }
-    const mergedResult = mergeIntoBoard(removedBlock);
-    updateResult({ filledRowsNumber: mergedResult.filledRowsNumber });
-  };
+    const interval = setInterval(onTick, dropInterval);
+    return () => clearInterval(interval);
+  }, [autoDrop, isPlaying, dropInterval]);
 
-  const mergeIntoBoard = (block: Block) => {
-    const mergedBoard = mergeBlockIntoBoard(block, board);
-    const mergedResult = renewFilledRows(mergedBoard);
-    setBoard(mergedResult.board);
-    return mergedResult;
-  };
-
-  const updateResult = (outcome: Outcome) => {
-    setBoard((prev) => ({
-      ...prev,
-      result: calculateNewResult(outcome, prev.result, prev),
-    }));
-  };
-
-  const activateBlockOrFinish = () => {
-    const activatedBlock = activeBlock.activate();
-    if (activatedBlock) {
-      return;
-    }
-    finishBlockyGame();
-  };
-
-  // Cell management
   const detectCellVariant = (
     cell: Cell,
     x: number,
@@ -106,49 +80,33 @@ export const useBlockyGame = (option?: { upAction?: UpAction }) => {
     if (cell.blockId) {
       return "filled";
     }
-    if (activeBlock.isActiveCell(x, y)) {
+    if (activeBlock && isFilledBlockCell(x, y, activeBlock)) {
       return "active";
     }
-    if (activeBlock.isBelowActiveBlock(x, y)) {
+    if (activeBlock && isCellBelowBlock(x, y, activeBlock)) {
       return "belowActiveBlock";
     }
     return "empty";
   };
 
-  // Game loop
-  const tickRunnerRef = (_ref: HTMLDivElement) => {
-    if (board.status !== "playing") {
-      return;
-    }
-    const interval = setInterval(runTick, board.config.dropInterval);
-    return () => clearInterval(interval);
-  };
-
   return {
     board,
-    activeBlock,
-    queuedBlocks: activeBlock.queuedBlocks,
+    queuedBlocks,
     result: board.result,
-    playMilliSeconds,
-    playTimeString,
-    // Refs
-    boardRef: activeBlock.boardRef,
-    tickRunnerRef,
-    // Game management
-    startBlockyGame,
-    finishBlockyGame,
-    pauseBlockyGame,
-    resumeBlockyGame,
-    readyBlockyGame,
-    // Block management
-    mergeIntoBoard,
+    boardRef,
+    startBlockyGame: () =>
+      send({
+        type: "start",
+        board: initBoard(),
+        queuedBlocks: generateQueuedBlocks(),
+      }),
+    finishBlockyGame: () => send({ type: "finish" }),
+    pauseBlockyGame: () => send({ type: "pause" }),
+    resumeBlockyGame: () => send({ type: "resume" }),
+    readyBlockyGame: () => send({ type: "reset", board: initBoard() }),
     runTick,
-    hasCollision,
-    updateBoard,
-    activateBlockOrFinish,
-    // Cell management
+    placeBlock,
+    activateBlock,
     detectCellVariant,
-    isActiveCell: activeBlock.isActiveCell,
-    isBelowActiveBlock: activeBlock.isBelowActiveBlock,
   };
 };

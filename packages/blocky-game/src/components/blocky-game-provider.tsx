@@ -1,42 +1,34 @@
 "use client";
 
-import {
-  createContext,
-  type Dispatch,
-  type SetStateAction,
-  useState,
-} from "react";
+import { createContext, useReducer } from "react";
 
-import type { BlockPosition, BlockShape } from "../core/block.js";
-import { type Board, hasBlockCollision, initBoard } from "../core/board.js";
+import { initBoard } from "../core/board.js";
+import {
+  type Game,
+  type GameAction,
+  gameReducer,
+  initGame,
+} from "../core/game.js";
 
 export interface BlockyGameContext {
-  board: Board;
-  setBoard: Dispatch<SetStateAction<Board>>;
-  hasCollision: (shape: BlockShape, position: BlockPosition) => boolean;
+  game: Game;
+  send: (action: GameAction) => void;
 }
 
 export const BlockyGameContext = createContext<BlockyGameContext>({
-  board: initBoard(),
-  setBoard: () => {
-    // The default context leaves the board unchanged outside a provider.
-  },
-  hasCollision: () => false,
+  game: initGame(initBoard()),
+  send: () => undefined,
 });
+
+const createGame = () => initGame(initBoard());
 
 export const BlockyGameProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [board, setBoard] = useState<Board>(initBoard);
-
-  const context = {
-    board,
-    setBoard,
-    hasCollision: (shape: BlockShape, position: BlockPosition) =>
-      hasBlockCollision({ shape, position }, board),
-  };
-
-  return <BlockyGameContext value={context}>{children}</BlockyGameContext>;
+  const [game, send] = useReducer(gameReducer, undefined, createGame);
+  return (
+    <BlockyGameContext value={{ game, send }}>{children}</BlockyGameContext>
+  );
 };
