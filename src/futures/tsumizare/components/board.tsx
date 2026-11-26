@@ -33,21 +33,19 @@ export const Board = ({
   </section>
 );
 
-// A transition runs with the settings of the state being entered, so each
-// variant decides how a cell animates into it: an active cell appears at once,
-// and the cell it leaves fades back to empty. Every variant a new row can start
-// in also fades its opacity in from @starting-style.
+// Moving cells switch instantly so the falling block stays crisp. Transitions
+// remain only for a new row fading in from @starting-style and for a landing
+// block settling into its filled shape.
 const cellVariants = cva(
-  "bg-primary/5 aspect-square rounded-sm ease-out motion-reduce:transition-none starting:opacity-0",
+  "bg-primary/5 aspect-square rounded-sm transition-opacity duration-150 ease-out motion-reduce:transition-none starting:opacity-0",
   {
     variants: {
       variant: {
-        empty: "transition-[background-color,opacity] duration-150",
+        empty: "",
         filled:
           "bg-primary rounded-none transition-[border-radius,scale] duration-300",
-        active: "bg-primary/90 scale-90 transition-opacity duration-150",
-        belowActiveBlock:
-          "bg-primary/10 transition-[background-color,opacity] duration-150",
+        active: "bg-primary/90 scale-90",
+        belowActiveBlock: "bg-primary/10",
       },
     },
     defaultVariants: {
