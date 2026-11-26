@@ -1,6 +1,18 @@
-import type { Cell, CellVariants, Row } from "blocky-game";
+import {
+  type Cell,
+  type CellVariants,
+  LINE_CLEAR_TRANSITION,
+  type Row,
+} from "blocky-game";
 import { cva, type VariantProps } from "class-variance-authority";
+import { ViewTransition } from "react";
 import { cn } from "@/lib/utils";
+
+const LINE_CLEAR_ROW = { [LINE_CLEAR_TRANSITION]: "auto", default: "none" };
+
+// An empty row looks the same wherever it sits, so only rows with landed cells
+// need to be captured and animated.
+const hasLandedCells = (row: Row) => row.cells.some((cell) => cell.blockId);
 
 export const Board = ({
   boardRef,
@@ -25,15 +37,22 @@ export const Board = ({
   >
     <div className="flex w-full max-w-xs flex-col gap-1 pb-4">
       {rows.map((row, y) => (
-        <div
-          className="grid gap-1"
+        <ViewTransition
+          default={hasLandedCells(row) ? LINE_CLEAR_ROW : "none"}
           key={row.id}
-          style={{ gridTemplateColumns: `repeat(${colsNumber}, 1fr)` }}
         >
-          {row.cells.map((cell, x) => (
-            <BoardCell key={cell.id} variant={detectCellVariant(cell, x, y)} />
-          ))}
-        </div>
+          <div
+            className="grid gap-1"
+            style={{ gridTemplateColumns: `repeat(${colsNumber}, 1fr)` }}
+          >
+            {row.cells.map((cell, x) => (
+              <BoardCell
+                key={cell.id}
+                variant={detectCellVariant(cell, x, y)}
+              />
+            ))}
+          </div>
+        </ViewTransition>
       ))}
     </div>
   </section>

@@ -216,3 +216,10 @@
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
+
+/* The overlay lets pointer input reach the page underneath while the rows
+   fall. */
+/* biome-ignore lint/suspicious/useBaseline: Browsers without view transitions skip the animation. */
+::view-transition {
+  pointer-events: none;
+}

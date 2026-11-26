@@ -26,6 +26,9 @@ export const App = () => (
 
 Call `useBlockyGame` once per game, because it listens to the keyboard. Read the game anywhere else with `useBlockyGameState`.
 
+A line clear commits as a React transition with the type `LINE_CLEAR_TRANSITION`. Wrap rows in `<ViewTransition>` to animate it.
+Any action sent while that transition is pending joins it, so every committed frame shows the actions in the order they were sent.
+
 The public API is exported from [`src/index.ts`](./src/index.ts).
 TsumiZare wraps its routes in the provider ([`src/routes/index.tsx`](../../src/routes/index.tsx)) and builds the game on the hook ([`tsumizare.tsx`](../../src/futures/tsumizare/tsumizare.tsx)).
 
