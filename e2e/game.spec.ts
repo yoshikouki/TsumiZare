@@ -61,6 +61,13 @@ test("manifest, icons, fonts and missing routes are served", async ({
   expect((await request.get("/missing")).status()).toBe(404);
 });
 
+test("home page links feedback to the contact form", async ({ page }) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("link", { name: "フィードバックを送る" })
+  ).toHaveAttribute("href", "https://yoshikouki.com/contact?topic=tsumizare");
+});
+
 for (const path of ["/", "/modes/no-tick"]) {
   test(`${path}: play, move, pause, resume, finish and save a result image`, async ({
     page,

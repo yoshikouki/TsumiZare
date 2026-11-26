@@ -1,5 +1,6 @@
 import { BlockyGameProvider } from "blocky-game";
 import { Hono } from "hono";
+import { Mail } from "lucide-react";
 
 import { Logo } from "@/components/logo";
 import { GameModes } from "@/components/site/game-modes";
@@ -66,6 +67,16 @@ export function HomePage() {
           <TypographyP>
             当アプリへのフィードバックもお待ちしております。
           </TypographyP>
+          <Button asChild variant="outline">
+            <a
+              href="https://yoshikouki.com/contact?topic=tsumizare"
+              target="_blank"
+              className="flex items-center gap-2"
+              rel="noopener"
+            >
+              <Mail className="w-5 flex-none" /> フィードバックを送る
+            </a>
+          </Button>
         </section>
       </main>
     </BlockyGameProvider>

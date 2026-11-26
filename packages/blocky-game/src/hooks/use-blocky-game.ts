@@ -1,16 +1,16 @@
 "use client";
 
 import { useContext, useRef } from "react";
-import { BlockyGameContext } from "../components/blocky-game-provider";
-import type { Block } from "../core/block";
+import { BlockyGameContext } from "../components/blocky-game-provider.js";
+import type { Block } from "../core/block.js";
 import {
   type Cell,
   initBoard,
   mergeBlockIntoBoard,
   renewFilledRows,
-} from "../core/board";
-import { calculateNewResult, type Outcome } from "../core/result";
-import { useActiveBlock } from "./use-active-block";
+} from "../core/board.js";
+import { calculateNewResult, type Outcome } from "../core/result.js";
+import { useActiveBlock } from "./use-active-block.js";
 
 export type UpAction = "rotate" | "moveUp";
 

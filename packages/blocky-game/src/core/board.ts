@@ -1,6 +1,6 @@
-import type { Block } from "./block";
-import { COLS, DROP_INTERVAL, ROWS } from "./constants";
-import { initResult, type Result } from "./result";
+import type { Block } from "./block.js";
+import { COLS, DROP_INTERVAL, ROWS } from "./constants.js";
+import { initResult, type Result } from "./result.js";
 
 export interface Cell {
   id: string;

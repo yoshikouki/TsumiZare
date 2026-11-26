@@ -2,44 +2,34 @@
 
 https://tsumizare.app/
 
+![App screenshot](/img/screenshot-play.png)
+
 Hono・React Server Components・Viteで構築し、Cloudflare Workersへ配信するパズルゲーム。
-Bunを開発・ビルド・テストに使う。ルーティングとHTML/Flight変換は
+ルーティングとHTML/Flight変換は
 `@yoshikouki/hono-file-router` と `@yoshikouki/hono-rsc-renderer` が担う。
+ゲーム状態はブラウザ内のReactで持ち、結果画像の保存・共有もブラウザ内で処理する。
+ゲームロジックは [blocky-game](./packages/blocky-game/) に分けている。
+
+## 開発
 
 ```sh
 bun install --frozen-lockfile
 bun dev
 ```
 
-| コマンド | 用途 |
-| --- | --- |
-| `bun run build` | ゲームライブラリとWorkerのビルド |
-| `bun run preview` | ビルドしたWorkerをローカルで実行 |
-| `bun run test` | ゲームロジック・React hooksのテスト |
-| `bun run test:e2e` | Vite開発環境のブラウザ検証 |
-| `bun run test:worker` | 本番ビルドのHTTP・ブラウザ検証 |
-| `bun run typecheck` | TypeScriptの型検証 |
-| `bun run lint` | 整形と静的検証 |
+コマンドは `package.json` の `scripts`、PRで通す検証は
+`.github/workflows/ci.yml` の `validate` ジョブが正本。
+`bun run test:worker` はビルド済みの `dist` を検証するので、先に `bun run build` を実行する。
 
-`src/routes` のHono moduleから `c.render()` を呼ぶ。
-ゲーム状態はブラウザ内のReactで持ち、結果画像の保存・共有もブラウザ内で処理する。
+## 配信
 
-本番へのpushはGitHub Actionsで検証後、同じ成果物を配信する。
+`main` へのpushはGitHub Actionsで検証し、検証した成果物をそのまま配信する。
 `Production` Environmentに `CLOUDFLARE_API_TOKEN` が必要。
 Workerコードと静的アセットはこのリポジトリ、独自ドメインとDNSは
-`personal-infra/terraform/cloudflare/tsumizare.tf` が管理する。
+`yoshikouki/personal-infra` の `terraform/cloudflare/tsumizare.tf` が管理する。
 Wranglerに独自ドメインやrouteを追加して管理を二重化しない。
+
 `/healthz` で配信中のGit SHAとWorker version IDを確認できる。
-
-配信検証は `bun run scripts/smoke-deployment.ts <URL> [Git SHA] [version ID]`。
-通常リリースで検証に失敗すると、CIは直前のWorker versionへ戻す。
-
-![App screenshot](/img/screenshot-play.png)
-
-## Custom hook
-
-See: [blocky-game](./packages/blocky-game/)
-
-`blocky-game` は tsup で ESM・CommonJS をバンドルし、`tsc` で型定義を生成する。
-型定義はバンドルせず `dist` にソースと同じ構成で出力し、`dist/index.d.ts` から公開する。
-TypeScript の JavaScript API に依存する tsup の `dts` は使わない。
+配信の検証は `scripts/smoke-deployment.ts` が行い、引数はスクリプトのUsageに従う。
+配信か配信後の検証に失敗すると、CIは直前のWorker versionへロールバックし、同じスクリプトで検証する。
+複数のversionへ分割配信している間はCIが配信しないので、先に1つのversionへ揃える。
