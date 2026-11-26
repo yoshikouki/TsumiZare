@@ -2,8 +2,15 @@
   "name": "blocky-game",
   "version": "0.0.2",
   "description": "Core functionalities for block game",
-  "main": "dist/index.mjs",
+  "type": "module",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsup && tsc -p tsconfig.json"
   },
@@ -23,5 +30,10 @@
   "files": [
     "dist"
   ],
-  "author": "yoshikouki"
+  "author": "yoshikouki",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoshikouki/TsumiZare.git",
+    "directory": "packages/blocky-game"
+  }
 }

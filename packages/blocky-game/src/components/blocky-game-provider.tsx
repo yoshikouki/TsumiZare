@@ -7,8 +7,8 @@ import {
   useState,
 } from "react";
 
-import type { BlockPosition, BlockShape } from "../core/block";
-import { type Board, hasBlockCollision, initBoard } from "../core/board";
+import type { BlockPosition, BlockShape } from "../core/block.js";
+import { type Board, hasBlockCollision, initBoard } from "../core/board.js";
 
 export interface BlockyGameContext {
   board: Board;

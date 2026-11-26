@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { BlockyGameContext } from "../components/blocky-game-provider";
+import type { BlockyGameContext } from "../components/blocky-game-provider.js";
 import {
   type Block,
   type BlockPosition,
@@ -12,11 +12,11 @@ import {
   isCellBelowBlock,
   isFilledBlockCell,
   rotateShape,
-} from "../core/block";
-import { WALL_KICKS } from "../core/constants";
-import type { UpAction } from "./use-blocky-game";
-import { useKeyboard } from "./use-keyboard";
-import { useTouch } from "./use-touch";
+} from "../core/block.js";
+import { WALL_KICKS } from "../core/constants.js";
+import type { UpAction } from "./use-blocky-game.js";
+import { useKeyboard } from "./use-keyboard.js";
+import { useTouch } from "./use-touch.js";
 
 export const useActiveBlock = ({
   board,
