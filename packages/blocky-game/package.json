@@ -1,6 +1,6 @@
 {
   "name": "blocky-game",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Core functionalities for block game",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
