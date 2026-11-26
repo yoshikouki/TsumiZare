@@ -128,6 +128,34 @@ describe("gameReducer", () => {
     expect(finished.activeBlock).toBeNull();
   });
 
+  it("finishes when the placed block covers the spot where the next one spawns", () => {
+    const game = playing({
+      board: boardWith([]),
+      activeBlock: block("a", BLOCKS.I, 3, 0),
+      queuedBlocks: [block("q", BLOCKS.I, 3, 0)],
+    });
+    const placed = run(game, {
+      type: "place",
+      nextBlock: block("n", BLOCKS.O, 3, 0),
+    });
+    expect(placed.board.status).toBe("finished");
+  });
+
+  it("keeps playing when a block placed in the top rows leaves the spawn free", () => {
+    const queued = block("q", BLOCKS.I, 3, 0);
+    const game = playing({
+      board: boardWith([]),
+      activeBlock: block("a", [[1], [1], [1], [1]], 0, 0),
+      queuedBlocks: [queued],
+    });
+    const placed = run(game, {
+      type: "place",
+      nextBlock: block("n", BLOCKS.O, 3, 0),
+    });
+    expect(placed.board.status).toBe("playing");
+    expect(placed.activeBlock).toEqual(queued);
+  });
+
   it("ignores play while paused and resumes where it stopped", () => {
     const game = playing({
       board: boardWith([]),
