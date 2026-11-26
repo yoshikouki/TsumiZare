@@ -99,7 +99,7 @@ export const BlockyGame = () => {
 
       {/* Game Board */}
       <Board boardRef={boardRef} boardConfig={board.config} isPaused={board.status === "pause"}>
-        {board.rows.map((row, rowIndex) =>
+        {board.rows.flatMap((row, rowIndex) =>
           row.cells.map((cell, cellIndex) => (
             <BoardCell key={cell.id} variant={detectCellVariant(cell, cellIndex, rowIndex)} />
           ))
