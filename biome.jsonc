@@ -31,7 +31,11 @@
   },
   "linter": {
     "enabled": true,
-    "rules": {}
+    "rules": {
+      "performance": {
+        "noJsxPropsBind": "off"
+      }
+    }
   },
   "vcs": {
     "enabled": true,
