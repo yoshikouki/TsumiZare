@@ -8,7 +8,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { ViewTransition } from "react";
 import { cn } from "@/lib/utils";
 
-const LINE_CLEAR_ROW = { [LINE_CLEAR_TRANSITION]: "auto", default: "none" };
+// globals.css shows only the new image of these rows: the old image still
+// shows the placed block as active next to the next block.
+const LINE_CLEAR_ROW = {
+  [LINE_CLEAR_TRANSITION]: "line-clear-row",
+  default: "none",
+};
 
 // An empty row looks the same wherever it sits, so only rows with landed cells
 // need to be captured and animated.

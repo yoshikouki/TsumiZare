@@ -377,6 +377,16 @@ const stepArbitrary: fc.Arbitrary<Step> = fc.oneof(
   { weight: 1, arbitrary: fc.constant({ kind: "vtFinish" as const }) }
 );
 
+// The first ArrowUp cannot move a block in the top row. Each later key
+// changes where the next block ends, so a dropped key shows.
+const keysAfterClear = [
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowUp",
+  "ArrowLeft",
+];
+
 const startOnNearlyFullBoard = async () => {
   send({
     type: "start",
@@ -405,14 +415,11 @@ describe("useBlockyGame with a pending line clear", () => {
     await mount();
     await startOnNearlyFullBoard();
     await step({ kind: "drop" });
-    await press("ArrowUp");
-    await press("ArrowLeft");
+    await inSequence(keysAfterClear, press);
     await settle();
     expect(vt.started).toBeGreaterThan(0);
     expectScreensFollowTheLog();
-    // ArrowUp cannot move a block in the top row; ArrowLeft shows that the
-    // keys reached the next block instead of being dropped.
-    expect(painted.at(-1)?.split("\n")[0]).toBe("..@@@@....");
+    expect(painted.at(-1)?.split("\n")[1]).toBe("..@@@@....");
   });
 
   it("applies ArrowUp to the next block when it arrives while the view transition prepares", async () => {
@@ -421,11 +428,10 @@ describe("useBlockyGame with a pending line clear", () => {
     await step({ kind: "drop" });
     await macrotask();
     expect(vt.pending).toBe(1);
-    await press("ArrowUp");
-    await press("ArrowLeft");
+    await inSequence(keysAfterClear, press);
     await settle();
     expectScreensFollowTheLog();
-    expect(painted.at(-1)?.split("\n")[0]).toBe("..@@@@....");
+    expect(painted.at(-1)?.split("\n")[1]).toBe("..@@@@....");
   });
 
   it("shows a key pressed while the view transition prepares once the animation starts", async () => {

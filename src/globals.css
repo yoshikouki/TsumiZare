@@ -223,3 +223,10 @@
 ::view-transition {
   pointer-events: none;
 }
+
+::view-transition-old(.line-clear-row) {
+  display: none;
+}
+::view-transition-new(.line-clear-row) {
+  animation: none;
+}

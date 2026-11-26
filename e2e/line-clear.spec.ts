@@ -12,6 +12,7 @@ const instrument = () => {
   const transitions: {
     types: string[];
     moves: number[];
+    images: string[];
     animating: boolean;
   }[] = [];
   const activeFrames: number[][] = [];
@@ -38,6 +39,7 @@ const instrument = () => {
     const record = {
       types: [...(options.types ?? [])],
       moves: [] as number[],
+      images: [] as string[],
       animating: false,
     };
     transitions.push(record);
@@ -49,6 +51,14 @@ const instrument = () => {
       record.animating = true;
       for (const animation of document.getAnimations()) {
         const effect = animation.effect as KeyframeEffect;
+        // React captures the root too and hides it, so only row images count.
+        const pseudo = effect.pseudoElement ?? "";
+        const isImage =
+          pseudo.startsWith("::view-transition-old(") ||
+          pseudo.startsWith("::view-transition-new(");
+        if (isImage && !pseudo.endsWith("(root)")) {
+          record.images.push(pseudo);
+        }
         if (!effect.pseudoElement?.startsWith("::view-transition-group")) {
           continue;
         }
@@ -128,7 +138,12 @@ const fillBottomRow = async (page: Page) => {
 
 declare global {
   interface Window {
-    transitions: { types: string[]; moves: number[]; animating: boolean }[];
+    transitions: {
+      types: string[];
+      moves: number[];
+      images: string[];
+      animating: boolean;
+    }[];
     activeFrames: number[][];
     clicks: { button: string; animating: boolean }[];
   }
@@ -171,16 +186,23 @@ test("rows above a cleared row fall into place, and moves never animate", async 
       )
     )
     .toBe(3);
+  // Only the groups move. An old image would still show the placed block as
+  // active next to the next block.
+  expect(await page.evaluate(() => window.transitions[0].images)).toEqual([]);
 });
 
 test("ArrowUp right after a line clear never brings the placed block back", async ({
   page,
 }) => {
   const { placed, from } = await fillBottomRow(page);
-  await page.keyboard.press("ArrowUp");
-  // ArrowUp cannot move a block in the top row; ArrowLeft shows that the keys
-  // reached the next block instead of being dropped.
-  await page.keyboard.press("ArrowLeft");
+  // The first ArrowUp cannot move a block in the top row. Each later key
+  // changes where the next block ends, so a dropped key shows.
+  await ["ArrowUp", "ArrowDown", "ArrowDown", "ArrowUp", "ArrowLeft"].reduce<
+    Promise<void>
+  >(
+    (previous, key) => previous.then(() => page.keyboard.press(key)),
+    Promise.resolve()
+  );
   await expect
     .poll(() => page.evaluate(() => window.transitions.length))
     .toBe(1);
@@ -195,7 +217,7 @@ test("ArrowUp right after a line clear never brings the placed block back", asyn
   for (const cells of frames.slice(firstNext)) {
     expect(cells.every((index) => index < TOP_FOUR_ROWS)).toBe(true);
   }
-  expect(await activeCells(page)).toEqual([2, 3, 4, 5]);
+  expect(await activeCells(page)).toEqual([12, 13, 14, 15]);
 });
 
 test("a click during the line clear animation reaches the button under it", async ({
