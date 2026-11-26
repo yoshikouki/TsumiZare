@@ -21,7 +21,7 @@ export const BlockViewer = ({
         <div
           key={`${block.id}-${rowIndex}-${cellIndex}`}
           className={cn(
-            "bg-primary aspect-square min-w-2",
+            "bg-primary aspect-square min-w-2 transition-opacity duration-150 ease-out motion-reduce:transition-none starting:opacity-0",
             cell ? "opacity-100" : "opacity-0"
           )}
         />

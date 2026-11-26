@@ -104,8 +104,12 @@ export const NoTickGame = () => {
       </div>
 
       {/* Game Board */}
-      <Board boardRef={boardRef} boardConfig={board.config}>
-        {board.rows.map((row, rowIndex) =>
+      <Board
+        boardRef={boardRef}
+        boardConfig={board.config}
+        isPaused={board.status === "pause"}
+      >
+        {board.rows.flatMap((row, rowIndex) =>
           row.cells.map((cell, cellIndex) => (
             <BoardCell
               key={cell.id}
