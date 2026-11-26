@@ -10,9 +10,14 @@ Wrap the game in `BlockyGameProvider`, then read the board and controls from `us
 import { BlockyGameProvider, useBlockyGame } from "blocky-game";
 
 const Game = () => {
-  const { board, startBlockyGame } = useBlockyGame();
+  const { board, startBlockyGame, tickRunnerRef } = useBlockyGame();
   // Render board.rows as the playing field.
-  return <button onClick={startBlockyGame}>{board.status}</button>;
+  // Blocks fall only while the element bound to tickRunnerRef is mounted.
+  return (
+    <div ref={tickRunnerRef}>
+      <button onClick={startBlockyGame}>{board.status}</button>
+    </div>
+  );
 };
 
 export const App = () => (
@@ -23,10 +28,9 @@ export const App = () => (
 ```
 
 The public API is exported from [`src/index.ts`](./src/index.ts).
-TsumiZare's [`tsumizare.tsx`](../../src/futures/tsumizare/tsumizare.tsx) is a complete example.
+TsumiZare wraps its routes in the provider ([`src/routes/index.tsx`](../../src/routes/index.tsx)) and builds the game on the hook ([`tsumizare.tsx`](../../src/futures/tsumizare/tsumizare.tsx)).
 
 ## Build
 
-`bun run build` bundles ESM and CommonJS with tsup, then emits declarations with `tsc`.
-Declarations mirror `src` under `dist` and are published from `dist/index.d.ts`.
-tsup's `dts` option is not used because it depends on the TypeScript JavaScript API and fails with TypeScript 7.
+Declarations are emitted by `tsc`, not by tsup's `dts` option.
+tsup's `dts` depends on the TypeScript JavaScript API and fails with TypeScript 7.0.

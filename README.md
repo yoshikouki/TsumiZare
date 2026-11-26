@@ -30,6 +30,6 @@ Workerコードと静的アセットはこのリポジトリ、独自ドメイ�
 Wranglerに独自ドメインやrouteを追加して管理を二重化しない。
 
 `/healthz` で配信中のGit SHAとWorker version IDを確認できる。
-配信検証は `bun run scripts/smoke-deployment.ts <URL> [Git SHA] [version ID]`。
-配信後の検証に失敗すると、CIは直前のWorker versionへ戻す。
+配信の検証は `scripts/smoke-deployment.ts` が行い、引数はスクリプトのUsageに従う。
+配信か配信後の検証に失敗すると、CIは直前のWorker versionへロールバックし、同じスクリプトで検証する。
 複数のversionへ分割配信している間はCIが配信しないので、先に1つのversionへ揃える。
