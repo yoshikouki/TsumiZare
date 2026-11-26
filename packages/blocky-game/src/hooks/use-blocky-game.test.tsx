@@ -406,9 +406,13 @@ describe("useBlockyGame with a pending line clear", () => {
     await startOnNearlyFullBoard();
     await step({ kind: "drop" });
     await press("ArrowUp");
+    await press("ArrowLeft");
     await settle();
     expect(vt.started).toBeGreaterThan(0);
     expectScreensFollowTheLog();
+    // ArrowUp cannot move a block in the top row; ArrowLeft shows that the
+    // keys reached the next block instead of being dropped.
+    expect(painted.at(-1)?.split("\n")[0]).toBe("..@@@@....");
   });
 
   it("applies ArrowUp to the next block when it arrives while the view transition prepares", async () => {
@@ -418,8 +422,10 @@ describe("useBlockyGame with a pending line clear", () => {
     await macrotask();
     expect(vt.pending).toBe(1);
     await press("ArrowUp");
+    await press("ArrowLeft");
     await settle();
     expectScreensFollowTheLog();
+    expect(painted.at(-1)?.split("\n")[0]).toBe("..@@@@....");
   });
 
   it("shows a key pressed while the view transition prepares once the animation starts", async () => {
@@ -458,10 +464,15 @@ describe("useBlockyGame with a pending line clear", () => {
     await startOnNearlyFullBoard();
     await step({ kind: "drop" });
     controls.runTick();
+    await macrotask();
+    await step({ kind: "vtUpdate" });
+    await step({ kind: "vtReady" });
+    await macrotask();
+    // The tick shows once the animation starts, not after it ends.
+    expect(vt.pending).toBe(1);
+    expect(painted.at(-1)?.split("\n")[1]).toBe("...@@@@...");
     await settle();
     expectScreensFollowTheLog();
-    expect(log.at(-1)?.type).toBe("tick");
-    expect(painted.at(-1)?.split("\n")[1]).toBe("...@@@@...");
   });
 
   it("keeps every frame on the action log for any interleaving", async () => {

@@ -39,6 +39,9 @@ export const Board = ({
       {rows.map((row, y) => (
         <ViewTransition
           default={hasLandedCells(row) ? LINE_CLEAR_ROW : "none"}
+          // A cleared row still shows the placed block as active in its old
+          // image, next to the next block. It leaves at once, as on main.
+          exit="none"
           key={row.id}
         >
           <div

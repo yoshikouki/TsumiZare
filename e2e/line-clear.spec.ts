@@ -15,7 +15,21 @@ const instrument = () => {
     animating: boolean;
   }[] = [];
   const activeFrames: number[][] = [];
-  Object.assign(window, { transitions, activeFrames });
+  const clicks: { button: string; animating: boolean }[] = [];
+  Object.assign(window, { transitions, activeFrames, clicks });
+  document.addEventListener(
+    "click",
+    (event) => {
+      const target = event.target as Element;
+      clicks.push({
+        button:
+          target.closest("button")?.getAttribute("aria-label") ??
+          target.tagName,
+        animating: transitions.at(-1)?.animating ?? false,
+      });
+    },
+    true
+  );
   const start = Document.prototype.startViewTransition;
   Document.prototype.startViewTransition = function (
     this: Document,
@@ -116,6 +130,7 @@ declare global {
   interface Window {
     transitions: { types: string[]; moves: number[]; animating: boolean }[];
     activeFrames: number[][];
+    clicks: { button: string; animating: boolean }[];
   }
 }
 
@@ -163,6 +178,9 @@ test("ArrowUp right after a line clear never brings the placed block back", asyn
 }) => {
   const { placed, from } = await fillBottomRow(page);
   await page.keyboard.press("ArrowUp");
+  // ArrowUp cannot move a block in the top row; ArrowLeft shows that the keys
+  // reached the next block instead of being dropped.
+  await page.keyboard.press("ArrowLeft");
   await expect
     .poll(() => page.evaluate(() => window.transitions.length))
     .toBe(1);
@@ -177,7 +195,7 @@ test("ArrowUp right after a line clear never brings the placed block back", asyn
   for (const cells of frames.slice(firstNext)) {
     expect(cells.every((index) => index < TOP_FOUR_ROWS)).toBe(true);
   }
-  expect(await activeCells(page)).toEqual([3, 4, 5, 6]);
+  expect(await activeCells(page)).toEqual([2, 3, 4, 5]);
 });
 
 test("a click during the line clear animation reaches the button under it", async ({
@@ -196,7 +214,10 @@ test("a click during the line clear animation reaches the button under it", asyn
     })
     .toBe(true);
   await page.mouse.click(pause.x + pause.width / 2, pause.y + pause.height / 2);
-  expect(await page.evaluate(() => window.transitions[0].animating)).toBe(true);
+  expect(await page.evaluate(() => window.clicks.at(-1))).toEqual({
+    button: "一時停止",
+    animating: true,
+  });
   await expect(
     page.getByRole("button", { name: "再開", exact: true })
   ).toBeVisible();
