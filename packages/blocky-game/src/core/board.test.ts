@@ -4,21 +4,12 @@ import {
   deepCopyBoard,
   hasBlockCollision,
   initBoard,
-  initCell,
   initRow,
   mergeBlockIntoBoard,
   renewFilledRows,
 } from "./board";
 
 describe("Board", () => {
-  describe("initCell", () => {
-    it("should initialize a cell with null blockId", () => {
-      const cell = initCell();
-      expect(cell).toHaveProperty("id");
-      expect(cell.blockId).toBeNull();
-    });
-  });
-
   describe("initRow", () => {
     it("should initialize a row with the specified number of cells", () => {
       const colsNumber = 5;

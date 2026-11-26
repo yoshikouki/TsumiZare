@@ -26,13 +26,12 @@ export interface Board {
 }
 
 export const id = () => Math.random().toString(36).slice(2, 11);
-export const initCell = () => ({
-  id: id(),
-  blockId: null,
-});
-export const initRow = (colsNumber = COLS) => ({
-  id: id(),
-  cells: Array.from({ length: colsNumber }, initCell),
+export const initRow = (colsNumber = COLS, rowId = id()): Row => ({
+  id: rowId,
+  cells: Array.from({ length: colsNumber }, (_, x) => ({
+    id: `${rowId}-${x}`,
+    blockId: null,
+  })),
 });
 export const initBoard = (config?: Partial<BoardConfig>): Board => {
   const rowsNumber = config?.rowsNumber ?? ROWS;
@@ -77,6 +76,11 @@ export const mergeBlockIntoBoard = (block: Block, board: Board) => {
   return newBoard;
 };
 
+// A renewed row's id follows the count of rows cleared so far, so renewing the
+// same board twice gives the same rows.
+const renewedRowId = (board: Board, index: number) =>
+  `${board.id}-${board.result.filledRowsNumber + index}`;
+
 export const renewFilledRows = (
   board: Board
 ): {
@@ -93,8 +97,8 @@ export const renewFilledRows = (
   const newBoard = {
     ...board,
     rows: [
-      ...Array.from({ length: filledRowsNumber }, () =>
-        initRow(board.config.colsNumber)
+      ...Array.from({ length: filledRowsNumber }, (_, index) =>
+        initRow(board.config.colsNumber, renewedRowId(board, index))
       ),
       ...remainingRows,
     ],

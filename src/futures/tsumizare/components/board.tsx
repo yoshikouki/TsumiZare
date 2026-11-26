@@ -1,17 +1,19 @@
-import type { BoardConfig } from "blocky-game";
+import type { Cell, CellVariants, Row } from "blocky-game";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export const Board = ({
-  children,
   boardRef,
-  boardConfig,
+  rows,
+  colsNumber,
   isPaused,
+  detectCellVariant,
 }: {
-  children: React.ReactNode;
   boardRef: React.Ref<HTMLDivElement>;
-  boardConfig: BoardConfig;
+  rows: Row[];
+  colsNumber: number;
   isPaused: boolean;
+  detectCellVariant: (cell: Cell, x: number, y: number) => CellVariants;
 }) => (
   <section
     aria-label="ゲーム盤"
@@ -21,14 +23,18 @@ export const Board = ({
     )}
     ref={boardRef}
   >
-    <div
-      className={cn("grid w-full max-w-xs gap-1 pb-4")}
-      style={{
-        gridTemplateRows: `repeat(${boardConfig.rowsNumber}, 1fr)`,
-        gridTemplateColumns: `repeat(${boardConfig.colsNumber}, 1fr)`,
-      }}
-    >
-      {children}
+    <div className="flex w-full max-w-xs flex-col gap-1 pb-4">
+      {rows.map((row, y) => (
+        <div
+          className="grid gap-1"
+          key={row.id}
+          style={{ gridTemplateColumns: `repeat(${colsNumber}, 1fr)` }}
+        >
+          {row.cells.map((cell, x) => (
+            <BoardCell key={cell.id} variant={detectCellVariant(cell, x, y)} />
+          ))}
+        </div>
+      ))}
     </div>
   </section>
 );

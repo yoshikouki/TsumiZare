@@ -1,10 +1,10 @@
 "use client";
 
-import { useBlockyGame } from "blocky-game";
+import { useBlockyGameState } from "blocky-game";
 import { cn } from "@/lib/utils";
 
 export const Header = ({ children }: { children: React.ReactNode }) => {
-  const { board } = useBlockyGame();
+  const { board } = useBlockyGameState();
 
   return (
     <header
