@@ -1,5 +1,5 @@
-import { id } from "./board";
-import { DEFAULT_QUEUED_BLOCK_SIZE } from "./constants";
+import { id } from "./board.js";
+import { DEFAULT_QUEUED_BLOCK_SIZE } from "./constants.js";
 
 export type BlockShape = number[][];
 export interface BlockPosition {

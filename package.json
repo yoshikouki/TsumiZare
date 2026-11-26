@@ -16,7 +16,6 @@
     "format": "biome check --write .",
     "format:unsafe": "biome check --write --unsafe .",
     "build:packages": "bun run --filter blocky-game build",
-    "deploy": "bun run build && wrangler deploy",
     "test:e2e": "playwright test",
     "test:worker": "TEST_TARGET=worker playwright test"
   },

@@ -3,7 +3,7 @@ import {
   SWIPE_THRESHOLD,
   TAP_DURATION_THRESHOLD,
   TAP_MOVE_THRESHOLD,
-} from "../core/constants";
+} from "../core/constants.js";
 
 export const useTouch = ({
   onSwipeUp,
