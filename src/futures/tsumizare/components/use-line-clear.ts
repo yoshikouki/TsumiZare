@@ -38,10 +38,18 @@ export function useLineClear(
     let previous = runner.getGame();
     let nextFlashId = 0;
     const unsubscribe = runner.subscribe((game, events) => {
-      const oldRows = previous.rows;
+      const { rows: oldRows, status: oldStatus } = previous;
       previous = game;
       if (!motion.matches) {
         return;
+      }
+      // A new or reset game starts on a clean board.
+      if (
+        game.status !== oldStatus &&
+        (oldStatus === "finished" || game.status === "ready")
+      ) {
+        setFlashes([]);
+        setBursts([]);
       }
       const cleared = events.flatMap((event) =>
         event.type === "cleared" ? event.rows : []
