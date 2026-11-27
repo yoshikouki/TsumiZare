@@ -12,11 +12,6 @@ import { useGameSession } from "../game-session";
 import { useLineClear } from "./use-line-clear";
 import { usePieceFeedback } from "./use-piece-feedback";
 
-const BURST_EDGES = ["bottom", "side", "top"].flatMap((edge) => [
-  [edge, "left"],
-  [edge, "right"],
-]);
-
 export const Board = ({
   boardRef,
   game,
@@ -99,15 +94,11 @@ export const Board = ({
             className="board-burst"
             key={id}
             onAnimationEnd={(event) => {
-              if (event.target === event.currentTarget) {
+              if (event.animationName === "board-burst-fade") {
                 removeBurst(id);
               }
             }}
-          >
-            {BURST_EDGES.map(([edge, side]) => (
-              <div data-edge={edge} data-side={side} key={edge + side} />
-            ))}
-          </div>
+          />
         ))}
         {game.piece ? <PieceLayer game={game} key={game.piece.id} /> : null}
       </div>

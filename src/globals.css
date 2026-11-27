@@ -284,60 +284,20 @@
   }
 
   /* A line runs from the bottom centre along both sides of the board and
-     meets at the top centre, then the frame spreads out and fades. Each edge
-     takes time in proportion to its length. */
+     meets at the top centre, then the frame spreads out and fades. The frame
+     is one rounded border, uncovered in that order by its clip path. */
   .board-burst {
+    --line: 3px;
+    --low: calc(100% - var(--line));
+
     position: absolute;
     inset: -0.5rem;
+    border: var(--line) solid var(--color-primary);
+    border-radius: 0.75rem;
     pointer-events: none;
-    animation: board-burst-fade 300ms 450ms ease-out both;
-  }
-
-  .board-burst > div {
-    position: absolute;
-    background: var(--color-primary);
-    animation: board-burst-across 75ms linear both;
-  }
-
-  .board-burst > [data-side="left"] {
-    left: 0;
-  }
-
-  .board-burst > [data-side="right"] {
-    right: 0;
-  }
-
-  .board-burst > [data-edge="bottom"],
-  .board-burst > [data-edge="top"] {
-    width: 50%;
-    height: 3px;
-  }
-
-  .board-burst > [data-edge="bottom"] {
-    bottom: 0;
-  }
-
-  .board-burst > [data-edge="side"] {
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    transform-origin: bottom;
-    animation: board-burst-up 300ms 75ms linear both;
-  }
-
-  .board-burst > [data-edge="top"] {
-    top: 0;
-    animation-delay: 375ms;
-  }
-
-  .board-burst > [data-edge="bottom"][data-side="left"],
-  .board-burst > [data-edge="top"][data-side="right"] {
-    transform-origin: right;
-  }
-
-  .board-burst > [data-edge="bottom"][data-side="right"],
-  .board-burst > [data-edge="top"][data-side="left"] {
-    transform-origin: left;
+    animation:
+      board-burst-draw 450ms linear both,
+      board-burst-fade 300ms 450ms ease-out both;
   }
 
   .board-row {
@@ -410,15 +370,60 @@
   }
 }
 
-@keyframes board-burst-across {
-  from {
-    scale: 0 1;
+/* The clip keeps eight corners throughout so that it can be interpolated:
+   the bottom edge opens from the centre, the sides rise, then a notch in the
+   top edge closes toward the centre. */
+@keyframes board-burst-draw {
+  0% {
+    clip-path: polygon(
+      50% var(--low),
+      50% var(--low),
+      50% var(--low),
+      50% var(--low),
+      50% var(--low),
+      50% var(--low),
+      50% 100%,
+      50% 100%
+    );
   }
-}
 
-@keyframes board-burst-up {
-  from {
-    scale: 1 0;
+  17% {
+    clip-path: polygon(
+      0 var(--low),
+      0 var(--low),
+      0 var(--low),
+      100% var(--low),
+      100% var(--low),
+      100% var(--low),
+      100% 100%,
+      0 100%
+    );
+  }
+
+  83% {
+    clip-path: polygon(
+      0 var(--line),
+      0 var(--line),
+      0 var(--line),
+      100% var(--line),
+      100% var(--line),
+      100% var(--line),
+      100% 100%,
+      0 100%
+    );
+  }
+
+  100% {
+    clip-path: polygon(
+      0 0,
+      50% 0,
+      50% var(--line),
+      50% var(--line),
+      50% 0,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
   }
 }
 
