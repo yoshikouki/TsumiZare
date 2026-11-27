@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-// Moves every 150ms, well inside the 333ms lock wait.
+// Moves every 150ms, well inside the 666ms lock wait.
 const STEER_INTERVAL = 150;
 
 const cells = (page: Page, state: "active" | "filled") =>
@@ -34,5 +34,5 @@ test("moving a grounded block keeps it from locking, and it locks once left alon
 }) => {
   await steer(page, 8);
   await expect(filled(page)).toHaveCount(0);
-  await expect(filled(page).first()).toBeVisible({ timeout: 1000 });
+  await expect(filled(page).first()).toBeVisible();
 });
