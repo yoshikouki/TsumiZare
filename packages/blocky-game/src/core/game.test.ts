@@ -1,190 +1,218 @@
-import { describe, expect, it } from "bun:test";
-import { BLOCKS, type Block } from "./block";
-import { type Board, initBoard } from "./board";
-import { type Game, type GameAction, gameReducer } from "./game";
+import { expect, test } from "bun:test";
+import {
+  BLOCKS,
+  cellVariant,
+  type Command,
+  createGame,
+  type Game,
+  msUntilNextStep,
+  step,
+} from "../index";
 
-const block = (id: string, shape: number[][], x: number, y: number): Block => ({
-  id,
-  shape,
-  position: { x, y },
+const start = (game: Game) => step(game, { type: "start" }).game;
+const advance = (game: Game, ms: number) => step(game, { type: "advance", ms });
+const move = (game: Game, direction: "left" | "right" | "down" | "up") =>
+  step(game, { type: "move", direction }).game;
+
+function activePiece(game: Game) {
+  if (!game.piece) {
+    throw new Error("Expected an active piece");
+  }
+  return game.piece;
+}
+
+test("gravity spawns, moves down and locks on its own deadlines", () => {
+  const ready = createGame({ cols: 4, rows: 3, shapes: [[[1]]] }, 0);
+  const playing = start(ready);
+  expect(msUntilNextStep(ready)).toBeNull();
+  expect(advance(playing, 332).game.piece).toBeNull();
+
+  const spawned = advance(playing, 333);
+  expect(spawned.events).toEqual([
+    { type: "spawned", block: activePiece(spawned.game) },
+  ]);
+  expect(spawned.game.piece?.position.y).toBe(0);
+  expect(advance(spawned.game, 333).game.piece?.position.y).toBe(1);
+
+  const grounded = advance(spawned.game, 666).game;
+  expect(grounded.piece?.position.y).toBe(2);
+  const waiting = advance(grounded, 499);
+  expect(waiting.events).toEqual([]);
+  expect(msUntilNextStep(waiting.game)).toBe(1);
+
+  const locked = advance(waiting.game, 1);
+  expect(locked.events).toEqual([
+    { type: "locked", block: activePiece(grounded) },
+  ]);
+  expect(cellVariant(locked.game, 0, 2)).toBe("filled");
+  expect(locked.game.piece).toBeNull();
+  expect(advance(locked.game, 166).events.map((event) => event.type)).toEqual([
+    "spawned",
+  ]);
 });
 
-const boardWith = (bottomRows: string[]): Board => {
-  const board = { ...initBoard(), status: "playing" as const };
-  const offset = board.rows.length - bottomRows.length;
-  bottomRows.forEach((line, index) => {
-    board.rows[offset + index].cells.forEach((cell, x) => {
-      cell.blockId = line[x] === "#" ? "old" : null;
-    });
-  });
-  return board;
-};
-
-const draw = (board: Board, rows = 3) =>
-  board.rows
-    .slice(-rows)
-    .map((row) => row.cells.map((cell) => (cell.blockId ? "#" : ".")).join(""));
-
-const playing = (game: Partial<Game> & { board: Board }): Game => ({
-  activeBlock: null,
-  queuedBlocks: [],
-  ...game,
+test("successful grounded moves and rotations restart the lock wait", () => {
+  const game = start(createGame({ cols: 4, rows: 1, shapes: [[[1]]] }, 0));
+  const grounded = advance(game, 333).game;
+  const shifted = move(advance(grounded, 400).game, "right");
+  const rotated = step(advance(shifted, 400).game, { type: "rotate" }).game;
+  expect(advance(rotated, 499).events).toEqual([]);
+  expect(advance(rotated, 500).events.map((event) => event.type)).toEqual([
+    "locked",
+  ]);
 });
 
-const run = (game: Game, ...actions: GameAction[]) =>
-  actions.reduce(gameReducer, game);
+test("failed moves keep the lock deadline and lifting off cancels it", () => {
+  const game = start(createGame({ cols: 4, rows: 2, shapes: [[[1]]] }, 0));
+  const grounded = advance(game, 666).game;
+  const waiting = advance(grounded, 400).game;
+  const failed = move(waiting, "left");
+  expect(advance(failed, 100).events.map((event) => event.type)).toEqual([
+    "locked",
+  ]);
 
-describe("gameReducer", () => {
-  it("moves the active block until a wall or a filled cell stops it", () => {
-    const game = playing({
-      board: boardWith(["#........."]),
-      activeBlock: block("a", BLOCKS.O, 1, 17),
-    });
-    const left = run(game, { type: "move", direction: "left" });
-    expect(left.activeBlock?.position).toEqual({ x: 0, y: 17 });
-    const blocked = run(left, { type: "move", direction: "down" });
-    expect(blocked.activeBlock?.position).toEqual({ x: 0, y: 17 });
-    // A move that fails returns the same game, so the lock timer keeps running.
-    expect(run(left, { type: "move", direction: "left" })).toBe(left);
-  });
+  const lifted = move(waiting, "up");
+  expect(advance(lifted, 100).events).toEqual([]);
+  const dropped = advance(lifted, 266).game;
+  expect(dropped.piece?.position.y).toBe(1);
+  expect(advance(dropped, 499).events).toEqual([]);
+  expect(advance(dropped, 500).events.map((event) => event.type)).toEqual([
+    "locked",
+  ]);
+});
 
-  it("kicks a rotated I block off the right wall", () => {
-    const game = playing({
-      board: boardWith([]),
-      activeBlock: block("a", [[1], [1], [1], [1]], 9, 5),
-    });
-    const rotated = run(game, { type: "rotate" });
-    expect(rotated.activeBlock?.shape).toEqual([[1, 1, 1, 1]]);
-    expect(rotated.activeBlock?.position).toEqual({ x: 6, y: 5 });
-  });
+test("advance processes multiple deadlines in order and stops at game over", () => {
+  const game = start(
+    createGame(
+      { cols: 4, rows: 1, gravity: 100, lockDelay: 100, shapes: [[[1]]] },
+      0
+    )
+  );
+  const result = advance(game, 10_000);
+  expect(result.events.map((event) => event.type)).toEqual([
+    "spawned",
+    "locked",
+    "finished",
+  ]);
+  expect(result.game.status).toBe("finished");
+  expect(msUntilNextStep(result.game)).toBeNull();
+});
 
-  it("keeps a grounded block on a tick and lands it on lock", () => {
-    const game = playing({
-      board: boardWith([]),
-      activeBlock: block("a", BLOCKS.I, 0, 19),
-    });
-    const ticked = run(game, {
-      type: "tick",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    });
-    expect(ticked).toBe(game);
-    const landed = run(ticked, { type: "lock" });
-    expect(landed.activeBlock).toBeNull();
-    expect(draw(landed.board, 1)).toEqual(["####......"]);
-  });
+test("pause freezes both deadlines and finish cancels them", () => {
+  const game = start(createGame({ cols: 4, rows: 1, shapes: [[[1]]] }, 0));
+  const waiting = advance(game, 633).game;
+  const paused = step(waiting, { type: "pause" }).game;
+  expect(paused.status).toBe("paused");
+  expect(msUntilNextStep(paused)).toBeNull();
+  expect(advance(paused, 2000)).toEqual({ game: paused, events: [] });
 
-  it("ignores a lock once the block has moved off the ground", () => {
-    const game = playing({
-      board: boardWith(["##........"]),
-      activeBlock: block("a", BLOCKS.O, 0, 17),
-    });
-    const offTheLedge = run(
-      game,
-      { type: "move", direction: "right" },
-      { type: "move", direction: "right" }
-    );
-    expect(offTheLedge.activeBlock?.position).toEqual({ x: 2, y: 17 });
-    expect(run(offTheLedge, { type: "lock" })).toEqual(offTheLedge);
-  });
+  const resumed = step(paused, { type: "resume" }).game;
+  expect(msUntilNextStep(resumed)).toBe(33);
+  expect(advance(resumed, 199).events).toEqual([]);
+  expect(advance(resumed, 200).events.map((event) => event.type)).toEqual([
+    "locked",
+  ]);
 
-  it("activates the next queued block on a tick and queues the new one", () => {
-    const queued = block("q", BLOCKS.T, 3, 0);
-    const next = block("n", BLOCKS.O, 3, 0);
-    const game = playing({ board: boardWith([]), queuedBlocks: [queued] });
-    const activated = run(game, { type: "tick", nextBlock: next });
-    expect(activated.activeBlock).toEqual(queued);
-    expect(activated.queuedBlocks).toEqual([next]);
-  });
+  const finished = step(paused, { type: "finish" });
+  expect(finished.game.piece).toBeNull();
+  expect(finished.game.status).toBe("finished");
+  expect(finished.events).toEqual([{ type: "finished" }]);
+});
 
-  it("clears a filled row, drops the rows above and scores it once", () => {
-    const queued = block("q", BLOCKS.I, 3, 0);
-    const game = playing({
-      board: boardWith(["#.........", "####..####"]),
-      activeBlock: block("a", [[1, 1]], 4, 19),
-      queuedBlocks: [queued],
-    });
-    const action: GameAction = {
-      type: "place",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    };
-    const placed = run(game, action);
-    expect(draw(placed.board)).toEqual([
-      "..........",
-      "..........",
-      "#.........",
-    ]);
-    expect(placed.board.result).toEqual({ score: 10, filledRowsNumber: 1 });
-    expect(placed.activeBlock).toEqual(queued);
-    const second = run(placed, { type: "move", direction: "left" });
-    expect(second.board.result).toEqual({ score: 10, filledRowsNumber: 1 });
-  });
+test("stacking spawns immediately and only place locks a piece", () => {
+  const ready = createGame(
+    { cols: 4, rows: 4, gravity: null, shapes: [[[1]]] },
+    0
+  );
+  const started = step(ready, { type: "start" });
+  expect(started.events).toEqual([
+    { type: "spawned", block: activePiece(started.game) },
+  ]);
+  const skipped = step(started.game, { type: "skip" });
+  expect(skipped.events).toEqual([
+    { type: "spawned", block: started.game.queue[0] },
+  ]);
+  const grounded = move(move(move(skipped.game, "down"), "down"), "down");
+  expect(msUntilNextStep(grounded)).toBeNull();
+  expect(advance(grounded, 10_000)).toEqual({ game: grounded, events: [] });
 
-  it("renews cleared rows into the same rows every time", () => {
-    const game = playing({
-      board: boardWith(["####..####"]),
-      activeBlock: block("a", [[1, 1]], 4, 19),
-    });
-    const once = run(game, { type: "lock" });
-    expect(run(game, { type: "lock" })).toEqual(once);
-    expect(draw(once.board, 1)).toEqual([".........."]);
-  });
+  const placed = step(grounded, { type: "place" });
+  expect(placed.events).toEqual([
+    { type: "locked", block: activePiece(grounded) },
+    { type: "spawned", block: grounded.queue[0] },
+  ]);
+  expect(cellVariant(placed.game, 0, 3)).toBe("filled");
+  expect(cellVariant(placed.game, 0, 0)).toBe("active");
+  expect(cellVariant(placed.game, 0, 1)).toBe("belowActiveBlock");
+  expect(cellVariant(placed.game, 1, 1)).toBe("empty");
+  const reset = step(placed.game, { type: "reset" }).game;
+  expect(reset.status).toBe("ready");
+  expect(reset.piece).toBeNull();
+  expect(cellVariant(reset, 0, 3)).toBe("empty");
+});
 
-  it("finishes when the next block does not fit", () => {
-    const board = boardWith([]);
-    board.rows[0].cells[4].blockId = "old";
-    const game = playing({ board, queuedBlocks: [block("q", BLOCKS.I, 3, 0)] });
-    const finished = run(game, {
-      type: "tick",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    });
-    expect(finished.board.status).toBe("finished");
-    expect(finished.activeBlock).toBeNull();
+test("clears report old row indexes, preserve surviving row identities and score", () => {
+  const ready = createGame(
+    { cols: 2, rows: 4, gravity: null, shapes: [BLOCKS.O] },
+    0
+  );
+  const game = start(ready);
+  const atBottom = move(move(game, "down"), "down");
+  const cleared = step(atBottom, { type: "place" });
+  expect(cleared.events).toEqual([
+    { type: "locked", block: activePiece(atBottom) },
+    { type: "cleared", rows: [2, 3] },
+    { type: "spawned", block: atBottom.queue[0] },
+  ]);
+  expect(cleared.game.rows.slice(2)).toEqual(game.rows.slice(0, 2));
+  const rowIds = new Set(
+    [...game.rows, ...cleared.game.rows.slice(0, 2)].map((row) => row.id)
+  );
+  expect(rowIds.size).toBe(6);
+  expect(cleared.game.result).toEqual({ score: 8, filledRowsNumber: 2 });
+  expect(step(cleared.game, { type: "place" }).game.result).toEqual({
+    score: 40,
+    filledRowsNumber: 4,
   });
+});
 
-  it("finishes when the placed block covers the spot where the next one spawns", () => {
-    const game = playing({
-      board: boardWith([]),
-      activeBlock: block("a", BLOCKS.I, 3, 0),
-      queuedBlocks: [block("q", BLOCKS.I, 3, 0)],
-    });
-    const placed = run(game, {
-      type: "place",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    });
-    expect(placed.board.status).toBe("finished");
-  });
+test("custom board bounds govern movement and default wall kicks still apply", () => {
+  const game = start(
+    createGame({ cols: 12, rows: 22, gravity: null, shapes: [BLOCKS.I] }, 0)
+  );
+  const vertical = step(game, { type: "rotate" }).game;
+  let atWall = vertical;
+  for (let count = 0; count < 22; count += 1) {
+    atWall = move(move(atWall, "right"), "down");
+  }
+  expect(atWall.piece?.position).toEqual({ x: 11, y: 18 });
+  const kicked = step(atWall, { type: "rotate" }).game;
+  expect(kicked.piece?.position).toEqual({ x: 8, y: 18 });
+  expect(kicked.piece?.shape).toEqual(BLOCKS.I);
+});
 
-  it("keeps playing when a block placed in the top rows leaves the spawn free", () => {
-    const queued = block("q", BLOCKS.I, 3, 0);
-    const game = playing({
-      board: boardWith([]),
-      activeBlock: block("a", [[1], [1], [1], [1]], 0, 0),
-      queuedBlocks: [queued],
+test("fixed seeds replay blocks and IDs with default spawn column three", () => {
+  const commands: Command[] = [
+    { type: "start" },
+    { type: "advance", ms: 333 },
+    { type: "rotate" },
+    { type: "move", direction: "down" },
+    { type: "place" },
+    { type: "reset" },
+    { type: "start" },
+    { type: "advance", ms: 333 },
+  ];
+  const replay = (seed: number) => {
+    let game = createGame({}, seed);
+    return commands.map((command) => {
+      const result = step(game, command);
+      ({ game } = result);
+      return result;
     });
-    const placed = run(game, {
-      type: "place",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    });
-    expect(placed.board.status).toBe("playing");
-    expect(placed.activeBlock).toEqual(queued);
-  });
-
-  it("ignores play while paused and resumes where it stopped", () => {
-    const game = playing({
-      board: boardWith([]),
-      activeBlock: block("a", BLOCKS.O, 3, 0),
-    });
-    const paused = run(
-      game,
-      { type: "pause" },
-      { type: "move", direction: "left" }
-    );
-    expect(paused.activeBlock?.position).toEqual({ x: 3, y: 0 });
-    const resumed = run(
-      paused,
-      { type: "resume" },
-      { type: "move", direction: "left" }
-    );
-    expect(resumed.activeBlock?.position).toEqual({ x: 2, y: 0 });
-  });
+  };
+  expect(replay(123)).toEqual(replay(123));
+  expect(replay(123)[1].game.queue.map((block) => block.shape)).not.toEqual(
+    replay(123_456)[1].game.queue.map((block) => block.shape)
+  );
+  expect(replay(123)[1].game.piece?.position.x).toBe(3);
 });

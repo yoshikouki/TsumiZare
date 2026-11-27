@@ -8,7 +8,7 @@ import {
   type GameAction,
   gameReducer,
   initGame,
-} from "../core/game.js";
+} from "../core/legacy-game.js";
 
 export interface BlockyGameContext {
   game: Game;

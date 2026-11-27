@@ -10,7 +10,7 @@ import {
 } from "../core/block.js";
 import { type Cell, initBoard } from "../core/board.js";
 import { LOCK_DELAY } from "../core/constants.js";
-import { type Direction, isGrounded } from "../core/game.js";
+import { type Direction, isGrounded } from "../core/legacy-game.js";
 import { useKeyboard } from "./use-keyboard.js";
 import { useTouch } from "./use-touch.js";
 

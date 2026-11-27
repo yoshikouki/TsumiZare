@@ -5,33 +5,26 @@ export interface Result {
   filledRowsNumber: number;
 }
 
-export interface Outcome {
-  filledRowsNumber?: Result["filledRowsNumber"];
-}
-
 export const initResult = (): Result => ({
   score: 0,
   filledRowsNumber: 0,
 });
 
+export function scoreClear(
+  prev: Result,
+  cleared: number,
+  cols: number
+): Result {
+  if (cleared === 0) {
+    return prev;
+  }
+  const filledRowsNumber = prev.filledRowsNumber + cleared;
+  return { filledRowsNumber, score: prev.score + filledRowsNumber ** 2 * cols };
+}
+
 export const calculateNewResult = (
-  outcome: Outcome,
+  outcome: { filledRowsNumber?: number },
   prev: Result,
   board: Board
-): Result => {
-  const newFilledRowsNumber = outcome.filledRowsNumber
-    ? prev.filledRowsNumber + outcome.filledRowsNumber
-    : prev.filledRowsNumber;
-  const filledRowsBonus = outcome.filledRowsNumber
-    ? newFilledRowsNumber ** 2 * board.config.colsNumber
-    : 0;
-  const score = [
-    // Adding bonuses
-    filledRowsBonus,
-  ].reduce((acc, bonus) => acc + bonus, prev.score);
-  return {
-    ...prev,
-    score,
-    filledRowsNumber: newFilledRowsNumber,
-  };
-};
+): Result =>
+  scoreClear(prev, outcome.filledRowsNumber ?? 0, board.config.colsNumber);
