@@ -36,22 +36,21 @@ function vacated(before: Block | null, after: Block | null) {
   return cellsOf(before).filter(({ x, y }) => !occupied.has(`${x},${y}`));
 }
 
-// Every cell squashes toward the bottom of the block, so the block deforms as
-// one piece.
+// Every cell squashes toward the bottom centre of the block, so the block
+// deforms as one piece.
 function squash(board: HTMLElement, block: Block, rows: Game["rows"]) {
   const bottom = block.position.y + block.shape.length - 1;
+  const center = block.position.x + (block.shape[0].length - 1) / 2;
   for (const { x, y } of cellsOf(block)) {
     const rise = bottom - y;
+    const side = x - center;
+    const shift = (wide: number, tall: number) =>
+      `calc(var(--row-pitch) * ${side * wide}) calc(var(--row-pitch) * ${rise * tall})`;
     board.querySelector(`[data-row-id="${rows[y].id}"]`)?.children[x]?.animate(
       {
         transformOrigin: ["50% 100%", "50% 100%"],
         scale: ["0.9", "1.04 0.93", "0.99 1.02", "1"],
-        translate: [
-          "0 0",
-          `0 calc(var(--row-pitch) * ${rise * 0.07})`,
-          `0 calc(var(--row-pitch) * ${rise * -0.02})`,
-          "0 0",
-        ],
+        translate: ["0 0", shift(0.04, 0.07), shift(-0.01, -0.02), "0 0"],
       },
       { duration: 320, easing: "ease-out" }
     );
@@ -71,7 +70,7 @@ function land(board: HTMLElement, events: GameEvent[], rows: Game["rows"]) {
   const depth = clearedRows >= 2 ? 7 : 2;
   board.animate(
     { translate: ["0 0", `0 ${depth}px`, `0 ${-depth / 4}px`, "0 0"] },
-    { duration: 260, easing: "ease-out" }
+    { composite: "add", duration: 260, easing: "ease-out" }
   );
   if (clearedRows === 0) {
     squash(board, landed.block, rows);
@@ -95,6 +94,7 @@ export function usePieceFeedback(
     const motion = matchMedia("(prefers-reduced-motion: no-preference)");
     let previous = runner.getGame();
     let nextTrailId = 0;
+    let nudge: Animation | undefined;
     const unsubscribe = runner.subscribe((game, events) => {
       const before = previous;
       previous = game;
@@ -112,10 +112,12 @@ export function usePieceFeedback(
       }
 
       for (const event of events) {
-        if (event.type === "blocked") {
-          board.animate(
+        // A held key repeats the blocked move. One nudge plays out before
+        // the next, and it adds to a sink instead of replacing it.
+        if (event.type === "blocked" && nudge?.playState !== "running") {
+          nudge = board.animate(
             { translate: ["0 0", NUDGES[event.direction], "0 0"] },
-            { duration: 180, easing: "ease-out" }
+            { composite: "add", duration: 180, easing: "ease-out" }
           );
         }
       }

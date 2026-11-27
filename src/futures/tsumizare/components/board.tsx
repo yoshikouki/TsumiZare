@@ -150,9 +150,12 @@ function PieceLayer({ game }: { game: Game }) {
     const lines = Array.from(cells, (cell) => Number(cell.style.gridRowStart));
     const centerX = (Math.min(...columns) + Math.max(...columns)) / 2;
     const centerY = (Math.min(...lines) + Math.max(...lines)) / 2;
+    // Each cell is drawn at 90%, which also scales how far it travels, so the
+    // offsets to the piece's centre are enlarged to match.
+    const reach = 1 / 0.9;
     for (const [index, cell] of cells.entries()) {
-      const x = `calc(var(--row-pitch) * ${centerX - columns[index]})`;
-      const y = `calc(var(--row-pitch) * ${centerY - lines[index]})`;
+      const x = `calc(var(--row-pitch) * ${(centerX - columns[index]) * reach})`;
+      const y = `calc(var(--row-pitch) * ${(centerY - lines[index]) * reach})`;
       const turn = (degrees: number) =>
         `translate(${x}, ${y}) rotate(${degrees}deg) translate(calc(${x} * -1), calc(${y} * -1))`;
       cell.animate(
