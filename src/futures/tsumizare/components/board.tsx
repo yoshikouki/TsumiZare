@@ -12,6 +12,11 @@ import { useGameSession } from "../game-session";
 import { useLineClear } from "./use-line-clear";
 import { usePieceFeedback } from "./use-piece-feedback";
 
+const BURST_EDGES = ["bottom", "side", "top"].flatMap((edge) => [
+  [edge, "left"],
+  [edge, "right"],
+]);
+
 export const Board = ({
   boardRef,
   game,
@@ -21,8 +26,11 @@ export const Board = ({
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const runner = useGameSession();
-  const { flashes, removeFlash, waveStep } = useLineClear(runner, gridRef);
-  const { trails, removeTrail } = usePieceFeedback(runner, gridRef);
+  const { bursts, flashes, removeBurst, removeFlash, waveStep } = useLineClear(
+    runner,
+    gridRef
+  );
+  usePieceFeedback(runner, gridRef);
 
   const dimensions: CSSProperties & {
     "--board-cols": number;
@@ -85,16 +93,22 @@ export const Board = ({
             </div>
           ))}
         </div>
-        <div aria-hidden="true" className="board-grid board-overlay">
-          {trails.map(({ id, x, y }) => (
-            <div
-              className="board-trail"
-              key={id}
-              onAnimationEnd={() => removeTrail(id)}
-              style={{ gridColumnStart: x + 1, gridRowStart: y + 1 }}
-            />
-          ))}
-        </div>
+        {bursts.map((id) => (
+          <div
+            aria-hidden="true"
+            className="board-burst"
+            key={id}
+            onAnimationEnd={(event) => {
+              if (event.target === event.currentTarget) {
+                removeBurst(id);
+              }
+            }}
+          >
+            {BURST_EDGES.map(([edge, side]) => (
+              <div data-edge={edge} data-side={side} key={edge + side} />
+            ))}
+          </div>
+        ))}
         {game.piece ? <PieceLayer game={game} key={game.piece.id} /> : null}
       </div>
     </section>
@@ -159,7 +173,7 @@ function PieceLayer({ game }: { game: Game }) {
       const turn = (degrees: number) =>
         `translate(${x}, ${y}) rotate(${degrees}deg) translate(calc(${x} * -1), calc(${y} * -1))`;
       cell.animate(
-        { transform: [turn(0), turn(9), turn(-2), turn(0)] },
+        { transform: [turn(0), turn(5), turn(-1), turn(0)] },
         { duration: 240, easing: "ease-out" }
       );
     }

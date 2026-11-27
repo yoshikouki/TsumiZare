@@ -7,7 +7,6 @@ const FALL_EASING =
 const WAVE_STEP = 30;
 // Surviving rows wait this long so the wave is under way when they fall.
 const FALL_DELAY = 140;
-const INVERTED = "invert(1) hue-rotate(180deg)";
 
 interface Flash {
   id: number;
@@ -26,6 +25,8 @@ export function useLineClear(
   boardRef: RefObject<HTMLDivElement | null>
 ) {
   const [flashes, setFlashes] = useState<Flash[]>([]);
+  // Three or more rows at once draw a line around the board.
+  const [bursts, setBursts] = useState<number[]>([]);
 
   useEffect(() => {
     const board = boardRef.current;
@@ -66,10 +67,7 @@ export function useLineClear(
       setFlashes((current) => [...current, ...afterimages]);
 
       if (cleared.length >= 3) {
-        document.documentElement.animate(
-          { filter: [INVERTED, INVERTED] },
-          { duration: 80 }
-        );
+        setBursts((current) => [...current, afterimages[0].id]);
       }
 
       const destinations = new Map(game.rows.map((row, y) => [row.id, y]));
@@ -110,6 +108,7 @@ export function useLineClear(
     const stopMotion = () => {
       if (!motion.matches) {
         setFlashes([]);
+        setBursts([]);
         for (const row of board.querySelectorAll("[data-row-id]")) {
           for (const animation of row.getAnimations()) {
             animation.cancel();
@@ -128,5 +127,9 @@ export function useLineClear(
     setFlashes((current) => current.filter((flash) => flash.id !== id));
   }
 
-  return { flashes, removeFlash, waveStep: WAVE_STEP };
+  function removeBurst(id: number) {
+    setBursts((current) => current.filter((burst) => burst !== id));
+  }
+
+  return { bursts, flashes, removeBurst, removeFlash, waveStep: WAVE_STEP };
 }

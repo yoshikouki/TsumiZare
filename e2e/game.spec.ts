@@ -61,6 +61,15 @@ test("manifest, icons, fonts and missing routes are served", async ({
   expect((await request.get("/missing")).status()).toBe(404);
 });
 
+test("the motion catalog is served only in development", async ({
+  request,
+}) => {
+  const catalog = await request.get("/dev/motion");
+  expect(catalog.status()).toBe(
+    process.env.TEST_TARGET === "worker" ? 404 : 200
+  );
+});
+
 test("home page links feedback to the contact form", async ({ page }) => {
   await page.goto("/");
   await expect(

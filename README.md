@@ -17,6 +17,8 @@ bun install --frozen-lockfile
 bun dev
 ```
 
+`bun dev` 中は `/dev/motion` でゲーム画面のモーションを1つずつ再生できる。場面は `src/futures/tsumizare/motion-catalog.tsx` に足す。
+
 コマンドは `package.json` の `scripts`、PRで通す検証は
 `.github/workflows/ci.yml` の `validate` ジョブが正本。
 `bun run test:worker` はビルド済みの `dist` を検証するので、先に `bun run build` を実行する。

@@ -283,11 +283,61 @@
     animation: board-clear-pop 240ms ease-in both;
   }
 
-  /* The cell a piece just left fades back. */
-  .board-trail {
-    border-radius: var(--radius-sm);
-    background: color-mix(in oklab, var(--color-primary) 12%, transparent);
-    animation: board-trail-fade 150ms ease-out both;
+  /* A line runs from the bottom centre along both sides of the board and
+     meets at the top centre, then the frame spreads out and fades. Each edge
+     takes time in proportion to its length. */
+  .board-burst {
+    position: absolute;
+    inset: -0.5rem;
+    pointer-events: none;
+    animation: board-burst-fade 300ms 450ms ease-out both;
+  }
+
+  .board-burst > div {
+    position: absolute;
+    background: var(--color-primary);
+    animation: board-burst-across 75ms linear both;
+  }
+
+  .board-burst > [data-side="left"] {
+    left: 0;
+  }
+
+  .board-burst > [data-side="right"] {
+    right: 0;
+  }
+
+  .board-burst > [data-edge="bottom"],
+  .board-burst > [data-edge="top"] {
+    width: 50%;
+    height: 3px;
+  }
+
+  .board-burst > [data-edge="bottom"] {
+    bottom: 0;
+  }
+
+  .board-burst > [data-edge="side"] {
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    transform-origin: bottom;
+    animation: board-burst-up 300ms 75ms linear both;
+  }
+
+  .board-burst > [data-edge="top"] {
+    top: 0;
+    animation-delay: 375ms;
+  }
+
+  .board-burst > [data-edge="bottom"][data-side="left"],
+  .board-burst > [data-edge="top"][data-side="right"] {
+    transform-origin: right;
+  }
+
+  .board-burst > [data-edge="bottom"][data-side="right"],
+  .board-burst > [data-edge="top"][data-side="left"] {
+    transform-origin: left;
   }
 
   .board-row {
@@ -360,8 +410,21 @@
   }
 }
 
-@keyframes board-trail-fade {
+@keyframes board-burst-across {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes board-burst-up {
+  from {
+    scale: 1 0;
+  }
+}
+
+@keyframes board-burst-fade {
   to {
     opacity: 0;
+    scale: 1.06;
   }
 }
