@@ -15,6 +15,11 @@ interface Flash {
   steps: number[];
 }
 
+interface Burst {
+  id: number;
+  rows: number;
+}
+
 const centerOf = ({ position, shape }: Block) => ({
   x: position.x + (shape[0].length - 1) / 2,
   y: position.y + (shape.length - 1) / 2,
@@ -67,7 +72,7 @@ export function useLineClear(
 ) {
   const [flashes, setFlashes] = useState<Flash[]>([]);
   // Three or more rows at once draw a line around the board.
-  const [bursts, setBursts] = useState<number[]>([]);
+  const [bursts, setBursts] = useState<Burst[]>([]);
 
   useEffect(() => {
     const board = boardRef.current;
@@ -112,7 +117,10 @@ export function useLineClear(
       setFlashes((current) => [...current, ...afterimages]);
 
       if (cleared.length >= 3) {
-        setBursts((current) => [...current, afterimages[0].id]);
+        setBursts((current) => [
+          ...current,
+          { id: afterimages[0].id, rows: cleared.length },
+        ]);
       }
 
       fall(board, oldRows, game.rows);
@@ -140,8 +148,8 @@ export function useLineClear(
     setFlashes((current) => current.filter((flash) => flash.id !== id));
   }
 
-  function removeBurst(id: number) {
-    setBursts((current) => current.filter((burst) => burst !== id));
+  function removeBurst(id: Burst["id"]) {
+    setBursts((current) => current.filter((burst) => burst.id !== id));
   }
 
   return { bursts, flashes, removeBurst, removeFlash, waveStep: WAVE_STEP };
