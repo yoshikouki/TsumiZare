@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "bun run build:packages && vite",
     "build": "bun run build:packages && vite build",
-    "preview": "NODE_ENV=production wrangler dev --local --port 8787",
+    "preview": "NODE_ENV=production wrangler dev --local",
     "test": "bun test packages scripts src",
     "typecheck": "bun run build:packages && tsc --noEmit",
     "lint": "biome check .",
