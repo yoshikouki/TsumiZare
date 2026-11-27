@@ -25,6 +25,7 @@ export type GameAction =
   | { type: "move"; direction: Direction }
   | { type: "rotate" }
   | { type: "tick"; nextBlock: Block }
+  | { type: "lock" }
   | { type: "place"; nextBlock: Block }
   | { type: "activate"; nextBlock: Block };
 
@@ -47,6 +48,9 @@ const shift = (block: Block, step: BlockPosition): Block => ({
   ...block,
   position: { x: block.position.x + step.x, y: block.position.y + step.y },
 });
+
+export const isGrounded = ({ activeBlock, board }: Game) =>
+  !!activeBlock && !fits(shift(activeBlock, STEPS.down), board);
 
 const moveBlock = (game: Game, direction: Direction): Game => {
   if (!game.activeBlock) {
@@ -92,7 +96,11 @@ const activateOrFinish = (game: Game, nextBlock: Block): Game => {
   if (!(block && fits(block, game.board))) {
     return finish(game);
   }
-  return { ...game, activeBlock: block, queuedBlocks: [...rest, nextBlock] };
+  return {
+    ...game,
+    activeBlock: block,
+    queuedBlocks: [...rest, nextBlock],
+  };
 };
 
 const finish = (game: Game): Game => ({
@@ -101,13 +109,12 @@ const finish = (game: Game): Game => ({
   board: { ...game.board, status: "finished" },
 });
 
-const tick = (game: Game, nextBlock: Block): Game => {
-  if (!game.activeBlock) {
-    return activateOrFinish(game, nextBlock);
-  }
-  const dropped = moveBlock(game, "down");
-  return dropped === game ? land(game) : dropped;
-};
+// A grounded block stays until the lock action. Moves that fail, and ticks of
+// a grounded block, return the same game, so they do not restart the lock wait.
+const tick = (game: Game, nextBlock: Block): Game =>
+  game.activeBlock
+    ? moveBlock(game, "down")
+    : activateOrFinish(game, nextBlock);
 
 const play = (game: Game, action: GameAction): Game => {
   switch (action.type) {
@@ -117,6 +124,8 @@ const play = (game: Game, action: GameAction): Game => {
       return rotateBlock(game);
     case "tick":
       return tick(game, action.nextBlock);
+    case "lock":
+      return isGrounded(game) ? land(game) : game;
     case "place":
       return activateOrFinish(land(game), action.nextBlock);
     case "activate":
@@ -131,8 +140,7 @@ export const gameReducer = (game: Game, action: GameAction): Game => {
   switch (action.type) {
     case "start":
       return {
-        board: { ...action.board, status: "playing" },
-        activeBlock: null,
+        ...initGame({ ...action.board, status: "playing" }),
         queuedBlocks: action.queuedBlocks,
       };
     case "reset":

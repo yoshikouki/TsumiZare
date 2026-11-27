@@ -9,7 +9,7 @@ import {
   isFilledBlockCell,
 } from "../core/block.js";
 import { type Cell, initBoard } from "../core/board.js";
-import type { Direction } from "../core/game.js";
+import { type Direction, isGrounded } from "../core/game.js";
 import { useKeyboard } from "./use-keyboard.js";
 import { useTouch } from "./use-touch.js";
 
@@ -71,6 +71,19 @@ export const useBlockyGame = (option?: {
     const interval = setInterval(onTick, dropInterval);
     return () => clearInterval(interval);
   }, [autoDrop, isPlaying, dropInterval]);
+
+  // A grounded block locks one drop interval after it touched down. Every
+  // move or rotation gives a new activeBlock, which restarts the wait.
+  const groundedBlock =
+    autoDrop && isPlaying && isGrounded(game) ? activeBlock : null;
+  const onLock = useEffectEvent(() => send({ type: "lock" }));
+  useEffect(() => {
+    if (!groundedBlock) {
+      return;
+    }
+    const timeout = setTimeout(onLock, dropInterval);
+    return () => clearTimeout(timeout);
+  }, [groundedBlock, dropInterval]);
 
   const detectCellVariant = (
     cell: Cell,

@@ -44,8 +44,8 @@ describe("gameReducer", () => {
     expect(left.activeBlock?.position).toEqual({ x: 0, y: 17 });
     const blocked = run(left, { type: "move", direction: "down" });
     expect(blocked.activeBlock?.position).toEqual({ x: 0, y: 17 });
-    const wall = run(left, { type: "move", direction: "left" });
-    expect(wall.activeBlock?.position).toEqual({ x: 0, y: 17 });
+    // A move that fails returns the same game, so the lock timer keeps running.
+    expect(run(left, { type: "move", direction: "left" })).toBe(left);
   });
 
   it("kicks a rotated I block off the right wall", () => {
@@ -58,17 +58,33 @@ describe("gameReducer", () => {
     expect(rotated.activeBlock?.position).toEqual({ x: 6, y: 5 });
   });
 
-  it("lands the block when a tick cannot drop it", () => {
+  it("keeps a grounded block on a tick and lands it on lock", () => {
     const game = playing({
       board: boardWith([]),
       activeBlock: block("a", BLOCKS.I, 0, 19),
     });
-    const landed = run(game, {
+    const ticked = run(game, {
       type: "tick",
       nextBlock: block("n", BLOCKS.O, 3, 0),
     });
+    expect(ticked).toBe(game);
+    const landed = run(ticked, { type: "lock" });
     expect(landed.activeBlock).toBeNull();
     expect(draw(landed.board, 1)).toEqual(["####......"]);
+  });
+
+  it("ignores a lock once the block has moved off the ground", () => {
+    const game = playing({
+      board: boardWith(["##........"]),
+      activeBlock: block("a", BLOCKS.O, 0, 17),
+    });
+    const offTheLedge = run(
+      game,
+      { type: "move", direction: "right" },
+      { type: "move", direction: "right" }
+    );
+    expect(offTheLedge.activeBlock?.position).toEqual({ x: 2, y: 17 });
+    expect(run(offTheLedge, { type: "lock" })).toEqual(offTheLedge);
   });
 
   it("activates the next queued block on a tick and queues the new one", () => {
@@ -108,12 +124,9 @@ describe("gameReducer", () => {
       board: boardWith(["####..####"]),
       activeBlock: block("a", [[1, 1]], 4, 19),
     });
-    const action: GameAction = {
-      type: "tick",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    };
-    const once = run(game, action, action);
-    expect(run(game, action, action)).toEqual(once);
+    const once = run(game, { type: "lock" });
+    expect(run(game, { type: "lock" })).toEqual(once);
+    expect(draw(once.board, 1)).toEqual([".........."]);
   });
 
   it("finishes when the next block does not fit", () => {
