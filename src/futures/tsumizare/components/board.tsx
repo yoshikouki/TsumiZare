@@ -88,13 +88,14 @@ export const Board = ({
             </div>
           ))}
         </div>
-        {bursts.map((id) => (
+        {bursts.map(({ id, rows }) => (
           <div
             aria-hidden="true"
             className="board-burst"
+            data-ending={rows === 3 ? "flow" : "spread"}
             key={id}
             onAnimationEnd={(event) => {
-              if (event.animationName === "board-burst-fade") {
+              if (event.animationName !== "board-burst-draw") {
                 removeBurst(id);
               }
             }}

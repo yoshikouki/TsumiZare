@@ -284,8 +284,9 @@
   }
 
   /* A line runs from the bottom centre along both sides of the board and
-     meets at the top centre, then the frame spreads out and fades. The frame
-     is one rounded border, uncovered in that order by its clip path. */
+     meets at the top centre. The frame is one rounded border, uncovered in
+     that order by its clip path. It then either spreads out and fades, or
+     flows away along the same route. */
   .board-burst {
     --line: 3px;
     --low: calc(100% - var(--line));
@@ -298,6 +299,12 @@
     animation:
       board-burst-draw 450ms linear both,
       board-burst-fade 300ms 450ms ease-out both;
+  }
+
+  .board-burst[data-ending="flow"] {
+    animation:
+      board-burst-draw 450ms linear both,
+      board-burst-flow 450ms 450ms linear forwards;
   }
 
   .board-row {
@@ -423,6 +430,63 @@
       100% 0,
       100% 100%,
       0 100%
+    );
+  }
+}
+
+/* The reverse cover, again with eight corners: a notch in the bottom edge
+   opens from the centre, the floor rises past the sides, then the top edge
+   closes in from both corners. */
+@keyframes board-burst-flow {
+  0% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      50% 100%,
+      50% var(--low),
+      50% var(--low),
+      50% 100%,
+      0 100%
+    );
+  }
+
+  17% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      100% 100%,
+      100% var(--low),
+      0 var(--low),
+      0 100%,
+      0 100%
+    );
+  }
+
+  83% {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% var(--line),
+      100% var(--line),
+      100% var(--line),
+      0 var(--line),
+      0 var(--line),
+      0 var(--line)
+    );
+  }
+
+  100% {
+    clip-path: polygon(
+      50% 0,
+      50% 0,
+      50% var(--line),
+      50% var(--line),
+      50% var(--line),
+      50% var(--line),
+      50% var(--line),
+      50% var(--line)
     );
   }
 }
