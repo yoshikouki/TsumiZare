@@ -12,7 +12,7 @@ function manifest() {
     theme_color: "#F7F6F3",
     icons: [
       {
-        src: "/logo.svg",
+        src: "/favicon.svg",
         sizes: "600x600",
         type: "image/svg+xml",
       },

@@ -26,7 +26,7 @@ export function Document({
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={`${appUrl}${pathname}`} />
         <link rel="stylesheet" href={stylesheet} />
-        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link
           rel="icon"
           href="/icons/icon-192x192.png"
@@ -44,7 +44,7 @@ export function Document({
         <meta property="og:url" content={`${appUrl}${pathname}`} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
-        <meta property="og:image" content={`${appUrl}/logo.svg`} />
+        <meta property="og:image" content={`${appUrl}/favicon.svg`} />
         <meta property="og:image:alt" content={title} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="1200" />
@@ -53,7 +53,7 @@ export function Document({
         <meta name="twitter:creator" content="@yoshikouki_" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={`${appUrl}/logo.svg`} />
+        <meta name="twitter:image" content={`${appUrl}/favicon.svg`} />
       </head>
       <body>
         {children}
