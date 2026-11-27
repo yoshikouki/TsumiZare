@@ -25,6 +25,19 @@ const webServer = worker
 
 export default defineConfig({
   testDir: "./e2e",
-  use: { baseURL: externalURL, ...devices["Desktop Chrome"] },
+  use: { baseURL: externalURL },
+  projects: [
+    { name: "chromium", use: devices["Desktop Chrome"] },
+    {
+      name: "webkit",
+      testMatch: "**/line-clear.spec.ts",
+      use: devices["Desktop Safari"],
+    },
+    {
+      name: "firefox",
+      testMatch: "**/line-clear.spec.ts",
+      use: devices["Desktop Firefox"],
+    },
+  ],
   webServer: externalURL ? undefined : webServer,
 });

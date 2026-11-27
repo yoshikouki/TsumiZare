@@ -47,8 +47,8 @@ jobs:
       - name: Build Worker
         run: bun run build
 
-      - name: Install Chromium
-        run: bunx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium webkit firefox
 
       - name: Test built Worker and browser interactions
         run: bun run test:worker
