@@ -245,6 +245,14 @@
   pointer-events: none;
 }
 
+.board-clear-flash {
+  grid-column: 1 / -1;
+  display: none;
+  background: var(--color-primary);
+  transform-origin: bottom;
+  scale: 1;
+}
+
 .board-cell[data-state="empty"] {
   border-radius: var(--radius-sm);
   background: color-mix(in oklab, var(--color-primary) 5%, transparent);
@@ -266,6 +274,11 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .board-clear-flash {
+    display: block;
+    animation: board-clear-collapse 160ms ease-in both;
+  }
+
   .board-row {
     transition: opacity 150ms ease-out;
   }
@@ -323,5 +336,12 @@
 
   to {
     opacity: 1;
+  }
+}
+
+@keyframes board-clear-collapse {
+  to {
+    opacity: 0;
+    scale: 1 0;
   }
 }

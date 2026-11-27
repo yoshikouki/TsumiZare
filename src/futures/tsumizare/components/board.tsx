@@ -12,7 +12,7 @@ export const Board = ({
   game: Game;
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
-  useLineClear(useGameSession(), gridRef);
+  const { flashes, removeFlash } = useLineClear(useGameSession(), gridRef);
 
   const dimensions: CSSProperties & {
     "--board-cols": number;
@@ -36,7 +36,17 @@ export const Board = ({
         ref={gridRef}
         style={dimensions}
       >
-        <div className="board-grid">
+        <div aria-hidden="true" className="board-grid board-overlay">
+          {flashes.map(({ id, rowIndex }) => (
+            <div
+              className="board-clear-flash"
+              key={id}
+              onAnimationEnd={() => removeFlash(id)}
+              style={{ gridRowStart: rowIndex + 1 }}
+            />
+          ))}
+        </div>
+        <div className="board-grid relative">
           {game.rows.map((row) => (
             <div className="board-row" data-row-id={row.id} key={row.id}>
               {row.cells.map((cell) => (
