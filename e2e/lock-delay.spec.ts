@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-// Moves every 150ms, well inside the 666ms lock wait.
+// Moves every 150ms, well inside the 500ms lock wait.
 const STEER_INTERVAL = 150;
 
 const cells = (page: Page, state: "active" | "filled") =>
