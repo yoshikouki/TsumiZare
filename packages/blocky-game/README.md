@@ -34,6 +34,8 @@ export function Game({ runner }: { runner: GameRunner }) {
 }
 ```
 
+Run the terminal example from the repository root with `bun run build:packages && bun examples/terminal/index.ts`.
+
 ## Release
 
 Bump `version`, merge it, then push the tag `blocky-game@<version>` on that commit.
