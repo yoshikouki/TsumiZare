@@ -28,3 +28,8 @@ Call `useBlockyGame` once per game, because it listens to the keyboard. Read the
 
 The public API is exported from [`src/index.ts`](./src/index.ts).
 TsumiZare wraps its routes in the provider ([`src/routes/index.tsx`](../../src/routes/index.tsx)) and builds the game on the hook ([`tsumizare.tsx`](../../src/futures/tsumizare/tsumizare.tsx)).
+
+## Release
+
+Bump `version`, merge it, then push the tag `blocky-game@<version>` on that commit.
+[`publish.yml`](../../.github/workflows/publish.yml) stages the package through npm trusted publishing, and a maintainer approves it with 2FA in the Staged Packages tab on npmjs.com.
