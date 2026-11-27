@@ -64,6 +64,15 @@ test("surviving rows fall two pitches and the next piece moves on the first fram
   await start(page);
   await prepareTwoLineClear(page);
   const board = page.locator(BOARD);
+  // The last placement is still sinking the board, which would shift the
+  // positions measured below.
+  await board.evaluate((element) =>
+    Promise.all(
+      element
+        .getAnimations({ subtree: true })
+        .map((animation) => animation.finished)
+    )
+  );
   const oldRows = await board.locator(ROW).evaluateAll((rows) =>
     rows.map((row) => ({
       id: row.getAttribute("data-row-id"),
