@@ -22,6 +22,12 @@ export const Board = ({
     "--board-rows": game.rules.rows,
   };
 
+  // An afterimage starts as the filled row it replaces, gaps included.
+  const flashCells = Array.from({ length: game.rules.cols }, (_, x) => (
+    // biome-ignore lint/suspicious/noArrayIndexKey: The cells are identical and fixed in number.
+    <div key={x} />
+  ));
+
   return (
     <section
       aria-label="ゲーム盤"
@@ -39,11 +45,13 @@ export const Board = ({
         <div aria-hidden="true" className="board-grid board-overlay">
           {flashes.map(({ id, rowIndex }) => (
             <div
-              className="board-clear-flash"
+              className="board-row board-clear-flash"
               key={id}
               onAnimationEnd={() => removeFlash(id)}
               style={{ gridRowStart: rowIndex + 1 }}
-            />
+            >
+              {flashCells}
+            </div>
           ))}
         </div>
         <div className="board-grid relative">

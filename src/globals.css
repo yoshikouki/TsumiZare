@@ -246,11 +246,13 @@
 }
 
 .board-clear-flash {
-  grid-column: 1 / -1;
   display: none;
-  background: var(--color-primary);
   transform-origin: bottom;
   scale: 1;
+}
+
+.board-clear-flash > div {
+  background: var(--color-primary);
 }
 
 .board-cell[data-state="empty"] {
@@ -275,7 +277,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .board-clear-flash {
-    display: block;
+    display: grid;
     animation: board-clear-collapse 160ms ease-in both;
   }
 
