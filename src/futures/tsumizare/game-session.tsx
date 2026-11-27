@@ -13,13 +13,21 @@ export function GameSession({
   gravity: number | null;
 }) {
   const [runner] = useState(() => createGameRunner(createGame({ gravity })));
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    // Time keeps passing while a hidden page's timers are throttled or frozen,
+    // so the game would play itself out before the player comes back.
+    const pauseWhenHidden = () => {
+      if (document.hidden) {
+        runner.send({ type: "pause" });
+      }
+    };
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    return () => {
+      document.removeEventListener("visibilitychange", pauseWhenHidden);
       // Stop the clock on unmount while keeping the runner usable in Strict Mode.
       runner.send({ type: "pause" });
-    },
-    [runner]
-  );
+    };
+  }, [runner]);
   return <GameSessionContext value={runner}>{children}</GameSessionContext>;
 }
 
