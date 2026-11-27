@@ -28,8 +28,3 @@ Call `useBlockyGame` once per game, because it listens to the keyboard. Read the
 
 The public API is exported from [`src/index.ts`](./src/index.ts).
 TsumiZare wraps its routes in the provider ([`src/routes/index.tsx`](../../src/routes/index.tsx)) and builds the game on the hook ([`tsumizare.tsx`](../../src/futures/tsumizare/tsumizare.tsx)).
-
-## Build
-
-Declarations are emitted by `tsc`, not by tsup's `dts` option.
-tsup's `dts` depends on the TypeScript JavaScript API and fails with TypeScript 7.0.

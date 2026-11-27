@@ -11,14 +11,16 @@
       "default": "./dist/index.js"
     }
   },
+  "engines": {
+    "node": ">=20.19"
+  },
   "scripts": {
-    "build": "tsup && tsc -p tsconfig.json"
+    "build": "rm -rf dist && tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "tsup": "^9.0.0",
     "typescript": "^7.0.2",
     "@testing-library/react": "^16.3.3",
     "@testing-library/dom": "^10.4.2"
