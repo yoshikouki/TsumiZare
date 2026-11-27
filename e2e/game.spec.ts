@@ -103,11 +103,22 @@ for (const path of ["/", "/modes/no-tick"]) {
       )
       .not.toBe(before);
     if (path === "/modes/no-tick") {
+      const row = () =>
+        active.first().evaluate((cell) => {
+          const cellRow = cell.parentElement as Element;
+          return Array.from(cellRow.parentElement?.children || []).indexOf(
+            cellRow
+          );
+        });
       // A block placed where the next one spawns ends the game.
       await Array.from({ length: 5 }).reduce<Promise<void>>(
         (previous) => previous.then(() => page.keyboard.press("ArrowDown")),
         Promise.resolve()
       );
+      await expect.poll(row).toBe(5);
+      // In stacking mode the up key moves the block up instead of rotating it.
+      await page.keyboard.press("ArrowUp");
+      await expect.poll(row).toBe(4);
       await page.getByRole("button", { name: "ブロックを置く" }).click();
       await expect(
         board.locator('[data-state="filled"]').first()

@@ -72,8 +72,9 @@ export const useBlockyGame = (option?: {
     return () => clearInterval(interval);
   }, [autoDrop, isPlaying, dropInterval]);
 
-  // A grounded block locks one drop interval after it touched down. Every
-  // move or rotation gives a new activeBlock, which restarts the wait.
+  // A grounded block locks two drop intervals after it touched down, which
+  // keeps the wait in step with the drop. Every move or rotation gives a new
+  // activeBlock, which restarts the wait.
   const groundedBlock =
     autoDrop && isPlaying && isGrounded(game) ? activeBlock : null;
   const onLock = useEffectEvent(() => send({ type: "lock" }));
@@ -81,7 +82,7 @@ export const useBlockyGame = (option?: {
     if (!groundedBlock) {
       return;
     }
-    const timeout = setTimeout(onLock, dropInterval);
+    const timeout = setTimeout(onLock, dropInterval * 2);
     return () => clearTimeout(timeout);
   }, [groundedBlock, dropInterval]);
 
