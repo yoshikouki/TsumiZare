@@ -1,6 +1,8 @@
 import { cellVariant, type Game } from "blocky-game";
-import { cva, type VariantProps } from "class-variance-authority";
+import { type CSSProperties, type ReactNode, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { useGameSession } from "../game-session";
+import { useLineClear } from "./use-line-clear";
 
 export const Board = ({
   boardRef,
@@ -8,61 +10,96 @@ export const Board = ({
 }: {
   boardRef: React.Ref<HTMLElement>;
   game: Game;
-}) => (
-  <section
-    aria-label="ゲーム盤"
-    className={cn(
-      "flex h-full w-full flex-col items-center px-4 transition-[filter] duration-200 motion-reduce:transition-none",
-      game.status === "paused" && "blur-xs"
-    )}
-    ref={boardRef}
-  >
-    <div className="flex w-full max-w-xs flex-col gap-1 pb-4">
-      {game.rows.map((row, y) => (
-        <div
-          className="grid gap-1"
-          key={row.id}
-          style={{ gridTemplateColumns: `repeat(${game.rules.cols}, 1fr)` }}
-        >
-          {row.cells.map((cell, x) => (
-            <BoardCell key={cell.id} variant={cellVariant(game, x, y)} />
+}) => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const { flashes, removeFlash } = useLineClear(useGameSession(), gridRef);
+
+  const dimensions: CSSProperties & {
+    "--board-cols": number;
+    "--board-rows": number;
+  } = {
+    "--board-cols": game.rules.cols,
+    "--board-rows": game.rules.rows,
+  };
+
+  // An afterimage starts as the filled row it replaces, gaps included.
+  const flashCells = Array.from({ length: game.rules.cols }, (_, x) => (
+    // biome-ignore lint/suspicious/noArrayIndexKey: The cells are identical and fixed in number.
+    <div key={x} />
+  ));
+
+  return (
+    <section
+      aria-label="ゲーム盤"
+      className={cn(
+        "flex h-full w-full flex-col items-center px-4 motion-safe:transition-[filter] motion-safe:duration-200",
+        game.status === "paused" && "blur-xs"
+      )}
+      ref={boardRef}
+    >
+      <div
+        className="@container relative mb-4 w-full max-w-xs"
+        ref={gridRef}
+        style={dimensions}
+      >
+        <div aria-hidden="true" className="board-grid board-overlay">
+          {flashes.map(({ id, rowIndex }) => (
+            <div
+              className="board-row board-clear-flash"
+              key={id}
+              onAnimationEnd={() => removeFlash(id)}
+              style={{ gridRowStart: rowIndex + 1 }}
+            >
+              {flashCells}
+            </div>
           ))}
         </div>
-      ))}
-    </div>
-  </section>
-);
+        <div className="board-grid relative">
+          {game.rows.map((row) => (
+            <div className="board-row" data-row-id={row.id} key={row.id}>
+              {row.cells.map((cell) => (
+                <div
+                  className="board-cell"
+                  data-state={cell.blockId === null ? "empty" : "filled"}
+                  key={cell.id}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+        {game.piece ? <PieceLayer game={game} key={game.piece.id} /> : null}
+      </div>
+    </section>
+  );
+};
 
-// Moving cells switch instantly so the falling block stays crisp. Transitions
-// remain only for a new row fading in from @starting-style and for a landing
-// block settling into its filled shape.
-const cellVariants = cva(
-  "bg-primary/5 aspect-square rounded-sm transition-opacity duration-150 ease-out motion-reduce:transition-none starting:opacity-0",
-  {
-    variants: {
-      variant: {
-        empty: "",
-        filled:
-          "bg-primary rounded-none transition-[border-radius,scale] duration-300",
-        active: "bg-primary/90 scale-90",
-        belowActiveBlock: "bg-primary/10",
-      },
-    },
-    defaultVariants: {
-      variant: "empty",
-    },
+function PieceLayer({ game }: { game: Game }) {
+  const active: ReactNode[] = [];
+  const guide: ReactNode[] = [];
+
+  for (const [y, row] of game.rows.entries()) {
+    for (const [x, cell] of row.cells.entries()) {
+      const variant = cellVariant(game, x, y);
+      const position = { gridColumnStart: x + 1, gridRowStart: y + 1 };
+
+      if (variant === "active") {
+        active.push(
+          <div data-state={variant} key={active.length} style={position} />
+        );
+      } else if (variant === "belowActiveBlock") {
+        guide.push(<div data-state={variant} key={cell.id} style={position} />);
+      }
+    }
   }
-);
 
-export const BoardCell = ({
-  variant,
-  className,
-}: {
-  variant: VariantProps<typeof cellVariants>["variant"];
-  className?: string;
-}) => (
-  <div
-    data-state={variant}
-    className={cn(cellVariants({ variant, className }))}
-  />
-);
+  return (
+    <div
+      aria-hidden="true"
+      className="board-grid board-overlay"
+      data-piece-layer=""
+    >
+      {guide}
+      {active}
+    </div>
+  );
+}

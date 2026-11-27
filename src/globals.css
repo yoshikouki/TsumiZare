@@ -216,3 +216,134 @@
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
+
+.board-grid {
+  --board-gap: var(--spacing);
+  --board-columns: repeat(var(--board-cols), minmax(0, 1fr));
+  --row-pitch: calc((100cqw + var(--board-gap)) / var(--board-cols));
+
+  display: grid;
+  grid-template-columns: var(--board-columns);
+  grid-template-rows: repeat(
+      var(--board-rows),
+      calc(var(--row-pitch) - var(--board-gap))
+    );
+  gap: var(--board-gap);
+}
+
+.board-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: var(--board-columns);
+  column-gap: var(--board-gap);
+  translate: 0 0;
+}
+
+.board-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.board-clear-flash {
+  display: none;
+  transform-origin: bottom;
+  scale: 1;
+}
+
+.board-clear-flash > div {
+  background: var(--color-primary);
+}
+
+.board-cell[data-state="empty"] {
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--color-primary) 5%, transparent);
+}
+
+.board-cell[data-state="filled"] {
+  background: var(--color-primary);
+}
+
+.board-overlay [data-state="active"] {
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--color-primary) 90%, transparent);
+  scale: 0.9;
+}
+
+.board-overlay [data-state="belowActiveBlock"] {
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--color-primary) 5%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .board-clear-flash {
+    display: grid;
+    animation: board-clear-collapse 160ms ease-in both;
+  }
+
+  .board-row {
+    transition: opacity 150ms ease-out;
+  }
+
+  .board-overlay [data-state="active"] {
+    transition:
+      opacity 110ms ease-out,
+      scale 110ms ease-out;
+  }
+
+  .board-cell[data-state="filled"] {
+    border-radius: var(--radius-sm);
+    animation: board-cell-settle 300ms ease;
+  }
+
+  /* The rounded body scales up as the square corners fade in. */
+  .board-cell[data-state="filled"]::before {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--color-primary);
+    content: "";
+    animation: board-cell-square 300ms ease;
+  }
+
+  /* biome-ignore lint/suspicious/useBaseline: Entry is immediate when starting styles are unavailable. */
+  @starting-style {
+    .board-row {
+      opacity: 0;
+    }
+
+    .board-overlay [data-state="active"] {
+      opacity: 0;
+      scale: 0.82;
+    }
+  }
+}
+
+@keyframes board-cell-settle {
+  from {
+    opacity: 0.9;
+    scale: 0.9;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes board-cell-square {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes board-clear-collapse {
+  to {
+    opacity: 0;
+    scale: 1 0;
+  }
+}

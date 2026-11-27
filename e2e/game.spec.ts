@@ -87,29 +87,18 @@ for (const path of ["/", "/modes/no-tick"]) {
     const active = board.locator('[data-state="active"]');
     await page.getByRole("button", { name: "Play", exact: true }).click();
     await expect(active.first()).toBeVisible();
-    const before = await active
-      .first()
-      .evaluate((cell) =>
-        Array.from(cell.parentElement?.children || []).indexOf(cell)
-      );
+    const column = () =>
+      active
+        .first()
+        .evaluate((cell) => Number(getComputedStyle(cell).gridColumnStart));
+    const before = await column();
     await page.keyboard.press("ArrowLeft");
-    await expect
-      .poll(() =>
-        active
-          .first()
-          .evaluate((cell) =>
-            Array.from(cell.parentElement?.children || []).indexOf(cell)
-          )
-      )
-      .not.toBe(before);
+    await expect.poll(column).not.toBe(before);
     if (path === "/modes/no-tick") {
       const row = () =>
-        active.first().evaluate((cell) => {
-          const cellRow = cell.parentElement as Element;
-          return Array.from(cellRow.parentElement?.children || []).indexOf(
-            cellRow
-          );
-        });
+        active
+          .first()
+          .evaluate((cell) => Number(getComputedStyle(cell).gridRowStart) - 1);
       // A block placed where the next one spawns ends the game.
       await Array.from({ length: 5 }).reduce<Promise<void>>(
         (previous) => previous.then(() => page.keyboard.press("ArrowDown")),
@@ -171,11 +160,11 @@ test.describe("touch controls", () => {
     const board = page.getByRole("region", { name: "ゲーム盤" });
     const active = board.locator('[data-state="active"]');
     await expect(active.first()).toBeVisible();
-    const before = await active
-      .first()
-      .evaluate((cell) =>
-        Array.from(cell.parentElement?.children || []).indexOf(cell)
-      );
+    const column = () =>
+      active
+        .first()
+        .evaluate((cell) => Number(getComputedStyle(cell).gridColumnStart));
+    const before = await column();
     const bounds = await board.boundingBox();
     if (!bounds) {
       throw new Error("The game board is not visible");
@@ -195,14 +184,6 @@ test.describe("touch controls", () => {
       type: "touchEnd",
       touchPoints: [],
     });
-    await expect
-      .poll(() =>
-        active
-          .first()
-          .evaluate((cell) =>
-            Array.from(cell.parentElement?.children || []).indexOf(cell)
-          )
-      )
-      .toBe(before - 1);
+    await expect.poll(column).toBe(before - 1);
   });
 });
