@@ -1,4 +1,4 @@
-import type { Block, GameRunner } from "blocky-game";
+import type { Block, Game, GameRunner } from "blocky-game";
 import { type RefObject, useEffect, useState } from "react";
 
 const FALL_EASING =
@@ -7,7 +7,6 @@ const FALL_EASING =
 const WAVE_STEP = 30;
 // Surviving rows wait this long so the wave is under way when they fall.
 const FALL_DELAY = 140;
-const INVERTED = "invert(1) hue-rotate(180deg)";
 
 interface Flash {
   id: number;
@@ -21,11 +20,54 @@ const centerOf = ({ position, shape }: Block) => ({
   y: position.y + (shape.length - 1) / 2,
 });
 
+// Surviving rows fall from where they were to where they are now.
+function fall(board: HTMLElement, oldRows: Game["rows"], rows: Game["rows"]) {
+  const destinations = new Map(rows.map((row, y) => [row.id, y]));
+  const elements = new Map(
+    Array.from(board.querySelectorAll<HTMLElement>("[data-row-id]"), (row) => [
+      row.dataset.rowId,
+      row,
+    ])
+  );
+
+  for (const [oldIndex, row] of oldRows.entries()) {
+    const newIndex = destinations.get(row.id);
+    if (newIndex === undefined || newIndex <= oldIndex) {
+      continue;
+    }
+
+    // An index gains one position for each cleared row below it, even
+    // when the runner delivers several clears in one update.
+    const distance = newIndex - oldIndex;
+    elements
+      .get(row.id)
+      ?.animate(
+        [
+          { translate: `0 calc(var(--row-pitch) * ${-distance})` },
+          { translate: "0 0" },
+        ],
+        {
+          composite: "add",
+          delay: FALL_DELAY,
+          duration: 320 + 30 * (distance - 1),
+          easing: FALL_EASING,
+          fill: "backwards",
+        }
+      );
+  }
+}
+
+// A new or reset game starts on a clean board.
+const restarted = (before: Game["status"], after: Game["status"]) =>
+  before !== after && (before === "finished" || after === "ready");
+
 export function useLineClear(
   runner: GameRunner,
   boardRef: RefObject<HTMLDivElement | null>
 ) {
   const [flashes, setFlashes] = useState<Flash[]>([]);
+  // Three or more rows at once draw a line around the board.
+  const [bursts, setBursts] = useState<number[]>([]);
 
   useEffect(() => {
     const board = boardRef.current;
@@ -37,10 +79,14 @@ export function useLineClear(
     let previous = runner.getGame();
     let nextFlashId = 0;
     const unsubscribe = runner.subscribe((game, events) => {
-      const oldRows = previous.rows;
+      const { rows: oldRows, status: oldStatus } = previous;
       previous = game;
       if (!motion.matches) {
         return;
+      }
+      if (restarted(oldStatus, game.status)) {
+        setFlashes([]);
+        setBursts([]);
       }
       const cleared = events.flatMap((event) =>
         event.type === "cleared" ? event.rows : []
@@ -66,50 +112,16 @@ export function useLineClear(
       setFlashes((current) => [...current, ...afterimages]);
 
       if (cleared.length >= 3) {
-        document.documentElement.animate(
-          { filter: [INVERTED, INVERTED] },
-          { duration: 80 }
-        );
+        setBursts((current) => [...current, afterimages[0].id]);
       }
 
-      const destinations = new Map(game.rows.map((row, y) => [row.id, y]));
-      const elements = new Map(
-        Array.from(
-          board.querySelectorAll<HTMLElement>("[data-row-id]"),
-          (row) => [row.dataset.rowId, row]
-        )
-      );
-
-      for (const [oldIndex, row] of oldRows.entries()) {
-        const newIndex = destinations.get(row.id);
-        if (newIndex === undefined || newIndex <= oldIndex) {
-          continue;
-        }
-
-        // An index gains one position for each cleared row below it, even
-        // when the runner delivers several clears in one update.
-        const distance = newIndex - oldIndex;
-        elements
-          .get(row.id)
-          ?.animate(
-            [
-              { translate: `0 calc(var(--row-pitch) * ${-distance})` },
-              { translate: "0 0" },
-            ],
-            {
-              composite: "add",
-              delay: FALL_DELAY,
-              duration: 320 + 30 * (distance - 1),
-              easing: FALL_EASING,
-              fill: "backwards",
-            }
-          );
-      }
+      fall(board, oldRows, game.rows);
     });
 
     const stopMotion = () => {
       if (!motion.matches) {
         setFlashes([]);
+        setBursts([]);
         for (const row of board.querySelectorAll("[data-row-id]")) {
           for (const animation of row.getAnimations()) {
             animation.cancel();
@@ -128,5 +140,9 @@ export function useLineClear(
     setFlashes((current) => current.filter((flash) => flash.id !== id));
   }
 
-  return { flashes, removeFlash, waveStep: WAVE_STEP };
+  function removeBurst(id: number) {
+    setBursts((current) => current.filter((burst) => burst !== id));
+  }
+
+  return { bursts, flashes, removeBurst, removeFlash, waveStep: WAVE_STEP };
 }

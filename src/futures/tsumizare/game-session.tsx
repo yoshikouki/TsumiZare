@@ -3,7 +3,7 @@
 import { createGame, createGameRunner, type GameRunner } from "blocky-game";
 import { createContext, useContext, useEffect, useState } from "react";
 
-const GameSessionContext = createContext<GameRunner | null>(null);
+export const GameSessionContext = createContext<GameRunner | null>(null);
 
 export function GameSession({
   children,
