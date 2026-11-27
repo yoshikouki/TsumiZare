@@ -1,6 +1,8 @@
 import { cellVariant, type Game } from "blocky-game";
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { useGameSession } from "../game-session";
+import { useLineClear } from "./use-line-clear";
 
 export const Board = ({
   boardRef,
@@ -9,6 +11,9 @@ export const Board = ({
   boardRef: React.Ref<HTMLElement>;
   game: Game;
 }) => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  useLineClear(useGameSession(), gridRef);
+
   const dimensions: CSSProperties & {
     "--board-cols": number;
     "--board-rows": number;
@@ -28,6 +33,7 @@ export const Board = ({
     >
       <div
         className="@container relative mb-4 w-full max-w-xs"
+        ref={gridRef}
         style={dimensions}
       >
         <div className="board-grid">

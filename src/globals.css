@@ -236,6 +236,7 @@
   grid-column: 1 / -1;
   grid-template-columns: var(--board-columns);
   column-gap: var(--board-gap);
+  translate: 0 0;
 }
 
 .board-overlay {
