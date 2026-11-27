@@ -9,7 +9,8 @@ import {
   isFilledBlockCell,
 } from "../core/block.js";
 import { type Cell, initBoard } from "../core/board.js";
-import type { Direction } from "../core/game.js";
+import { LOCK_DELAY } from "../core/constants.js";
+import { type Direction, isGrounded } from "../core/game.js";
 import { useKeyboard } from "./use-keyboard.js";
 import { useTouch } from "./use-touch.js";
 
@@ -71,6 +72,21 @@ export const useBlockyGame = (option?: {
     const interval = setInterval(onTick, dropInterval);
     return () => clearInterval(interval);
   }, [autoDrop, isPlaying, dropInterval]);
+
+  // Each move that restarts the lock delay changes the key, which restarts
+  // the timer.
+  const lockKey =
+    autoDrop && isPlaying && isGrounded(game)
+      ? `${activeBlock?.id}:${game.lockResets}`
+      : null;
+  const onLock = useEffectEvent(() => send({ type: "lock" }));
+  useEffect(() => {
+    if (lockKey === null) {
+      return;
+    }
+    const timeout = setTimeout(onLock, LOCK_DELAY);
+    return () => clearTimeout(timeout);
+  }, [lockKey]);
 
   const detectCellVariant = (
     cell: Cell,

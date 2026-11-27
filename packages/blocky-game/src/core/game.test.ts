@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { BLOCKS, type Block } from "./block";
 import { type Board, initBoard } from "./board";
+import { LOCK_RESET_LIMIT } from "./constants";
 import { type Game, type GameAction, gameReducer } from "./game";
 
 const block = (id: string, shape: number[][], x: number, y: number): Block => ({
@@ -28,6 +29,7 @@ const draw = (board: Board, rows = 3) =>
 const playing = (game: Partial<Game> & { board: Board }): Game => ({
   activeBlock: null,
   queuedBlocks: [],
+  lockResets: 0,
   ...game,
 });
 
@@ -58,17 +60,79 @@ describe("gameReducer", () => {
     expect(rotated.activeBlock?.position).toEqual({ x: 6, y: 5 });
   });
 
-  it("lands the block when a tick cannot drop it", () => {
+  it("keeps a grounded block on a tick and lands it on lock", () => {
     const game = playing({
       board: boardWith([]),
       activeBlock: block("a", BLOCKS.I, 0, 19),
     });
-    const landed = run(game, {
+    const ticked = run(game, {
       type: "tick",
       nextBlock: block("n", BLOCKS.O, 3, 0),
     });
+    expect(ticked.activeBlock?.position).toEqual({ x: 0, y: 19 });
+    const landed = run(ticked, { type: "lock" });
     expect(landed.activeBlock).toBeNull();
     expect(draw(landed.board, 1)).toEqual(["####......"]);
+  });
+
+  it("ignores a lock once the block has moved off the ground", () => {
+    const game = playing({
+      board: boardWith(["##........"]),
+      activeBlock: block("a", BLOCKS.O, 0, 17),
+    });
+    const offTheLedge = run(
+      game,
+      { type: "move", direction: "right" },
+      { type: "move", direction: "right" }
+    );
+    expect(offTheLedge.activeBlock?.position).toEqual({ x: 2, y: 17 });
+    expect(run(offTheLedge, { type: "lock" })).toEqual(offTheLedge);
+  });
+
+  it("counts moves and rotations of a grounded block up to the limit", () => {
+    const game = playing({
+      board: boardWith([]),
+      activeBlock: block("a", BLOCKS.O, 3, 18),
+    });
+    const steps = Array.from(
+      { length: LOCK_RESET_LIMIT + 5 },
+      (_, index): GameAction =>
+        index % 2
+          ? { type: "move", direction: "left" }
+          : { type: "move", direction: "right" }
+    );
+    expect(run(game, ...steps.slice(0, 3)).lockResets).toBe(3);
+    expect(run(game, ...steps).lockResets).toBe(LOCK_RESET_LIMIT);
+    expect(run(game, { type: "rotate" }).lockResets).toBe(1);
+  });
+
+  it("does not count moves in the air or moves that fail", () => {
+    const air = playing({
+      board: boardWith([]),
+      activeBlock: block("a", BLOCKS.O, 3, 5),
+    });
+    expect(run(air, { type: "move", direction: "left" }).lockResets).toBe(0);
+    const wall = playing({
+      board: boardWith([]),
+      activeBlock: block("a", BLOCKS.O, 0, 18),
+    });
+    expect(run(wall, { type: "move", direction: "left" }).lockResets).toBe(0);
+  });
+
+  it("gives the next block a fresh lock delay", () => {
+    const game = playing({
+      board: boardWith([]),
+      activeBlock: block("a", BLOCKS.O, 3, 18),
+      queuedBlocks: [block("q", BLOCKS.T, 3, 0)],
+      lockResets: LOCK_RESET_LIMIT,
+    });
+    const next = run(
+      game,
+      { type: "lock" },
+      { type: "tick", nextBlock: block("n", BLOCKS.O, 3, 0) }
+    );
+    expect(next.activeBlock?.id).toBe("q");
+    expect(next.lockResets).toBe(0);
   });
 
   it("activates the next queued block on a tick and queues the new one", () => {
@@ -108,12 +172,9 @@ describe("gameReducer", () => {
       board: boardWith(["####..####"]),
       activeBlock: block("a", [[1, 1]], 4, 19),
     });
-    const action: GameAction = {
-      type: "tick",
-      nextBlock: block("n", BLOCKS.O, 3, 0),
-    };
-    const once = run(game, action, action);
-    expect(run(game, action, action)).toEqual(once);
+    const once = run(game, { type: "lock" });
+    expect(run(game, { type: "lock" })).toEqual(once);
+    expect(draw(once.board, 1)).toEqual([".........."]);
   });
 
   it("finishes when the next block does not fit", () => {
