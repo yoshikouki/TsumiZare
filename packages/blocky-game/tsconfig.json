@@ -12,7 +12,6 @@
     "rootDir": "src",
     "outDir": "dist",
     "declaration": true,
-    "emitDeclarationOnly": true,
     "noEmitOnError": true
   },
   "include": ["src"],
