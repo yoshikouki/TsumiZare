@@ -1,5 +1,3 @@
-import type { Board } from "./board.js";
-
 export interface Result {
   score: number;
   filledRowsNumber: number;
@@ -21,10 +19,3 @@ export function scoreClear(
   const filledRowsNumber = prev.filledRowsNumber + cleared;
   return { filledRowsNumber, score: prev.score + filledRowsNumber ** 2 * cols };
 }
-
-export const calculateNewResult = (
-  outcome: { filledRowsNumber?: number },
-  prev: Result,
-  board: Board
-): Result =>
-  scoreClear(prev, outcome.filledRowsNumber ?? 0, board.config.colsNumber);

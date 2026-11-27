@@ -48,7 +48,7 @@ async function verifyDeployment() {
       assert(flight.headers.get("content-type")?.includes("text/x-component"));
       assert(flight.headers.get("vary")?.includes("RSC"));
       assert(flight.headers.get("cache-control")?.includes("no-store"));
-      assert((await flight.text()).includes("BlockyGameProvider"));
+      assert((await flight.text()).includes("GameSession"));
     })
   );
 

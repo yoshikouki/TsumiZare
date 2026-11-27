@@ -36,7 +36,7 @@ for (const path of ["/", "/modes/no-tick"]) {
         expect(flight.headers()["content-type"]).toContain("text/x-component");
         expect(flight.headers().vary).toContain("RSC");
         expect(flight.headers()["cache-control"]).toContain("no-store");
-        expect(await flight.text()).toContain("BlockyGameProvider");
+        expect(await flight.text()).toContain("GameSession");
       })
     );
   });

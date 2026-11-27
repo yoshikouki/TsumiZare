@@ -1,10 +1,12 @@
 "use client";
 
-import { useBlockyGame } from "blocky-game";
+import { useGame } from "blocky-game/react";
 import { DoorOpen, Pause, Play, Square, StepForward } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useGameSession } from "./game-session";
+import { useGameInput } from "./input/use-game-input";
 import { BlockViewer } from "./components/block-viewer";
 import { Board } from "./components/board";
 import { GameControlButton } from "./game-control-button";
@@ -12,18 +14,10 @@ import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
 
 export const TsumiZare = () => {
-  const {
-    board,
-    queuedBlocks,
-    result,
-    boardRef,
-    startBlockyGame,
-    finishBlockyGame,
-    pauseBlockyGame,
-    resumeBlockyGame,
-    readyBlockyGame,
-    detectCellVariant,
-  } = useBlockyGame({ autoDrop: true });
+  const runner = useGameSession();
+  const game = useGame(runner);
+  const { queue, result, rules, status } = game;
+  const boardRef = useGameInput(runner, "rotate");
 
   return (
     <div
@@ -36,7 +30,7 @@ export const TsumiZare = () => {
       <div
         className={cn(
           "flex w-full max-w-xs justify-between pt-4 pb-1 opacity-100 transition-all duration-200",
-          board.status === "ready" && "pointer-events-none opacity-0"
+          status === "ready" && "pointer-events-none opacity-0"
         )}
       >
         <div
@@ -45,10 +39,10 @@ export const TsumiZare = () => {
             "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
           )}
         >
-          {queuedBlocks[0] ? (
+          {queue[0] ? (
             <>
               <div className="text-primary/50">Next</div>
-              <BlockViewer block={queuedBlocks[0]} />
+              <BlockViewer block={queue[0]} />
             </>
           ) : null}
         </div>
@@ -64,7 +58,7 @@ export const TsumiZare = () => {
             variant={"ghost"}
             size={"icon"}
             aria-label="一時停止"
-            onClick={pauseBlockyGame}
+            onClick={() => runner.send({ type: "pause" })}
           >
             <Pause className="fill-primary stroke-primary stroke-1" />
           </Button>
@@ -72,24 +66,21 @@ export const TsumiZare = () => {
       </div>
 
       {/* Game Board */}
-      <Board
-        boardRef={boardRef}
-        rows={board.rows}
-        colsNumber={board.config.colsNumber}
-        isPaused={board.status === "pause"}
-        detectCellVariant={detectCellVariant}
-      />
+      <Board boardRef={boardRef} game={game} />
 
       {/* Game Controller */}
       <div
         className={cn(
           "bg-background/30 absolute inset-0 flex flex-col items-center justify-center opacity-100 transition-all duration-200",
-          board.status === "playing" && "pointer-events-none opacity-0"
+          status === "playing" && "pointer-events-none opacity-0"
         )}
       >
         {/* Ready to play */}
-        <GameControlContainer isVisible={board.status === "ready"}>
-          <GameControlButton onClick={startBlockyGame} className="group">
+        <GameControlContainer isVisible={status === "ready"}>
+          <GameControlButton
+            onClick={() => runner.send({ type: "start" })}
+            className="group"
+          >
             <Play
               className="fill-primary-foreground stroke-primary-foreground group-hover:fill-primary group-hover:stroke-primary"
               size="40"
@@ -100,7 +91,7 @@ export const TsumiZare = () => {
 
         {/* Pause */}
         <GameControlContainer
-          isVisible={board.status === "pause"}
+          isVisible={status === "paused"}
           className="bg-background rounded border p-4"
         >
           <div className="py-8">
@@ -109,7 +100,7 @@ export const TsumiZare = () => {
           <div className="flex w-full gap-2">
             <GameControlButton
               aria-label="再開"
-              onClick={resumeBlockyGame}
+              onClick={() => runner.send({ type: "resume" })}
               className="group py-10"
             >
               <Play
@@ -119,7 +110,7 @@ export const TsumiZare = () => {
             </GameControlButton>
             <GameControlButton
               aria-label="終了"
-              onClick={finishBlockyGame}
+              onClick={() => runner.send({ type: "finish" })}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
             >
@@ -129,18 +120,16 @@ export const TsumiZare = () => {
         </GameControlContainer>
 
         {/* Finish result */}
-        <GameControlContainer isVisible={board.status === "finished"}>
+        <GameControlContainer isVisible={status === "finished"}>
           <ResultViewer
             score={result.score}
-            filledCellsNumber={
-              result.filledRowsNumber * board.config.colsNumber
-            }
+            filledCellsNumber={result.filledRowsNumber * rules.cols}
           />
 
           <div className="flex w-full gap-2">
             <GameControlButton
               aria-label="もう一度遊ぶ"
-              onClick={startBlockyGame}
+              onClick={() => runner.send({ type: "start" })}
               className="group py-10"
             >
               <StepForward
@@ -150,7 +139,7 @@ export const TsumiZare = () => {
             </GameControlButton>
             <GameControlButton
               aria-label="ゲーム選択に戻る"
-              onClick={readyBlockyGame}
+              onClick={() => runner.send({ type: "reset" })}
               variant={"outline"}
               className="aspect-square flex-1 py-10"
             >

@@ -41,7 +41,7 @@ test.each([false, true])(
           case "/":
           case "/modes/no-tick": {
             if (flight) {
-              return new Response("BlockyGameProvider", {
+              return new Response("GameSession", {
                 headers: {
                   "content-type": "text/x-component",
                   vary: "RSC",

@@ -7,8 +7,7 @@ import {
   isFilledBlockCell,
   rotateShape,
 } from "./block.js";
-import { type Row, initRow } from "./board.js";
-import { WALL_KICKS } from "./constants.js";
+import { createRow, type Row } from "./board.js";
 import { initResult, type Result, scoreClear } from "./result.js";
 
 export interface Rules {
@@ -70,13 +69,21 @@ const STEPS: Record<Direction, BlockPosition> = {
   up: { x: 0, y: -1 },
 };
 
-const ROTATION_OFFSETS = [{ x: 0, y: 0 }, ...WALL_KICKS];
+const ROTATION_OFFSETS = [
+  { x: 0, y: 0 },
+  { x: -1, y: 0 },
+  { x: 1, y: 0 },
+  { x: 0, y: -1 },
+  { x: -1, y: -1 },
+  { x: 1, y: -1 },
+  { x: -3, y: 0 }, // For I block on the right wall
+];
 const QUEUE_SIZE = 3;
 const RANDOM_RANGE = 2 ** 32;
 
 const makeRows = (cols: number, count: number, nextId: number): Row[] =>
   Array.from({ length: count }, (_, index) =>
-    initRow(cols, `row-${nextId + index}`)
+    createRow(cols, `row-${nextId + index}`)
   );
 
 function resetGame(
