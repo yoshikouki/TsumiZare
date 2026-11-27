@@ -1,15 +1,15 @@
-import { BlockyGameProvider } from "blocky-game";
 import { Hono } from "hono";
 import { Logo } from "@/components/logo";
 import { GameModes } from "@/components/site/game-modes";
 import { Header } from "@/components/site/header";
 import { HowToPlay } from "@/components/site/how-to-play";
 import { NoTickGame } from "@/futures/tsumizare/no-tick-game";
+import { GameSession } from "@/futures/tsumizare/game-session";
 import { cn } from "@/lib/utils";
 
 export function NoTickModePage() {
   return (
-    <BlockyGameProvider>
+    <GameSession gravity={null}>
       <Header>
         <div className="flex w-full max-w-xs items-center justify-between">
           <a href="/" className="flex-1">
@@ -31,7 +31,7 @@ export function NoTickModePage() {
           <HowToPlay />
         </section>
       </main>
-    </BlockyGameProvider>
+    </GameSession>
   );
 }
 

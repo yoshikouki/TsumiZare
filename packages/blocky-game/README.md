@@ -1,35 +1,40 @@
 # blocky-game
 
-React hooks and game logic for falling-block puzzle games.
+A deterministic falling-block game core. The root export has no React or DOM dependency.
 
-## Usage
+## Core
 
-Wrap the game in `BlockyGameProvider`, then read the board and controls from `useBlockyGame`.
-Pass `autoDrop: true` to make blocks fall on their own.
-A block that touches down locks 500ms later. Each move or rotation on the ground restarts that wait, and a tick never locks it.
+`createGame(rules?, seed?)` creates a ready game. It defaults to 10 columns, 20 rows, the seven tetrominoes, 333 ms gravity, and a 500 ms lock delay. Set `gravity: null` for stacking mode. The first piece spawns on start and time never moves or locks it.
 
-```tsx
-import { BlockyGameProvider, useBlockyGame } from "blocky-game";
+```ts
+import { createGame, step } from "blocky-game";
 
-const Game = () => {
-  const { board, startBlockyGame } = useBlockyGame({ autoDrop: true });
-  // Render board.rows as the playing field.
-  return <button onClick={startBlockyGame}>{board.status}</button>;
-};
-
-export const App = () => (
-  <BlockyGameProvider>
-    <Game />
-  </BlockyGameProvider>
-);
+const ready = createGame({}, 42);
+const started = step(ready, { type: "start" }).game;
+const { game, events } = step(started, { type: "advance", ms: 333 });
 ```
 
-Call `useBlockyGame` once per game, because it listens to the keyboard. Read the game anywhere else with `useBlockyGameState`.
+`step` takes a snapshot and a command and returns the next snapshot and ordered events. A clear reports the row indexes before the clear. Surviving rows keep their IDs. Use `cellVariant(game, x, y)` to render the board and `msUntilNextStep(game)` to drive your own clock.
 
-The public API is exported from [`src/index.ts`](./src/index.ts).
-TsumiZare wraps its routes in the provider ([`src/routes/index.tsx`](../../src/routes/index.tsx)) and builds the game on the hook ([`tsumizare.tsx`](../../src/futures/tsumizare/tsumizare.tsx)).
+## Runner and React
+
+`createGameRunner(game)` drives the clock. Call `runner.send(command)` for input and `runner.subscribe((game, events) => …)` to observe changes. Create one runner per game and dispose of it when its owner is done.
+
+```tsx
+import type { GameRunner } from "blocky-game";
+import { useGame } from "blocky-game/react";
+
+export function Game({ runner }: { runner: GameRunner }) {
+	const game = useGame(runner);
+	return (
+		<button onClick={() => runner.send({ type: "start" })} type="button">
+			Start game ({game.status})
+		</button>
+	);
+}
+```
 
 ## Release
 
 Bump `version`, merge it, then push the tag `blocky-game@<version>` on that commit.
-[`publish.yml`](../../.github/workflows/publish.yml) stages the package through npm trusted publishing, and a maintainer approves it with 2FA in the Staged Packages tab on npmjs.com.
+The [publish workflow](../../.github/workflows/publish.yml) stages the package through npm trusted publishing. A maintainer approves it with 2FA in the Staged Packages tab on npmjs.com.

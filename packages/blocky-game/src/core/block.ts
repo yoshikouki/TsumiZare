@@ -1,6 +1,3 @@
-import { id } from "./board.js";
-import { DEFAULT_QUEUED_BLOCK_SIZE } from "./constants.js";
-
 export type BlockShape = number[][];
 export interface BlockPosition {
   x: number;
@@ -41,22 +38,6 @@ export const BLOCKS: Blocks = {
     [0, 0, 1],
     [1, 1, 1],
   ],
-} as const;
-export const TETROMINO_TYPES = Object.keys(BLOCKS) as BlockType[];
-
-export const generateRandomBlock = () => {
-  const type =
-    TETROMINO_TYPES[Math.floor(Math.random() * TETROMINO_TYPES.length)];
-  return {
-    id: id(),
-    shape: BLOCKS[type],
-    position: { x: 3, y: 0 },
-  };
-};
-
-export const generateQueuedBlocks = (count = DEFAULT_QUEUED_BLOCK_SIZE) => {
-  const blocks = Array.from({ length: count }, generateRandomBlock);
-  return blocks;
 };
 
 export const rotateShape = (shape: BlockShape) => {

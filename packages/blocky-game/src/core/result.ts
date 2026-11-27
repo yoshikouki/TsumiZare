@@ -1,12 +1,6 @@
-import type { Board } from "./board.js";
-
 export interface Result {
   score: number;
   filledRowsNumber: number;
-}
-
-export interface Outcome {
-  filledRowsNumber?: Result["filledRowsNumber"];
 }
 
 export const initResult = (): Result => ({
@@ -14,24 +8,14 @@ export const initResult = (): Result => ({
   filledRowsNumber: 0,
 });
 
-export const calculateNewResult = (
-  outcome: Outcome,
+export function scoreClear(
   prev: Result,
-  board: Board
-): Result => {
-  const newFilledRowsNumber = outcome.filledRowsNumber
-    ? prev.filledRowsNumber + outcome.filledRowsNumber
-    : prev.filledRowsNumber;
-  const filledRowsBonus = outcome.filledRowsNumber
-    ? newFilledRowsNumber ** 2 * board.config.colsNumber
-    : 0;
-  const score = [
-    // Adding bonuses
-    filledRowsBonus,
-  ].reduce((acc, bonus) => acc + bonus, prev.score);
-  return {
-    ...prev,
-    score,
-    filledRowsNumber: newFilledRowsNumber,
-  };
-};
+  cleared: number,
+  cols: number
+): Result {
+  if (cleared === 0) {
+    return prev;
+  }
+  const filledRowsNumber = prev.filledRowsNumber + cleared;
+  return { filledRowsNumber, score: prev.score + filledRowsNumber ** 2 * cols };
+}

@@ -1,4 +1,21 @@
-export * from "./components/blocky-game-provider.js";
-export * from "./core/block.js";
-export * from "./core/board.js";
-export * from "./hooks/use-blocky-game.js";
+export {
+  BLOCKS,
+  type Block,
+  type BlockPosition,
+  type BlockShape,
+} from "./core/block.js";
+export type { Cell, Row } from "./core/board.js";
+export {
+  type CellVariant,
+  cellVariant,
+  type Command,
+  createGame,
+  type Direction,
+  type Game,
+  type GameEvent,
+  msUntilNextStep,
+  type Rules,
+  step,
+} from "./core/game.js";
+export type { Result } from "./core/result.js";
+export { createGameRunner, type GameRunner } from "./runner.js";

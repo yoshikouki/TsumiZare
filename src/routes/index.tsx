@@ -1,4 +1,3 @@
-import { BlockyGameProvider } from "blocky-game";
 import { Hono } from "hono";
 import { Mail } from "lucide-react";
 
@@ -14,11 +13,12 @@ import {
   TypographyP,
 } from "@/components/ui/typography";
 import { TsumiZare } from "@/futures/tsumizare/tsumizare";
+import { GameSession } from "@/futures/tsumizare/game-session";
 import { cn } from "@/lib/utils";
 
 export function HomePage() {
   return (
-    <BlockyGameProvider>
+    <GameSession gravity={333}>
       <Header>
         <a href="/" className="flex items-center gap-2">
           <Logo className={cn("size-8")} />
@@ -79,7 +79,7 @@ export function HomePage() {
           </Button>
         </section>
       </main>
-    </BlockyGameProvider>
+    </GameSession>
   );
 }
 
