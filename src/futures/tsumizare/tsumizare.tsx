@@ -9,6 +9,7 @@ import { useGameSession } from "./game-session";
 import { useGameInput } from "./input/use-game-input";
 import { BlockViewer } from "./components/block-viewer";
 import { Board } from "./components/board";
+import { Score } from "./components/score";
 import { GameControlButton } from "./game-control-button";
 import { GameControlContainer } from "./game-control-container";
 import { ResultViewer } from "./result-viewer";
@@ -52,7 +53,7 @@ export const TsumiZare = () => {
             "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden"
           )}
         >
-          <div className="text-primary/50">{result.score}</div>
+          <Score score={result.score} />
           <Button
             type="button"
             variant={"ghost"}

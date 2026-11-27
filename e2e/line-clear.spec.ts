@@ -84,6 +84,17 @@ test("surviving rows fall two pitches and the next piece moves on the first fram
       if (!boardElement) {
         throw new Error("Game board is missing");
       }
+      // The whole board sinks when a block lands. Settle it so that only the
+      // rows' own fall is measured.
+      for (const animation of boardElement.getAnimations({ subtree: true })) {
+        const { effect } = animation;
+        if (
+          effect instanceof KeyframeEffect &&
+          effect.target?.querySelector(rows)
+        ) {
+          animation.finish();
+        }
+      }
       const movingRows = [...boardElement.querySelectorAll(rows)].map((row) => {
         const fall = row
           .getAnimations()

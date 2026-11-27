@@ -14,7 +14,7 @@ const started = step(ready, { type: "start" }).game;
 const { game, events } = step(started, { type: "advance", ms: 333 });
 ```
 
-`step` takes a snapshot and a command and returns the next snapshot and ordered events. A clear reports the row indexes before the clear. Surviving rows keep their IDs. Use `cellVariant(game, x, y)` to render the board and `msUntilNextStep(game)` to drive your own clock.
+`step` takes a snapshot and a command and returns the next snapshot and ordered events. A move that a wall or a filled cell stops reports `blocked`. A clear reports the row indexes before the clear. Surviving rows keep their IDs. Use `cellVariant(game, x, y)` to render the board and `msUntilNextStep(game)` to drive your own clock.
 
 ## Runner and React
 
