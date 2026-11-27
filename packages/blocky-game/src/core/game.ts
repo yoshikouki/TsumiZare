@@ -47,6 +47,7 @@ export type Command =
   | { type: "advance"; ms: number };
 
 export type GameEvent =
+  | { type: "blocked"; direction: Direction }
   | { type: "locked"; block: Block }
   | { type: "cleared"; rows: number[] }
   | { type: "spawned"; block: Block }
@@ -355,8 +356,13 @@ function apply(game: Game, command: Command, events: GameEvent[]): Game {
     return game;
   }
   switch (command.type) {
-    case "move":
-      return move(game, command.direction);
+    case "move": {
+      const moved = move(game, command.direction);
+      if (moved === game && game.piece) {
+        events.push({ type: "blocked", direction: command.direction });
+      }
+      return moved;
+    }
     case "rotate":
       return rotate(game);
     case "place":

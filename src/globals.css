@@ -247,8 +247,6 @@
 
 .board-clear-flash {
   display: none;
-  transform-origin: bottom;
-  scale: 1;
 }
 
 .board-clear-flash > div {
@@ -278,7 +276,18 @@
 @media (prefers-reduced-motion: no-preference) {
   .board-clear-flash {
     display: grid;
-    animation: board-clear-collapse 160ms ease-in both;
+  }
+
+  /* Each cell waits for the wave to reach it. The delay is set per cell. */
+  .board-clear-flash > div {
+    animation: board-clear-pop 240ms ease-in both;
+  }
+
+  /* The cell a piece just left fades back. */
+  .board-trail {
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+    animation: board-trail-fade 150ms ease-out both;
   }
 
   .board-row {
@@ -341,9 +350,18 @@
   }
 }
 
-@keyframes board-clear-collapse {
+@keyframes board-clear-pop {
+  25% {
+    scale: 1.12;
+  }
+
+  to {
+    scale: 0;
+  }
+}
+
+@keyframes board-trail-fade {
   to {
     opacity: 0;
-    scale: 1 0;
   }
 }

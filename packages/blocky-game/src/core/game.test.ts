@@ -67,6 +67,10 @@ test("failed moves keep the lock deadline and lifting off cancels it", () => {
   const grounded = advance(game, 666).game;
   const waiting = advance(grounded, 400).game;
   const failed = move(waiting, "left");
+  expect(step(waiting, { type: "move", direction: "left" }).events).toEqual([
+    { type: "blocked", direction: "left" },
+  ]);
+  expect(step(waiting, { type: "move", direction: "up" }).events).toEqual([]);
   expect(advance(failed, 100).events.map((event) => event.type)).toEqual([
     "locked",
   ]);
