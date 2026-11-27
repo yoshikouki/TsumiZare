@@ -174,7 +174,8 @@ test("rows above a cleared row fall into place, and moves never animate", async 
       cells[0].getBoundingClientRect().top
     );
   });
-  // Group transforms snap to whole pixels.
+  // Every row above the cleared one falls, empty rows included. Group
+  // transforms snap to whole pixels.
   await expect
     .poll(() =>
       page.evaluate(
@@ -185,7 +186,7 @@ test("rows above a cleared row fall into place, and moves never animate", async 
         rowPitch
       )
     )
-    .toBe(3);
+    .toBe(19);
   // Only the groups move. An old image would still show the placed block as
   // active next to the next block.
   expect(await page.evaluate(() => window.transitions[0].images)).toEqual([]);

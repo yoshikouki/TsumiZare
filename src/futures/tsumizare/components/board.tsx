@@ -15,10 +15,6 @@ const LINE_CLEAR_ROW = {
   default: "none",
 };
 
-// An empty row looks the same wherever it sits, so only rows with landed cells
-// need to be captured and animated.
-const hasLandedCells = (row: Row) => row.cells.some((cell) => cell.blockId);
-
 export const Board = ({
   boardRef,
   rows,
@@ -43,7 +39,7 @@ export const Board = ({
     <div className="flex w-full max-w-xs flex-col gap-1 pb-4">
       {rows.map((row, y) => (
         <ViewTransition
-          default={hasLandedCells(row) ? LINE_CLEAR_ROW : "none"}
+          default={LINE_CLEAR_ROW}
           // A cleared row still shows the placed block as active in its old
           // image, next to the next block. It leaves at once, as on main.
           exit="none"
