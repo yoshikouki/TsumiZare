@@ -6,7 +6,7 @@ React hooks and game logic for falling-block puzzle games.
 
 Wrap the game in `BlockyGameProvider`, then read the board and controls from `useBlockyGame`.
 Pass `autoDrop: true` to make blocks fall on their own.
-A block that touches down locks 500ms later. Each move or rotation on the ground restarts that wait, up to 15 times per block, and a tick never locks it.
+A block that touches down locks one drop interval later. Each move or rotation on the ground restarts that wait, and a tick never locks it.
 
 ```tsx
 import { BlockyGameProvider, useBlockyGame } from "blocky-game";

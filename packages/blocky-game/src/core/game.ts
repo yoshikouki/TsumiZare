@@ -5,14 +5,13 @@ import {
   mergeBlockIntoBoard,
   renewFilledRows,
 } from "./board.js";
-import { LOCK_RESET_LIMIT, WALL_KICKS } from "./constants.js";
+import { WALL_KICKS } from "./constants.js";
 import { calculateNewResult } from "./result.js";
 
 export interface Game {
   board: Board;
   activeBlock: Block | null;
   queuedBlocks: Block[];
-  lockResets: number;
 }
 
 export type Direction = "left" | "right" | "down" | "up";
@@ -41,7 +40,6 @@ export const initGame = (board: Board): Game => ({
   board,
   activeBlock: null,
   queuedBlocks: [],
-  lockResets: 0,
 });
 
 const fits = (block: Block, board: Board) => !hasBlockCollision(block, board);
@@ -76,13 +74,6 @@ const rotateBlock = (game: Game): Game => {
   return kicked ? { ...game, activeBlock: kicked } : game;
 };
 
-// A move or rotation of a grounded block restarts its lock delay, up to
-// LOCK_RESET_LIMIT times.
-const steer = (game: Game, steered: Game): Game =>
-  steered !== game && isGrounded(game) && game.lockResets < LOCK_RESET_LIMIT
-    ? { ...steered, lockResets: game.lockResets + 1 }
-    : steered;
-
 const land = (game: Game): Game => {
   if (!game.activeBlock) {
     return game;
@@ -109,7 +100,6 @@ const activateOrFinish = (game: Game, nextBlock: Block): Game => {
     ...game,
     activeBlock: block,
     queuedBlocks: [...rest, nextBlock],
-    lockResets: 0,
   };
 };
 
@@ -119,8 +109,8 @@ const finish = (game: Game): Game => ({
   board: { ...game.board, status: "finished" },
 });
 
-// A grounded block stays until the lock action, which comes LOCK_DELAY after
-// it touched down or after its last move.
+// A grounded block stays until the lock action. Moves that fail, and ticks of
+// a grounded block, return the same game, so they do not restart the lock wait.
 const tick = (game: Game, nextBlock: Block): Game =>
   game.activeBlock
     ? moveBlock(game, "down")
@@ -129,9 +119,9 @@ const tick = (game: Game, nextBlock: Block): Game =>
 const play = (game: Game, action: GameAction): Game => {
   switch (action.type) {
     case "move":
-      return steer(game, moveBlock(game, action.direction));
+      return moveBlock(game, action.direction);
     case "rotate":
-      return steer(game, rotateBlock(game));
+      return rotateBlock(game);
     case "tick":
       return tick(game, action.nextBlock);
     case "lock":
