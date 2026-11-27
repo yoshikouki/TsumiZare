@@ -1,6 +1,8 @@
 export const ROWS = 20;
 export const COLS = 10;
 export const DROP_INTERVAL = 333;
+// A grounded block locks this long after it touched down or last moved.
+export const LOCK_DELAY = 500;
 export const SWIPE_THRESHOLD = 30;
 export const TAP_MOVE_THRESHOLD = 5;
 export const TAP_DURATION_THRESHOLD = 300;
