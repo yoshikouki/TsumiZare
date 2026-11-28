@@ -72,8 +72,10 @@ export function useGameInput(
       ) {
         return;
       }
+      // Enter is the only bound key that also activates a focused control.
       if (
         status !== "playing" &&
+        event.key === "Enter" &&
         event.target instanceof Element &&
         event.target.closest('a, button, input, select, textarea, [role="tab"]')
       ) {

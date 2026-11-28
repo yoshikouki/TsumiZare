@@ -25,6 +25,16 @@ test("keyboard starts, pauses, and resumes standard mode", async ({ page }) => {
   await expect(resume).toHaveCount(0);
 });
 
+test("P resumes a game paused with the pause button", async ({ page }) => {
+  await openGame(page, "/");
+  const resume = page.getByRole("button", { name: "再開" });
+  await page.keyboard.press("Enter");
+  await page.getByRole("button", { name: "一時停止" }).click();
+  await expect(resume).toBeVisible();
+  await page.keyboard.press("p");
+  await expect(resume).toHaveCount(0);
+});
+
 test("Enter places a block in stacking mode", async ({ page }) => {
   await openGame(page, "/modes/no-tick");
   const board = page.getByRole("region", { name: "ゲーム盤" });
