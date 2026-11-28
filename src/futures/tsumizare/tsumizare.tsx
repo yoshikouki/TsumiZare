@@ -18,7 +18,7 @@ export const TsumiZare = () => {
   const runner = useGameSession();
   const game = useGame(runner);
   const { queue, result, rules, status } = game;
-  const boardRef = useGameInput(runner, "rotate");
+  const boardRef = useGameInput(runner, "standard");
 
   return (
     <div

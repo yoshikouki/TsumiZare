@@ -1,7 +1,9 @@
-import type { GameRunner } from "blocky-game";
+import type { Game, GameRunner } from "blocky-game";
 import { useCallback, useEffect } from "react";
 
 type Input = Parameters<GameRunner["send"]>[0];
+type Status = Game["status"];
+type Bindings = Record<Status, Record<string, Input>>;
 
 const SWIPE_THRESHOLD = 30;
 const TAP_MOVE_THRESHOLD = 5;
@@ -11,6 +13,9 @@ const RIGHT: Input = { type: "move", direction: "right" };
 const DOWN: Input = { type: "move", direction: "down" };
 const UP: Input = { type: "move", direction: "up" };
 const ROTATE: Input = { type: "rotate" };
+const START: Input = { type: "start" };
+const PAUSE: Input = { type: "pause" };
+const RESUME: Input = { type: "resume" };
 
 function swipeCommand(dx: number, dy: number, up: Input) {
   const absX = Math.abs(dx);
@@ -26,31 +31,63 @@ function swipeCommand(dx: number, dy: number, up: Input) {
   }
 }
 
-export function useGameInput(runner: GameRunner, upAction: "move" | "rotate") {
-  const up = upAction === "move" ? UP : ROTATE;
+export function useGameInput(
+  runner: GameRunner,
+  mode: "standard" | "stacking"
+) {
+  const up = mode === "stacking" ? UP : ROTATE;
 
   useEffect(() => {
-    const bindings = new Map([
-      ["ArrowLeft", LEFT],
-      ["ArrowRight", RIGHT],
-      ["ArrowDown", DOWN],
-      ["ArrowUp", up],
-      [" ", ROTATE],
-    ]);
+    const bindings: Bindings = {
+      ready: { Enter: START },
+      playing: {
+        ArrowLeft: LEFT,
+        ArrowRight: RIGHT,
+        ArrowDown: DOWN,
+        ArrowUp: up,
+        " ": ROTATE,
+        Escape: PAUSE,
+        p: PAUSE,
+        P: PAUSE,
+        ...(mode === "stacking" ? { Enter: { type: "place" } } : {}),
+      },
+      paused: { Escape: RESUME, p: RESUME, P: RESUME, Enter: RESUME },
+      finished: { Enter: START },
+    };
 
     function onKeyDown(event: KeyboardEvent) {
-      const command = bindings.get(event.key);
-      if (command) {
-        if (runner.getGame().status === "playing") {
-          event.preventDefault();
-        }
-        runner.send(command);
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
       }
+      const { status } = runner.getGame();
+      const keys = bindings[status];
+      if (!Object.hasOwn(keys, event.key)) {
+        return;
+      }
+      const command = keys[event.key];
+      if (
+        event.repeat &&
+        command.type !== "move" &&
+        command.type !== "rotate"
+      ) {
+        return;
+      }
+      // Enter is the only bound key that also activates a focused control.
+      if (
+        status !== "playing" &&
+        event.key === "Enter" &&
+        event.target instanceof Element &&
+        event.target.closest('a, button, input, select, textarea, [role="tab"]')
+      ) {
+        return;
+      }
+      event.preventDefault();
+      runner.send(command);
     }
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [runner, up]);
+  }, [runner, mode, up]);
 
   return useCallback(
     (element: HTMLElement | null) => {

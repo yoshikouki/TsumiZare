@@ -24,7 +24,7 @@ export const NoTickGame = () => {
   const runner = useGameSession();
   const game = useGame(runner);
   const { queue, result, rules, status } = game;
-  const boardRef = useGameInput(runner, "move");
+  const boardRef = useGameInput(runner, "stacking");
 
   return (
     <div
